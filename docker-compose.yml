@@ -1,0 +1,30 @@
+services:
+  backend: 
+    build: 
+      context: ./backend
+      dockerfile: dockerfile
+    env_file:
+      - .env
+    command: gunicorn config.wsgi.application --build 0.0.0.0:8000 --timeout 120 --worker 3
+    volumes:
+      - ./backend:/backend
+    ports:
+      - 8000:8000
+    entrypoint: 
+      - DJANGO_SETTINGS_MODULE=config.serrings
+      - DJANGO_ALLOWED_HOSTS=localhost
+      - DATABASE_URL=mysql://takato:0605@db:3306/todolist
+      - DATABASE_NAME=todolist
+      - DATABASE_USER=takato
+      - DATABASE_PASSWORD=0605
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - todo-networks
+  frontend: 
+    build: 
+      context: ./frontend
+      dockerfile: dockerfile
+    volumes:
+      - 
