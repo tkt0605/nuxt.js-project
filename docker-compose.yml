@@ -6,13 +6,13 @@ services:
     container_name: backend
     env_file:
       - .env
-    command: gunicorn config.wsgi.application --build 0.0.0.0:8000 --timeout 120 --worker 3
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 3
     volumes:
       - ./backend:/backend
     ports:
-      - 8000:8000
+      - "8000:8000"
     environment: 
-      - DJANGO_SETTINGS_MODULE=config.serrings
+      - DJANGO_SETTINGS_MODULE=config.settings
       - DJANGO_ALLOWED_HOSTS=localhost
       - DATABASE_URL=mysql://takato:0605@db:3306/todolist
       - DATABASE_NAME=todolist
@@ -30,9 +30,9 @@ services:
     container_name: frontend
     command: npm run dev
     volumes:
-      - ./frontend:/backend/frontend
+      - ./frontend:/frontend
     ports:
-      - 3000:3000
+      - "3000:3000"
     networks:
       - todo-networks
   db:
@@ -45,7 +45,7 @@ services:
       - MYSQL_PASSWORD=0605
     volumes:
       - mysql_data:/var/lib/mysql_data
-      - ./mysql/init.sql:docker-entrypoint-initdb.d/init.sql:ro
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 1m30s
