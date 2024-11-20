@@ -2,6 +2,7 @@ export default {
   // Target: https://go.nuxtjs.dev/config-target
   // target: 'static',
   target: 'server',
+  ssr: true,
   // ここで、ポートを設定しないと、Nuxt.jsのインデックスページにアクセスできない。
   server: {
     host: "0.0.0.0",
