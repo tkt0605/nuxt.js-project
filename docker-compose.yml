@@ -28,11 +28,15 @@ services:
       context: ./frontend
       dockerfile: dockerfile
     container_name: frontend
-    command: npm run dev
+    # command: npm run dev
+    # command: npm run build && npm run start
     volumes:
       - ./frontend:/frontend
     ports:
       - "3000:3000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
     networks:
       - todo-networks
   db:
