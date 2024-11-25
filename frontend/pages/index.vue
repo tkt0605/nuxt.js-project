@@ -1,6 +1,8 @@
 <template>
-  <div>Hello World</div>
-  <!-- <nuxt-link to="/about">About</nuxt-link> -->
+  <nav class="bord">
+    <ul class="todo_border">
+    </ul>
+  </nav>
 </template>
 <style>
 </style>
@@ -10,3 +12,8 @@ export default {
   // layout: 'default',
 }
 </script>
+<style>
+.bord{
+  
+}
+</style>
