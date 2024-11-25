@@ -63,7 +63,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
 SITE_ID=1
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # デフォルトの認証バックエンド
     'allauth.account.auth_backends.AuthenticationBackend',  # allauth用バックエンド
