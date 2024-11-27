@@ -10,7 +10,7 @@ services:
     volumes:
       - ./backend:/backend
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment: 
       - DJANGO_SETTINGS_MODULE=config.settings
       - DJANGO_ALLOWED_HOSTS=localhost
