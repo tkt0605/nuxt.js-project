@@ -62,7 +62,7 @@ aside{
     margin-right: auto;
     margin-left: auto;
     display: flex;
-    gap: 450px;
+    justify-content: space-between;
 }
 .logo{
     font-size: 20px;
