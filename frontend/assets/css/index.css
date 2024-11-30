@@ -1,0 +1,359 @@
+.bord{
+    background: rgb(226, 226, 226);
+    top: 100px;
+    left: 400px; 
+    width: calc(100% - 400px); 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 85vh;
+    position: relative;
+}
+  .todo_list{
+    /* background-color: white; */
+    border-radius: 10px;
+    /* border: 1px solid #ccc; */
+    box-shadow: inset;
+    max-width: 680px;
+    width: 100%;
+    overflow: auto;
+    /* margin-bottom: 250px; */
+    align-items: center;
+    height: 100%;
+
+  }
+  .item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eceff1;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center; /* チェックボックス、時間、テキストを縦方向中央揃え */
+    justify-content: space-between; /* 各要素を左右に分散配置 */
+  }
+  
+  .item:last-child {
+    border-bottom: none;
+  }
+  .item:hover {
+    background-color: #f1f5f9;
+  }
+  .checkboxs {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    accent-color: #007bff; /* Modern browsers */
+    cursor: pointer;
+  }
+  
+  /* Time styling */
+  .time {
+    font-size: 14px;
+    color: #6c757d;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+  
+  /* Text styling */
+  .text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    flex-grow: 1;
+    word-wrap: break-word;
+  }
+  
+  /* Completed task (when checkbox is checked) */
+  .checkboxs:checked + .time + .text {
+    text-decoration: line-through;
+    color: #6c757d;
+  }
+  .text-base{
+    margin-top: 0px;
+  }
+  /* Add some padding around the list */
+  .form{
+    max-width: 680px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 4px 10px;
+    position: relative;
+    /* display: flex;
+    align-items: center; */
+  }
+  .flex-button{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: 8px; 
+    margin-right: 8px;
+    position: relative;
+  }
+  .flex-button-span{
+    min-width: 2rem;
+    position: relative;
+  }
+  .texter{
+    position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse; /* 上から追加するために逆方向 */
+  }
+  .text_keybord{
+    position: relative;
+    width: 100%;
+    max-width: 680px;
+    min-height: 40px;
+    max-height: 150px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #ffffff;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    resize: none;
+    transform-origin: bottom; /* 底辺を基準に拡張 */
+   }
+   .text_keybord::before{
+    content: attr(placeholder);
+    color: #999;
+    pointer-events: none;
+    display: block;
+   }
+  .text_keybord:focus{
+    border-color: #ffffff; /* フォーカス時も通常時と同じ色 */
+    overflow: auto;
+  }
+  .text_keybord:focus::before{
+    content: "";
+  }
+  .post_icon{
+  }
+  .submit_button{
+    position: relative;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+    height: 2rem;
+    width: 2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+    font-weight: 800;
+    display: flex;
+    justify-content: flex-end;
+
+  }
+  .small{
+    text-align: center;
+  }
+/* 全体コンテナ */
+.m-auto {
+  margin: auto;
+  font-size: 1rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .m-auto {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .m-auto {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .m-auto {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+/* 内部フレックスコンテナ */
+.mx-auto {
+  margin: auto;
+  display: flex;
+  flex: 1;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .mx-auto {
+    gap: 1.25rem;
+    max-width: 48rem; /* md:max-w-3xl */
+  }
+}
+
+@media (min-width: 1024px) {
+  .mx-auto {
+    gap: 1.5rem;
+    max-width: 40rem; /* lg:max-w-[40rem] */
+  }
+}
+
+@media (min-width: 1280px) {
+  .mx-auto {
+    max-width: 48rem; /* xl:max-w-[48rem] */
+  }
+}
+
+/* フォームスタイル */
+form {
+  width: 100%;
+}
+
+.relative {
+  position: relative;
+}
+
+.flex {
+  display: flex;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.max-w-full {
+  max-width: 100%;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.rounded-3xl {
+  border-radius: 1.5rem;
+}
+
+.transition-colors {
+  transition: background-color 0.3s ease;
+}
+
+.contain-inline-size {
+  contain: inline-size;
+}
+
+/* 入力エリアの背景 */
+#composer-background {
+  display: flex;
+  flex-direction: column;
+  cursor: text;
+  background-color: #f4f4f4; /* ライトテーマ */
+  border-radius: 1.5rem;
+  padding: 0.625rem 0.625rem;
+  transition: background-color 0.3s ease;
+}
+
+/* 入力エリア */
+textarea,
+.ProseMirror {
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #000; /* ライトテーマ */
+  border: none;
+  background: transparent;
+  outline: none;
+  resize: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-y: auto;
+}
+
+textarea::placeholder,
+.ProseMirror[data-placeholder]:empty::before {
+  color: #aaa; /* プレースホルダーカラー */
+  content: attr(data-placeholder);
+}
+
+/* 入力エリアの高さ */
+textarea,
+.ProseMirror {
+  min-height: 44px;
+  max-height: 25vh; /* 最大高さ */
+}
+
+/* ボタン */
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* アイコンボタン */
+button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+}
+
+button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+button:focus-visible {
+  outline: 2px solid #000; /* フォーカス時の視覚効果 */
+}
+
+/* ファイル添付ボタン */
+button[aria-label="ファイルを添付"] {
+  background-color: #f4f4f4;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+button[aria-label="ファイルを添付"]:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 音声ボタン */
+button[data-testid="composer-speech-button"] {
+  background-color: #000; /* 黒い背景 */
+  color: #fff; /* 白いアイコン */
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+}
+
+button[data-testid="composer-speech-button"]:hover {
+  opacity: 0.8;
+}
+
+/* レスポンシブ */
+@media (min-width: 768px) {
+  button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  button svg {
+    width: 2rem;
+    height: 2rem;
+  }
+}
