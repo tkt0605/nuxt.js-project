@@ -1,7 +1,6 @@
 <template>
   <div class="bord">
     <div class="todo_list">   
-    <!-- <div class="m-auto text-base py-[18px] px-3 md:px-4 w-full md:px-5 lg:px-4 xl:px-5"> -->
       <div class="item">
         <input type="checkbox" class="checkboxs"/>
         <p class="time">time</p>
