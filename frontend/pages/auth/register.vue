@@ -15,7 +15,8 @@
   
   <script>
   export default {
-    layout: 'account', // 専用レイアウトを指定
+    layout: 'auth', // 専用レイアウトを指定
+    name: 'register'
   };
   </script>
   

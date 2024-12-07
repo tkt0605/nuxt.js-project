@@ -88,6 +88,7 @@ export default {
       editable.addEventListener('focus', this.handlePlaceholder);
       editable.addEventListener('blur', this.handlePlaceholder);
     }
+
   },
   beforeUnmount(){
     const editable = this.$refs.textKeybord;

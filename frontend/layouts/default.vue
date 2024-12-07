@@ -2,7 +2,7 @@
   <div>
     <Header/>
     <NuxtPage />
-    <nuxt />
+    <!-- <nuxt /> -->
   </div>
 </template>
 <script>

@@ -34,7 +34,16 @@
 </template>
 <script>
 export default {
-    
+    methods:{
+        async logout(){
+            try{
+                await this.$auth.logout();
+                this.$router.push('/login/');
+            }catch(error){
+                console.error(error);
+            }
+        },
+    },
 }
 </script>
 <style>
