@@ -1,9 +1,16 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EmailLoginSerializer, LogoutSerializer
+from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer
+from .models import CustomUser, ToDOList
+from rest_framework import generics
+User = get_user_model()
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegisterSerializer
 class IndexAPI(APIView):
     def get(self, request):
         return Response({'message': 'Hello world!!!!'})
@@ -28,3 +35,4 @@ class LogoutView(APIView):
             serializer.save()
             return Response({'message': "Successfully Logout"}, status=200)
         return Response(serializer.errors, status=400)
+    

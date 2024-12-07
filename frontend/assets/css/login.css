@@ -1,0 +1,124 @@
+/* .login-base{
+
+}
+.title{
+    font-size: 32px;
+    font: "Söhne";
+    margin: 24px 0 0;
+    color: #2d333a;
+    width: 320px;
+    text-align: center;
+}
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #ffffff;
+    padding: 20px;
+}
+.login-form {
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+}
+.form-input {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus {
+    border-color: #007bff;
+}
+.form-button {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-button:hover {
+    background-color: #0056b3;
+} */
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: white;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* ベースセクション */
+.login-base {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000000;
+    margin: 0;
+}
+
+/* フォーム全体 */
+.login-form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* 入力フィールド */
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    /* transition: border-color 0.3s, box-shadow 0.3s; */
+}
+/* ボタン */
+.form-button {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #0984e3;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.form-button:hover {
+    background-color: #74b9ff;
+    transform: translateY(-2px);
+}
+
+.form-button:active {
+    background-color: #0984e3;
+    transform: translateY(0);
+}

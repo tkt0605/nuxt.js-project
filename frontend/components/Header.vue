@@ -5,8 +5,8 @@
                 <div class="container">
                     <a class="logo">ToDO<small class="logo_small"> By Typewriter</small></a>
                     <div class="account_form">
-                        <button class="login">ログイン</button>
-                        <button class="signup">サインアップ</button>
+                        <button type="button" onclick="window.location.href='http://localhost:3000/auth/login';" class="login">ログイン</button>
+                        <button type="button" onclick="window.location.href='http://localhost:3000/auth/signup';" class="signup">サインアップ</button>
                     </div>
                 </div>
             </div>
@@ -33,6 +33,7 @@
     </div>
 </template>
 <script>
+import '../assets/css/header.css';
 export default {
     methods:{
         async logout(){
@@ -43,10 +44,10 @@ export default {
                 console.error(error);
             }
         },
-    },
+    }
 }
 </script>
-<style>
+<!-- <style>
 *{
     margin: 0;
     padding: 0;
@@ -153,4 +154,4 @@ li .log_todo{
     margin-left: 20px;
     gap: 15px;
 }
-</style>
+</style> -->

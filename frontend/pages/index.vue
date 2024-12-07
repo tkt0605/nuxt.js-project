@@ -1,4 +1,5 @@
 <template>
+  <Header/>
   <div class="bord">
     <div class="todo_list">   
       <div class="item">
@@ -29,42 +30,14 @@
     </div>
   </div>
 </template>
-<!-- <script>
-export default {
-  name: 'IndexPage',
-  methods: {
-    handlePlaceholder(event){
-      const editable = event.target;
-      if (event.type == 'focus' && editable.classList.contains('placeholder')) {
-        editable.classList.remove('placeholder');
-        editable.innerText = '';
-      }
-
-      if (event.type == 'blur' && editable.innerText.trim() === ''){
-        editable.classList.add('placeholder');
-        editable.innerText = editable.getAttribute('data-placeholder');
-      }
-    },
-  },
-  mounted() {
-    const editable = document.getElementById('text_keybord');
-    // イベントリスナーを設定
-    this.handlePlaceholder({type: 'blur', target: editable});
-    editable.addEventListener('focus', this.handlePlaceholder);
-    editable.addEventListener('blur', this.handlePlaceholder);
-
-    this.$once('hook:beforeDestory', () => {
-      editable.removeEventListener('focus', this.handlePlaceholder);
-      editable.removeEventListener('blur', this.handlePlaceholder);
-    })
-  }
-}
-</script>
-<style scoped src="assets/css/index.css"></style> -->
 <script>
 import '../assets/css/index.css';
-
+import Header from '../components/Header.vue';
 export default {
+  layout: 'default',
+  components: {
+    Header,
+  },
   name: 'IndexPage',
   methods: {
     handlePlaceholder(event) {

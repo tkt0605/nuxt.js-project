@@ -1,15 +1,18 @@
 <template>
-    <div>
-        <form @submit.prevent="login">
-            <input v-model="email" placeholder="メールアドレス"/>
-            <input v-model="password" placeholder="パスワード"/>
-            <button type="submit">ログイン</button>
+    <div class="login-container">
+        <div class="login-base">
+            <h1 class="title">お帰りなさい</h1>
+        </div>
+        <form @submit.prevent="login" class="login-form">
+            <input v-model="email" placeholder="メールアドレス" class="form-input" />
+            <input v-model="password" type="password" placeholder="パスワード" class="form-input" />
+            <button type="submit" class="form-button">ログイン</button>
         </form>
     </div>
 </template>
 <script>
+import '../../assets/css/login.css'
 export default {
-    layout: 'auth',
     name: 'Login',
     data() {
         return {
@@ -30,4 +33,5 @@ export default {
         }
     }
 }
+
 </script>

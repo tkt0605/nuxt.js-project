@@ -29,7 +29,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     groups = models.ManyToManyField(Group, related_name="custom_user_group", blank=True, help_text="このユーザーが所属するグループ。ユーザーは、各グループに付与されたすべての権限を取得します", related_query_name="user")
     user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True, help_text="このユーザーに対する特定の権限", related_query_name="user")
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = []
     def __str__(self):
         return self.email
 class ToDOList(models.Model):
