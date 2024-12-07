@@ -10,20 +10,18 @@
     position: relative;
 }
   .todo_list{
-    /* background-color: white; */
+    padding: 20px;
     border-radius: 10px;
-    /* border: 1px solid #ccc; */
     box-shadow: inset;
     max-width: 680px;
     width: 100%;
     overflow: auto;
-    /* margin-bottom: 250px; */
     align-items: center;
     height: 100%;
-
   }
   .item {
-    padding: 15px 20px;
+    background-color: white;
+    padding: 20px;
     border-bottom: 1px solid #eceff1;
     transition: background-color 0.3s ease;
     display: flex;

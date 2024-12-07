@@ -11,7 +11,7 @@
       <div class="">
         <div class="form">
           <div class="texter" id="texter">
-            <div id="text_keybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのToDOを記入" >
+            <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのToDOを記入" >
               <p></p>
             </div>
           </div>
@@ -29,11 +29,10 @@
     </div>
   </div>
 </template>
-<script>
+<!-- <script>
 export default {
   name: 'IndexPage',
   methods: {
-
     handlePlaceholder(event){
       const editable = event.target;
       if (event.type == 'focus' && editable.classList.contains('placeholder')) {
@@ -61,4 +60,41 @@ export default {
   }
 }
 </script>
-<style scoped src="assets/css/index.css"></style>
+<style scoped src="assets/css/index.css"></style> -->
+<script>
+import '../assets/css/index.css';
+
+export default {
+  name: 'IndexPage',
+  methods: {
+    handlePlaceholder(event) {
+      const editable = event.target;
+      if (event.type === 'focus' && editable.classList.contains('placeholder')) {
+        editable.classList.remove('placeholder');
+        editable.innerText = '';
+      }
+
+      if (event.type === 'blur' && editable.innerText.trim() === '') {
+        editable.classList.add('placeholder');
+        editable.innerText = editable.getAttribute('data-placeholder');
+      }
+    },
+  },
+  mounted() {
+    if (process.client){
+      const editable = this.$refs.textKeybord; 
+      if (!editable) return; 
+      this.handlePlaceholder({ type: 'blur', target: editable });
+      editable.addEventListener('focus', this.handlePlaceholder);
+      editable.addEventListener('blur', this.handlePlaceholder);
+    }
+  },
+  beforeUnmount(){
+    const editable = this.$refs.textKeybord;
+    if (editable){
+        editable.removeEventListener('focus', this.handlePlaceholder);
+        editable.removeEventListener('blur', this.handlePlaceholder);
+    }
+  }
+};
+</script>

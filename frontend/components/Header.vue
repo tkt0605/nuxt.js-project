@@ -32,6 +32,11 @@
         </aside>
     </div>
 </template>
+<script>
+export default {
+    
+}
+</script>
 <style>
 *{
     margin: 0;

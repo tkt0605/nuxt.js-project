@@ -8,7 +8,6 @@ export default {
     host: "0.0.0.0",
     port: 3000
   },
-  // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'frontend',
     htmlAttrs: {
@@ -24,31 +23,40 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-
-  // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
   ],
-
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
   ],
-
-  // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
-
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
+  components: false,
   buildModules: [
   ],
-
-  // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    
   ],
-  // modules: ['@nuxtjs/axios'],
-  // axios:{
-  //   baseURL: 'http://localhost:8000/api',
-  // },
-  // Build Configuration: https://go.nuxtjs.dev/config-build
+  axios: {
+    baseURL: 'localhost:8001/api',
+  },
+  auth: {
+    strategies: {
+      local: {
+        token: {
+          property: 'access',
+          type: 'Bearer',
+          maxAge: 1800,
+        },
+        refreshToken: {
+          property: 'refresh',
+          data: 'refresh',
+          maxAge: 604800,
+        },
+        endpoints: {
+          login: { url: '/token/', method: 'post'},
+          logout: {url: '/token/logout/', method: 'post'},
+          refresh: { url: '/token/refresh/', method: 'post' },
+          user: false
+        },
+      },
+    },
+  },
   build: {
   }
 }
