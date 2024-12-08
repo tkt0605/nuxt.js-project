@@ -114,11 +114,13 @@
 }
 
 .form-button:hover {
-    background-color: #74b9ff;
-    transform: translateY(-2px);
+    background-color: #74b9ff;;
 }
-
+/* 
 .form-button:active {
     background-color: #0984e3;
     transform: translateY(0);
+} */
+.other-page{
+    margin-top: 10px;
 }

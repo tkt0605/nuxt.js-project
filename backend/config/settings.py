@@ -97,7 +97,7 @@ SIMPLE_JWT = {
 # CORS_ORIGINS_ALLOW_ALL = True
 ROOT_URLCONF = 'config.urls'
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # フロントエンドのURL
+    "http://localhost:3000",  # フロントエンドのURL
 ]
 CORS_ALLOW_HEADERS = [
     'authorization',
@@ -196,7 +196,7 @@ AUTH_USER_MODEL = 'api.CustomUser'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = '/accounts/login'
-LOGOUT_REDIRECT_URL = "/accounts/login"
+LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'

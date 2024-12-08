@@ -30,8 +30,8 @@ export default {
   components: false,
   buildModules: [
   ],
-  modules: [
-  ],
+  modules: [],
+  plugins: ['~/plugins/pinia.js'],
   axios: {
     baseURL: 'localhost:8001/api',
   },

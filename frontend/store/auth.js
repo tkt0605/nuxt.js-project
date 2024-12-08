@@ -1,31 +1,88 @@
-export const state = () => ({
-    user: null,
-    accessToken: null,
-    refreshToken: null,
-})
-export const mutations =  {
-    SET_USER(state, user) {
-        state.user = user
-    },
-    SET_TOKENS(state, {access, refresh}) {
-        state.access = access,
-        state.refresh = refresh
-    },
-    CLEAR_AUTH(state) {
-        state.user = null,
-        state.accessToken = null,
-        state.refreshToken = null
-    }
-}
+import { defineStore } from "pinia";
+export const useAuthStore = defineStore('auth', {
+    sate: () => ({
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+    }),
+    actions: {
+        async login(email, password){
+            try{
+                const response = await this.$fetch('/api/login/', {
+                    method: 'POST',
+                    body: {email, password},
+                });
+                this.user = response.user;
+                this.accessToken = response.access;
+                this.refreshToken = response.refresh;
 
-export const actions = {
-    async login({commit}, {email, password}) {
-        const {data} = await this.$axios.post('/login/', {email, password})
-        commit('SET_USER', data.user)
-        commit('SET_TOKENS', {'access': data.access, 'refresh': data.refresh})
+                localStorage.setItem('access_token', this.accessToken);
+                localStorage.setItem('refresh_token', this.refreshToken);
+
+                return response.user;
+            }catch(error){
+                console.error('ログインエラー:', error);
+                throw error;
+            }
+        },
+        async signup(email, password){
+            try{
+                await $fetch('/api/signup/', {
+                    method: "POST",
+                    body: {email, password},
+                });
+
+                await this.login(email, password);
+            }catch(error){
+                console.error("アカウント登録エラー:", error);
+                throw error;
+            }
+        },
+        async logout() {
+            try{
+                const refreshToken = this.refreshToken;
+                await $fetch('/api/logout/', {
+                    method: "POST",
+                    body: {refresh: refreshToken}, 
+                });
+
+                this.clearAuth();
+            }catch(error){
+                console.error('ログアウトエラー:', error);
+                throw error;
+            }
+        },
+
+        async refreshToken() {
+            try{
+                const refreshToken = localStorage.getItem('refresh_token');
+                const response = await $fetch('/api/token/refresh/', {
+                    method: "POST",
+                    body: {refresh: refreshToken},
+                });
+                this.accessToken = response.access;
+                localStorage.setItem('access_token', this.accessToken);
+                return this.accessToken;
+            }catch(error){
+                console.error('トークンリフレッシュエラー:', error);
+                throw error;
+            }
+        },
+        clearAuth(){
+            this.user = null;
+            this.accessToken = null;
+            this.refreshToken = null;
+
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+        },
     },
-    async logout({commit, state}) {
-        await this.$axios.post('/logout/', {'refresh': state.refreshToken})
-        commit('CLEAR_AUTH')
-    } 
-}
+    getters: {
+        isAuthenticated(state){
+            return !!state.accessToken;
+        },
+        currentUser(state){
+            return state.user;
+        },
+    },
+});
