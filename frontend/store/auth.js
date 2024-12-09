@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', {
         async signup(email, password){
             const config = useRuntimeConfig();
             try{
-                await fetch(`${config.public.apiBase}/signup/`, {
+                const response = await fetch(`${config.public.apiBase}/signup/`, {
                     method: "POST",
                     headers:{
                         'Content-Type': "application/json",
@@ -53,7 +53,10 @@ export const useAuthStore = defineStore('auth', {
                         password: password.trim(),
                     }),
                 });
-
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'アカウント登録に失敗しました');
+                }        
                 await this.login(email, password);
             }catch(error){
                 console.error("アカウント登録エラー:", error);
@@ -64,14 +67,17 @@ export const useAuthStore = defineStore('auth', {
             const config = useRuntimeConfig();
             try{
                 const refreshToken = this.refreshToken;
-                await fetch(`${config.public.apiBase}/token/logout/`, {
+                const response = await fetch(`${config.public.apiBase}/token/logout/`, {
                     method: "POST",
                     headers: {
                         'Content-type': 'application/json',
                     },
                     body: JSON.stringify({refresh: refreshToken}), 
                 });
-
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'ログアウトに失敗しました');
+                }   
                 this.clearAuth();
             }catch(error){
                 console.error('ログアウトエラー:', error);

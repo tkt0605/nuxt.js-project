@@ -11,6 +11,7 @@ User = get_user_model()
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 class IndexAPI(APIView):
     def get(self, request):
         return Response({'message': 'Hello world!!!!'})
