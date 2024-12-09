@@ -25,16 +25,23 @@ export default {
   },
   css: [
   ],
-  plugins: [
-  ],
+  // plugins: [],
+  plugins: ['~/plugins/pinia.js'],
   components: false,
   buildModules: [
   ],
   modules: [],
-  plugins: ['~/plugins/pinia.js'],
-  axios: {
-    baseURL: 'localhost:8001/api',
+  pinia: {
+    autoImports: ['defineStore'],
   },
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:8001/api', // DjangoのAPIベースURL
+    },
+  },
+  // axios: {
+  //   baseURL: 'http://localhost:8001/api',
+  // },
   auth: {
     strategies: {
       local: {
@@ -60,4 +67,4 @@ export default {
   },
   build: {
   }
-}
+};

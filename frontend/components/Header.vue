@@ -5,11 +5,11 @@
                 <div class="container">
                     <a class="logo">ToDO<small class="logo_small"> By Typewriter</small></a>
                     <div v-if="isAuthenticated" class="account_form">
-                        <button type="button" @click="logout">ログアウト</button>
+                        <button class="logout" type="button" @click="logout">ログアウト</button>
                     </div>
                     <div v-else class="account_form">
-                        <button type="button" @click="gotoLogin">ログイン</button>
-                        <button type="button" @click="gotoSignup">サインアップ </button>
+                        <button class="login" type="button" @click="gotoLogin">ログイン</button>
+                        <button class="signup" type="button" @click="gotoSignup">サインアップ </button>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
         </aside>
     </div>
 </template>
-<script>
+<script setup>
 import '../assets/css/header.css';
 // import { ref } from 'vue';
 import { useRouter } from 'nuxt/app';
@@ -47,29 +47,17 @@ const logout = async() =>{
     try{
         await authStore.logout();
         console.log('ログアウト成功');
+        router.push('/auth/login');
     }catch(error){
         console.error('ログアウト失敗', error);
         throw error;
     }
 };
 const gotoLogin = ()=>{
-    router.push('/login');
+    router.push('/auth/login');
 };
 const gotoSignup = ()=>{
-    router.push('/signup');
+    router.push('/auth/signup');
 };
-const isAuthenticated = computed(() => authStore.isAuthenticated);
-// export default {
-//     methods:{
-//         async logout(){
-//             try{
-//                 await this.$store.dispatch('auth/logout');
-//                 this.$router.push('/login');
-//             }catch(error){
-//                 console.error('ログアウトエラー:', error);
-//                 throw error;
-//             }
-//         },
-//     },
-// };
-</script>   
+const isAuthenticated = computed (() => authStore.isAuthenticated);
+</script>  

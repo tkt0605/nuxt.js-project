@@ -11,45 +11,23 @@
         <p class="other-page">アカウントをお持ちではありませんか？<a href='http://localhost:3000/auth/signup'>サインアップ</a></p>
     </div>
 </template>
-<script>
+<script setup>
 import '../../assets/css/login.css';
 import { ref } from 'vue';
 import { useAuthStore } from '../../store/auth';
+import { useRouter } from 'nuxt/app';
 const email = ref('');
 const password = ref('');
 const authStore = useAuthStore();
-
+const router = useRouter();
 const login = async() =>{
     try{
         await authStore.login(email.value, password.value);
         console.log('ログイン成功:', authStore.user);
+        router.push('/');
     }catch(error){
         console.error("ログインエラー:", error);
         throw error;
     }
 };
-// export default {
-//     name: 'Login',
-//     data() {
-//         return {
-//             email: '',
-//             password: '',
-//         };
-//     },
-//     methods: {
-//         async login() {
-//             try{
-//                 await this.$store.dispatch('auth/login', {
-//                     email: this.email,
-//                     password: this.password,
-//                 });
-//                 this.$router.push('/');
-//             }catch(error){
-//                 console.error('ログイン失敗:', error);
-//                 throw error;
-//             }
-//         },
-//     },
-// };
-
 </script>

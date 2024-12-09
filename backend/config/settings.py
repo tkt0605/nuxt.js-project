@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+from datetime import timedelta
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
+    'rest_framework_simplejwt',
     'dj_rest_auth',  # REST API経由の認証
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework.authtoken',
@@ -87,17 +88,17 @@ REST_AUTH_SERIALIZERS = {
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True
-    # 'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    # 'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    # 'ROTATE_REFRESH_TOKENS': True,
-    # 'BLACKLIST_AFTER_ROTATION': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
 # CORS_ORIGINS_ALLOW_ALL = True
 ROOT_URLCONF = 'config.urls'
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # フロントエンドのURL
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",  # フロントエンドのURL
+
 ]
 CORS_ALLOW_HEADERS = [
     'authorization',
@@ -105,12 +106,13 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'accept',
     'accept-encoding',
-    'origin',
+    'origin',   
     'user-agent',
     'x-requested-with',
 ]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 # SESSION_COOKIE_SECURE = False  # ローカル開発環境の場合
 # CSRF_COOKIE_SECURE = False  # ローカル開発環境の場合

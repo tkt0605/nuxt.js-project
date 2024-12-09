@@ -12,45 +12,23 @@
   </div>
 </template>
   
-<script>
+<script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '../../store/auth';
-
+import { useRouter } from 'nuxt/app';
 const email =ref('');
 const password = ref('');
 const authStore = useAuthStore();
-
+const  router = useRouter();
 const signup = async() =>{
   try{
     await authStore.signup(email.value, password.value);
     console.log('アカウント登録:', authStore.user);
+    // router.push('/')
   }catch(error){
     console.error('アカウント登録エラー:', error);
     throw error;
   }
 }; 
-// export default {
-//   name: 'Signup',
-//   data() {
-//     return {
-//       email: '',
-//       password: '',
-//     };
-//   },
-//   methods: {
-//     async signup() {
-//       try{
-//         await this.$store.dispatch('auth/signup', {
-//           email: this.email,
-//           password: this.password,
-//         });
-//         this.$router.push('/');
-//       }catch(error){
-//         console.error('アカウント作成失敗:', error);
-//         throw error;
-//       }
-//     },
-//   },
-// };
 </script>
   

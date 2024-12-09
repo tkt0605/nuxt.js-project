@@ -98,6 +98,13 @@ li .log_todo{
     border: 1px solid rgb(255, 255, 255);
     width: 120px;
 }
+.logout{
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid rgb(255, 255, 255);
+    width: 100px;
+    color: black;
+}
 .account_form{
     left: 150px;
     top: 0;

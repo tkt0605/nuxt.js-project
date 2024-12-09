@@ -15,6 +15,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/logout/', TokenBlacklistView.as_view(), name='token_logout'),
     path('signup/', RegisterView.as_view(), name='signup'),
+    # path('auth/', include(auth_patterns)),  # 認証関連をまとめる
 ]
 
 if settings.DEBUG:
