@@ -1,8 +1,8 @@
 .bord{
     background: rgb(226, 226, 226);
     top: 100px;
-    left: 400px; 
-    width: calc(100% - 400px); 
+    left: 30%;
+    width: calc(100% - 30%);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -28,7 +28,7 @@
     align-items: center; /* チェックボックス、時間、テキストを縦方向中央揃え */
     justify-content: space-between; /* 各要素を左右に分散配置 */
   }
-  
+
   .item:last-child {
     border-bottom: none;
   }
@@ -42,7 +42,7 @@
     accent-color: #007bff; /* Modern browsers */
     cursor: pointer;
   }
-  
+
   /* Time styling */
   .time {
     font-size: 14px;
@@ -50,7 +50,7 @@
     margin-right: 20px;
     flex-shrink: 0;
   }
-  
+
   /* Text styling */
   .text {
     font-size: 16px;
@@ -59,7 +59,7 @@
     flex-grow: 1;
     word-wrap: break-word;
   }
-  
+
   /* Completed task (when checkbox is checked) */
   .checkboxs:checked + .time + .text {
     text-decoration: line-through;
@@ -85,7 +85,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    margin-left: 8px; 
+    margin-left: 8px;
     margin-right: 8px;
     position: relative;
   }

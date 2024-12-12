@@ -1,14 +1,14 @@
 <template>
   <Header/>
   <div class="bord">
-    <div class="todo_list">   
+    <div class="todo_list">
       <div class="item">
         <input type="checkbox" class="checkboxs"/>
         <p class="time">time</p>
         <p class="text">Title</p>
-      </div>      
+      </div>
     </div>
-    <div class="text-base"> 
+    <div class="text-base">
       <div class="">
         <div class="form">
           <div class="texter" id="texter">
@@ -55,8 +55,8 @@ export default {
   },
   mounted() {
     if (process.client){
-      const editable = this.$refs.textKeybord; 
-      if (!editable) return; 
+      const editable = this.$refs.textKeybord;
+      if (!editable) return;
       this.handlePlaceholder({ type: 'blur', target: editable });
       editable.addEventListener('focus', this.handlePlaceholder);
       editable.addEventListener('blur', this.handlePlaceholder);
