@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import ToDOList
 User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
-    class Meta: 
+    class Meta:
         model = User
         fields = '__all__'
 class RegisterSerializer(serializers.ModelSerializer):
@@ -15,7 +16,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password']
-        )   
+        )
         return user
 class EmailLoginSerializer(serializers.Serializer):
     email = serializers.EmailField
@@ -32,3 +33,7 @@ class LogoutSerializer(serializers.Serializer):
         return data
     def save(self, **kwargs):
         RefreshToken(self.token).blacklist()
+class ToDOListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ToDOList
+        fields = '__all__'

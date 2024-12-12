@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
+import { setTransitionHooks } from "vue";
 // import axios from "axios";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -8,6 +9,39 @@ export const useAuthStore = defineStore('auth', {
         refreshToken: null,
     }),
     actions: {
+        async createToDO(title, todo) {
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/todos/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title.trim(),
+                        todo: todo.trim(),
+                    }),
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "ToDOの作成に失敗しました。");
+                }
+                const data = await response.json();
+                this.todo_post = {
+                    title: title.trim(),
+                    todo: todo.trim(),
+                };
+                this.title = data.title;
+                this.todo = data.todo;
+                localStorage.setItem('title', this.title);
+                localStorage.setItem('todo', this.todo);
+
+                return data.todo_post;
+            }catch(error){
+                console.error('ToDO作成に失敗しました。:', error);
+                throw error;
+            }
+        },
         async login(email, password){
             const config = useRuntimeConfig();
             try{
@@ -18,7 +52,7 @@ export const useAuthStore = defineStore('auth', {
                         // 'Authorization': 'Bearer',
                     },
                     body: JSON.stringify({
-                        email: email.trim(), 
+                        email: email.trim(),
                         password: password.trim(),
                     }),
                 });
@@ -49,14 +83,14 @@ export const useAuthStore = defineStore('auth', {
                         'Content-Type': "application/json",
                     },
                     body: JSON.stringify({
-                        email: email.trim(), 
+                        email: email.trim(),
                         password: password.trim(),
                     }),
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || 'アカウント登録に失敗しました');
-                }        
+                }
                 await this.login(email, password);
             }catch(error){
                 console.error("アカウント登録エラー:", error);
@@ -72,12 +106,12 @@ export const useAuthStore = defineStore('auth', {
                     headers: {
                         'Content-type': 'application/json',
                     },
-                    body: JSON.stringify({refresh: refreshToken}), 
+                    body: JSON.stringify({refresh: refreshToken}),
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || 'ログアウトに失敗しました');
-                }   
+                }
                 this.clearAuth();
             }catch(error){
                 console.error('ログアウトエラー:', error);
