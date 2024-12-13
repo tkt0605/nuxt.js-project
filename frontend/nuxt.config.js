@@ -30,7 +30,7 @@ export default {
   components: false,
   buildModules: [
   ],
-  modules: [],
+  modules: ['@pinia/nuxt'],
   pinia: {
     autoImports: ['defineStore'],
   },

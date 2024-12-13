@@ -3,10 +3,18 @@ import { useRuntimeConfig } from "nuxt/app";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
-        accessToken: localStorage.getItem('access_token') || null,
-        refreshToken: localStorage.getItem('refresh_token') || null,
+        accessToken: null,
+        refreshToken: null,
     }),
     actions: {
+        clearAuth(){
+            this.user = null;
+            this.accessToken = null;
+            this.refreshToken = null;
+
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+        },
         async createToDO(title, todo) {
             const config = useRuntimeConfig();
             try{
@@ -14,6 +22,7 @@ export const useAuthStore = defineStore('auth', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.accessToken}`,
                     },
                     body: JSON.stringify({
                         title: title.trim(),
@@ -40,6 +49,36 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        async getToDO(){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/todolist/`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`,
+                    },
+                });
+                if(!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "ToDOの取得に失敗しました。");
+                };
+                const data = await response.json();
+                console.log("取得したToDOリスト:", data);
+                if (!Array.isArray(data)) {
+                    throw new Error('APIレスポンスが配列ではありません。');
+                }
+                return data.map(todo => ({
+                    id: todo?.id,
+                    title: todo?.title || 'Untitled', // titleがない場合はデフォルト値
+                    todo: todo?.todo || '',           // todoがない場合は空文字
+                    created_at: todo?.created_at || 'N/A', // created_atがない場合はデフォルト値
+                }));
+            }catch(error){
+                console.error('ToDOリスト取得エラー:', error);
+                throw error;
+            }
+        },
         async login(email, password){
             const config = useRuntimeConfig();
             try{
@@ -48,6 +87,7 @@ export const useAuthStore = defineStore('auth', {
                     headers: {
                         'Content-Type': 'application/json',
                         // 'Authorization': 'Bearer',
+                        "Authorization": `Bearer ${this.accessToken}`,
                     },
                     body: JSON.stringify({
                         email: email.trim(),
@@ -116,7 +156,17 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        async restoreSession() {
+            const accessToken = localStorage.getItem('accessToken');
+            const refreshToken = localStorage.getItem('refreshToken');
+            const user = JSON.parse(localStorage.getItem('user'));
 
+            if (accessToken && refreshToken && user) {
+                this.accessToken = accessToken;
+                this.refreshToken = refreshToken;
+                this.user = user;
+            }
+        },
         async refreshToken() {
             const config = useRuntimeConfig();
             try{
@@ -125,7 +175,6 @@ export const useAuthStore = defineStore('auth', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
-                        // 'Authorization': 'Bearer',
                     },
                     body: JSON.stringify({refresh: refreshToken}),
                 });
@@ -136,14 +185,6 @@ export const useAuthStore = defineStore('auth', {
                 console.error('トークンリフレッシュエラー:', error);
                 throw error;
             }
-        },
-        clearAuth(){
-            this.user = null;
-            this.accessToken = null;
-            this.refreshToken = null;
-
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
         },
     },
     getters: {
