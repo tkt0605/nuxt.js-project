@@ -15,7 +15,7 @@ class RegisterView(generics.CreateAPIView):
 class ToDOViewset(viewsets.ModelViewSet):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
-class ToDOListView(generics.ListCreateAPIView):
+class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
 class ToDODetailView(generics.RetrieveUpdateDestroyAPIView):

@@ -30,20 +30,11 @@
     </div>
   </div>
 </template>
-<script >
+<!-- <script >
 import '../assets/css/index.css';
 import Header from '../components/Header.vue';
 export default {
   layout: 'default',
-  // data(){
-  //   return{
-  //     newToDO:{
-  //       title: '',
-  //       todo: '',
-  //       completed: false,
-  //     }
-  //   }
-  // },
   components: {
     Header,
   },
@@ -61,18 +52,6 @@ export default {
         editable.innerText = editable.getAttribute('data-placeholder');
       }
     },
-    // async createToDO() {
-    //   const content = this.$refs.textKeybord.trim();
-    //   if (!content){
-    //     alert('ToDOを記入してください。');
-    //     return;
-    //   }
-    //   this.newToDO.title = content;
-
-    //   try{
-    //     const response = await axios.post('')
-    //   }
-    // }
   },
   mounted() {
     if (process.client){
@@ -92,4 +71,22 @@ export default {
     }
   }
 };
+</script> -->
+
+
+<script setup>
+import { ref } from 'vue';
+import { useAuthStore } from '../store/auth';
+
+const authStore = useAuthStore();
+const title = ref('');
+const todo = ref('');
+
+const submitToDO = async() => {
+  const todoElement = document.getElementById('text_keybord');
+  const todoContent = todoElement.innerText.trim();
+  if (!todoContent) {
+    
+  }
+}
 </script>

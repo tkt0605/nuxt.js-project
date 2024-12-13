@@ -1,18 +1,16 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
-import { setTransitionHooks } from "vue";
-// import axios from "axios";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
-        accessToken: null,
-        refreshToken: null,
+        accessToken: localStorage.getItem('access_token') || null,
+        refreshToken: localStorage.getItem('refresh_token') || null,
     }),
     actions: {
         async createToDO(title, todo) {
             const config = useRuntimeConfig();
             try{
-                const response = await fetch(`${config.public.apiBase}/todos/`, {
+                const response = await fetch(`${config.public.apiBase}/todolist/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -3,11 +3,10 @@ from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_simplejwt.views import TokenBlacklistView, TokenRefreshView, TokenObtainPairView
 from rest_framework import routers
-from .views import IndexAPI,LogoutView, EmailLoginView, RegisterView, ToDOViewset, ToDOListView, ToDODetailView
+from .views import IndexAPI,LogoutView, EmailLoginView, RegisterView, ToDOViewset, ToDOsListView, ToDODetailView
 from api import views
 router = routers.DefaultRouter()
-router = routers.DefaultRouter()
-router.register('todolists', views.ToDOViewset)
+router.register('todolist', views.ToDOViewset)
 # router.register('hello', IndexAPI(), basename="api_hello")
 urlpatterns = [
     path('', include(router.urls)),
@@ -18,9 +17,8 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/logout/', TokenBlacklistView.as_view(), name='token_logout'),
     path('signup/', RegisterView.as_view(), name='signup'),
-    path('todos/', ToDOListView.as_view(), name='todo_list'),
-    path('todos/<uuid:pk>/', ToDODetailView.as_view(), name="todo_details")
-    # path('auth/', include(auth_patterns)),  # 認証関連をまとめる
+    # path('t/', ToDOsListView.as_view(), name='todo_list'),
+    # path('t/<uuid:pk>/', ToDODetailView.as_view(), name="todo_details")
 ]
 
 if settings.DEBUG:
