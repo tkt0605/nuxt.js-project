@@ -31,17 +31,15 @@ import '../assets/css/header.css';
 // import { ref } from 'vue';
 import { useRouter } from 'nuxt/app';
 import { useAuthStore } from '../store/auth';
+import { }
 import { ref, computed } from 'vue';
 const router = useRouter();
 const authStore = useAuthStore();
+const todostore =
 const todolist = ref([]);
-const activeTabId = ref(null);
-const activeTab = computed(() => {
-    todolist.value.find((todo) => todo.id === activeTabId.value)
-});
-const selectTab = (id) => {
-    activeTabId.value = id;
-};
+const selectTab = (id) =>{
+    t
+}
 const logout = async() =>{
     try{
         await authStore.logout();
