@@ -1,7 +1,19 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
+const storage = {
+    get(key) {
+        return JSON.parse(localStorage.getItem(key));
+    },
+    set(key, value) {
+        localStorage.setItem(key, JSON.stringify(value));
+    },
+    remove(key) {
+        localStorage.removeItem(key);
+    },
+};
 export const useAuthStore = defineStore('auth', {
     state: () => ({
+        todolist: [],
         user: null,
         accessToken: null,
         refreshToken: null,
@@ -14,6 +26,59 @@ export const useAuthStore = defineStore('auth', {
 
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
+            localStorage.removeItem('user');
+        },
+        async restoreSession() {
+            if (process.server) return; // サーバーサイドでは何もしない
+            const accessToken = localStorage.getItem('access_token'); // キー名を統一
+            const refreshToken = localStorage.getItem('refresh_token');
+            const user = JSON.parse(localStorage.getItem('user')); // ユーザー情報も復元
+            if (accessToken && refreshToken && user) {
+                this.accessToken = accessToken;
+                this.refreshToken = refreshToken;
+                this.user = user;
+
+                // オプション: トークンを検証するためにサーバーに確認を送信
+                try {
+                    await this.refreshToken(); // 必要に応じてトークンをリフレッシュ
+                } catch (error) {
+                    console.error('トークン検証またはリフレッシュに失敗しました:', error);
+                    this.clearAuth(); // トークンが無効ならログアウト処理
+                }
+            } else {
+                this.clearAuth(); // トークンやユーザー情報がない場合はログアウト状態にする
+            }
+        },
+        async refreshToken() {
+            const config = useRuntimeConfig();
+            try {
+                const refreshToken = process.client? storage.get('refresh_token'): null;
+                if (!refreshToken) throw new Error('リフレッシュトークンがありません');
+
+                const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ refresh: refreshToken }),
+                });
+
+                if (!response.ok) throw new Error('トークンリフレッシュに失敗しました');
+
+                const data = await response.json();
+                this.accessToken = data.access;
+
+                if (process.client) {
+                    // localStorage.setItem('access_token', this.accessToken);
+                    storage.set('access_token', this.accessToken);
+                }
+
+                return this.accessToken;
+            } catch (error) {
+                console.error('トークンリフレッシュエラー:', error);
+                this.clearAuth();
+                throw error;
+            }
         },
         async createToDO(title, todo) {
             const config = useRuntimeConfig();
@@ -42,6 +107,8 @@ export const useAuthStore = defineStore('auth', {
                 this.todo = data.todo;
                 localStorage.setItem('title', this.title);
                 localStorage.setItem('todo', this.todo);
+                // storage.set('title', this.title);
+                // storage.set('todo', this.todo);
 
                 return data.todo_post;
             }catch(error){
@@ -70,9 +137,9 @@ export const useAuthStore = defineStore('auth', {
                 }
                 return data.map(todo => ({
                     id: todo?.id,
-                    title: todo?.title || 'Untitled', // titleがない場合はデフォルト値
-                    todo: todo?.todo || '',           // todoがない場合は空文字
-                    created_at: todo?.created_at || 'N/A', // created_atがない場合はデフォルト値
+                    title: todo?.title, // titleがない場合はデフォルト値
+                    todo: todo?.todo,           // todoがない場合は空文字
+                    created_at: todo?.created_at, // created_atがない場合はデフォルト値
                 }));
             }catch(error){
                 console.error('ToDOリスト取得エラー:', error);
@@ -105,6 +172,8 @@ export const useAuthStore = defineStore('auth', {
 
                 localStorage.setItem('access_token', this.accessToken);
                 localStorage.setItem('refresh_token', this.refreshToken);
+                // storage.set('access_token', this.accessToken);
+                // storage.set('refresh_token', this.refreshToken);
 
                 return data.user;
             }catch(error){
@@ -156,36 +225,25 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        async restoreSession() {
-            const accessToken = localStorage.getItem('accessToken');
-            const refreshToken = localStorage.getItem('refreshToken');
-            const user = JSON.parse(localStorage.getItem('user'));
-
-            if (accessToken && refreshToken && user) {
-                this.accessToken = accessToken;
-                this.refreshToken = refreshToken;
-                this.user = user;
-            }
-        },
-        async refreshToken() {
-            const config = useRuntimeConfig();
-            try{
-                const refreshToken = localStorage.getItem('refresh_token');
-                const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({refresh: refreshToken}),
-                });
-                this.accessToken = response.access;
-                localStorage.setItem('access_token', this.accessToken);
-                return this.accessToken;
-            }catch(error){
-                console.error('トークンリフレッシュエラー:', error);
-                throw error;
-            }
-        },
+        // async refreshToken() {
+        //     const config = useRuntimeConfig();
+        //     try{
+        //         const refreshToken = localStorage.getItem('refresh_token');
+        //         const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
+        //             method: "POST",
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             body: JSON.stringify({refresh: refreshToken}),
+        //         });
+        //         this.accessToken = response.access;
+        //         localStorage.setItem('access_token', this.accessToken);
+        //         return this.accessToken;
+        //     }catch(error){
+        //         console.error('トークンリフレッシュエラー:', error);
+        //         throw error;
+        //     }
+        // },
     },
     getters: {
         isAuthenticated(state){

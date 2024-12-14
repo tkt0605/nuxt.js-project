@@ -2,10 +2,12 @@
   <Header/>
   <div class="bord">
     <div class="todo_list">
-      <div class="item" v-for="todo in todolist" :key="todo?.id || todo?.title ">
+      <div class="item" v-for="todo in todolist" :key="todo?.id">
         <input type="checkbox" class="checkboxs"/>
-        <p class="time">{{ todo?.created_at || 'N/A' }}</p>
-        <p class="text">{{ todo?.todo || 'Untitled'  }}</p>
+        <div class="details">
+          <p class="time">{{ formatDate(todo?.created_at) }}</p>
+          <p class="text">{{ todo?.todo  }}</p>
+        </div>
       </div>
     </div>
     <div class="text-base">
@@ -79,7 +81,9 @@ import '../assets/css/index.css';
 import Header from '../components/Header.vue';
 // import { ref } from 'vue';
 import { useAuthStore } from '../store/auth';
+import { computed } from 'vue';
 
+// ストアの利用
 const authStore = useAuthStore();
 const todolist = ref([]);
 onMounted(async () => {
@@ -89,7 +93,18 @@ onMounted(async () => {
         console.error('初期データのロードに失敗しました。', error);
     }
 });
-
+function formatDate(date) {
+  if (!date) return '日付不明';
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  };
+  return new Date(date).toLocaleDateString('ja-JP', options);
+}
 const submitToDO = async() => {
   const todoElement = document.getElementById('text_keybord');
   const todoContent = todoElement.innerText.trim();
@@ -99,7 +114,8 @@ const submitToDO = async() => {
   };
   try{
     const newtodo = await authStore.createToDO('create todo', todoContent);
-    todolist.value.push(newtodo);
+    // todolist.value.push(newtodo);
+    todolist.value.unshift(newtodo);
     todoElement.innerText = '';
     alert('ToDOが作成されました。');
   }catch(error){
@@ -107,5 +123,7 @@ const submitToDO = async() => {
     alert('ログインユーザー認証ができません。（ログインしてください）');
     throw error;
   }
-}
+};
+
+
 </script>

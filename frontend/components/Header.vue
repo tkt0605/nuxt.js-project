@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="header">
-            <div class="headerline"> 
+            <div class="headerline">
                 <div class="container">
                     <a class="logo">ToDO<small class="logo_small"> By Typewriter</small></a>
                     <div v-if="isAuthenticated" class="account_form">
@@ -19,18 +19,9 @@
                 <li class="create_todo">
                     <NuxtLink class="new_todo" to="/">New ToDO</NuxtLink>
                 </li>
-                <li class="log_todo">
-                    <NuxtLink class="todo_tab" to="/">2024/11/26 ToDO 1</NuxtLink>
-                </li>
-                <li class="log_todo">
-                    <NuxtLink class="todo_tab" to="/">2024/11/26 ToDO 1</NuxtLink>
-                </li>
-                <li class="log_todo">
-                    <NuxtLink class="todo_tab" to="/">2024/11/26 ToDO 1</NuxtLink>
-                </li>
-                <li class="log_todo">
-                    <NuxtLink class="todo_tab" to="/">2024/11/26 ToDO 1</NuxtLink>
-                </li>
+                <div class="tab" v-for="todo in todolist" :key="todo.id" :class="{ active: activeTabId === todo.id}" @click="selectTab(todo.id)">
+                    <p>{{ todo.title }}</p>
+                </div>
             </ul>
         </aside>
     </div>
@@ -40,9 +31,17 @@ import '../assets/css/header.css';
 // import { ref } from 'vue';
 import { useRouter } from 'nuxt/app';
 import { useAuthStore } from '../store/auth';
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 const router = useRouter();
 const authStore = useAuthStore();
+const todolist = ref([]);
+const activeTabId = ref(null);
+const activeTab = computed(() => {
+    todolist.value.find((todo) => todo.id === activeTabId.value)
+});
+const selectTab = (id) => {
+    activeTabId.value = id;
+};
 const logout = async() =>{
     try{
         await authStore.logout();
@@ -60,4 +59,4 @@ const gotoSignup = ()=>{
     router.push('/auth/signup');
 };
 const isAuthenticated = computed (() => authStore.isAuthenticated);
-</script>  
+</script>
