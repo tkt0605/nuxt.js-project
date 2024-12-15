@@ -78,11 +78,12 @@ li{
     top: 10px;
 }
 li .create_todo{
-    font-size: 15px;
+    font-size: 20px;
     align-items: center;
     /* margin-left: 15px; */
 }
 li .new_todo{
+    font-size: 20px;
     padding: 10px 10px;
     border-radius: 5px;
     color: black;

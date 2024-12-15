@@ -26,7 +26,7 @@
                     </div>
                   </li>
                   <li v-if="todolist.length === 0" class="empty-message">
-                    <p>現在表示するToDoはありません。</p>
+                    <p>ログイン・サインアップしてください。</p>
                   </li>
                 </div>
             </ul>
