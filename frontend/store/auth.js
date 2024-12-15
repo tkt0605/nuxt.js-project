@@ -1,16 +1,6 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
-const storage = {
-    get(key) {
-        return JSON.parse(localStorage.getItem(key));
-    },
-    set(key, value) {
-        localStorage.setItem(key, JSON.stringify(value));
-    },
-    remove(key) {
-        localStorage.removeItem(key);
-    },
-};
+import { useRouter } from "nuxt/app";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         todolist: [],
@@ -51,33 +41,42 @@ export const useAuthStore = defineStore('auth', {
         },
         async refreshToken() {
             const config = useRuntimeConfig();
+            const router = useRouter();
+            const refreshToken = localStorage.getItem("refresh_token");
+
+            if (!refreshToken) {
+              console.error("リフレッシュトークンがありません。ログインが必要です。");
+              router.push("/auth/login");
+              throw new Error("リフレッシュトークンが存在しません。");
+            }
+
             try {
-                const refreshToken = process.client? storage.get('refresh_token'): null;
-                if (!refreshToken) throw new Error('リフレッシュトークンがありません');
+              const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ refresh: refreshToken }),
+              });
 
-                const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ refresh: refreshToken }),
-                });
+              if (!response.ok) {
+                const errorData = await response.json();
+                console.error("トークンのリフレッシュに失敗しました:", errorData);
 
-                if (!response.ok) throw new Error('トークンリフレッシュに失敗しました');
+                router.push("/auth/login");
+                throw new Error(`リフレッシュトークンエラー: ${errorData.detail}`);
+              }
 
-                const data = await response.json();
-                this.accessToken = data.access;
+              const data = await response.json();
 
-                if (process.client) {
-                    // localStorage.setItem('access_token', this.accessToken);
-                    storage.set('access_token', this.accessToken);
-                }
+              // 新しいアクセストークンを保存
+              this.accessToken = data.access;
+              localStorage.setItem("access_token", data.access);
 
-                return this.accessToken;
+              console.log("アクセストークンがリフレッシュされました:", data.access);
+              return data.access;
             } catch (error) {
-                console.error('トークンリフレッシュエラー:', error);
-                this.clearAuth();
-                throw error;
+              console.error("リフレッシュトークン処理中のエラー:", error.message);
+              router.push("/auth/login");
+              throw error;
             }
         },
         async createToDO(title, todo) {
@@ -143,6 +142,35 @@ export const useAuthStore = defineStore('auth', {
                 }));
             }catch(error){
                 console.error('ToDOリスト取得エラー:', error);
+                throw error;
+            }
+        },
+        async AsideTitle() {
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/todolist/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${this.accessToken}`,
+                    },
+                });
+
+                if (!response.ok){
+                    const errorgetTitle = await response.json();
+                    throw new Error(errorgetTitle.detail || "TodoのTitleの取得に失敗しました。");
+                };
+                const data = await response.json();
+                console.log('取得したToDOのTitle', data);
+                if (!Array.isArray(data)){
+                    throw new Error('APIレスポンスはありません。');
+                };
+                return data.map(todo => ({
+                    id: todo?.id,
+                    title: todo?.title,
+                }));
+            }catch(error){
+                console.error("Titleの取得に失敗しました。", error);
                 throw error;
             }
         },

@@ -19,8 +19,15 @@
                 <li class="create_todo">
                     <NuxtLink class="new_todo" to="/">New ToDO</NuxtLink>
                 </li>
-                <div class="tab" v-for="todo in todolist" :key="todo.id" :class="{ active: activeTabId === todo.id}" @click="selectTab(todo.id)">
-                    <p>{{ todo.title }}</p>
+                <div class="lists">
+                  <li v-for="todo in todolist" :key="todo?.id" >
+                    <div class="todo-item">
+                      <p class="todo-title">{{ todo?.title || "タイトルなし" }}</p>
+                    </div>
+                  </li>
+                  <li v-if="todolist.length === 0" class="empty-message">
+                    <p>現在表示するToDoはありません。</p>
+                  </li>
                 </div>
             </ul>
         </aside>
@@ -28,33 +35,39 @@
 </template>
 <script setup>
 import '../assets/css/header.css';
-// import { ref } from 'vue';
 import { useRouter } from 'nuxt/app';
 import { useAuthStore } from '../store/auth';
-import { }
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+
 const router = useRouter();
 const authStore = useAuthStore();
-const todostore =
 const todolist = ref([]);
-const selectTab = (id) =>{
-    t
-}
-const logout = async() =>{
-    try{
-        await authStore.logout();
-        console.log('ログアウト成功');
-        router.push('/auth/login');
-    }catch(error){
-        console.error('ログアウト失敗', error);
-        throw error;
-    }
-};
-const gotoLogin = ()=>{
+
+onMounted(async () => {
+  try{
+    todolist.value = await authStore.AsideTitle();
+  }catch(error){
+    console.error('初期データのロードに失敗しました。', error);
+  }
+});
+const logout = async () => {
+  try {
+    await authStore.logout();
+    console.log('ログアウト成功');
     router.push('/auth/login');
+  } catch (error) {
+    console.error('ログアウト失敗', error);
+    alert('ログアウトに失敗しました。時間をおいて再試行してください。');
+  }
 };
-const gotoSignup = ()=>{
-    router.push('/auth/signup');
+
+const gotoLogin = () => {
+  router.push('/auth/login');
 };
-const isAuthenticated = computed (() => authStore.isAuthenticated);
+
+const gotoSignup = () => {
+  router.push('/auth/signup');
+};
+
+const isAuthenticated = computed(() => authStore.isAuthenticated);
 </script>

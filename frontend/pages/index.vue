@@ -77,53 +77,52 @@ export default {
 
 
 <script setup>
-import '../assets/css/index.css';
-import Header from '../components/Header.vue';
-// import { ref } from 'vue';
-import { useAuthStore } from '../store/auth';
-import { computed } from 'vue';
-
-// ストアの利用
+import "../assets/css/index.css";
+import Header from "../components/Header.vue"
+import { useAuthStore } from "../store/auth";
+import { useRouter } from "nuxt/app";
+import { computed, onMounted } from "vue";
 const authStore = useAuthStore();
+const router = useRouter();
 const todolist = ref([]);
+
 onMounted(async () => {
-    try {
-        todolist.value = await authStore.getToDO();
-    } catch (error) {
-        console.error('初期データのロードに失敗しました。', error);
-    }
+  try{
+    todolist.value = await authStore.getToDO();
+  }catch(error){
+    console.error('初期データのロードに失敗しました。', error);
+  }
 });
-function formatDate(date) {
-  if (!date) return '日付不明';
+function formatDate(date){
+  if (!date) return  '日付不明';
   const options = {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
+    hour: "2-digit",
     hour12: true,
+    minute: "2-digit",
   };
-  return new Date(date).toLocaleDateString('ja-JP', options);
+  return new Date(date).toLocaleDateString('ja-jp', options);
 }
 const submitToDO = async() => {
   const todoElement = document.getElementById('text_keybord');
   const todoContent = todoElement.innerText.trim();
-  if (!todoContent) {
-    alert('todoを作成してください。');
+
+  if(!todoContent) {
+    console.log('todoが作成されました。')
     return;
   };
   try{
     const newtodo = await authStore.createToDO('create todo', todoContent);
-    // todolist.value.push(newtodo);
+    todolist.value = await authStore.getToDO();
     todolist.value.unshift(newtodo);
-    todoElement.innerText = '';
-    alert('ToDOが作成されました。');
+    todoElement.innerText = "";
+    console.log('todoが作成されました。');
   }catch(error){
-    console.error('ToDOの作成に失敗しました。', error);
-    alert('ログインユーザー認証ができません。（ログインしてください）');
+    console.error("todoの作成に失敗しました。", error);
     throw error;
   }
 };
-
 
 </script>
