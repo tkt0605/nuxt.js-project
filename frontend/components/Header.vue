@@ -20,9 +20,9 @@
                     <NuxtLink class="new_todo" to="/">New ToDO</NuxtLink>
                 </li>
                 <div class="lists">
-                  <li v-for="todo in todolist" :key="todo?.id" >
+                  <li v-for="todo in todolist" :key="todo.id" >
                     <div class="todo-item">
-                      <NuxtLink v-if="todo.id" :to="`/t/${todo.id}`" class="todo_id" >
+                      <NuxtLink v-if="todo.id" :to="`/t/${todo.id}`" data-discover="true" class="todo_id" >
                         <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
                       </NuxtLink>
                     </div>

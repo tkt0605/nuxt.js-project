@@ -174,6 +174,13 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        // async TabToDO() {
+        //     const config = useRuntimeConfig();
+
+        //     try{
+        //         const response = await get(`${config.public.apiBase}/todolist/`)
+        //     }
+        // },
         async login(email, password){
             const config = useRuntimeConfig();
             try{

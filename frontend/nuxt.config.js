@@ -8,6 +8,9 @@ export default {
     host: "0.0.0.0",
     port: 3000
   },
+  generate: {
+    routes: [],
+  },
   head: {
     title: 'frontend',
     htmlAttrs: {
@@ -33,6 +36,9 @@ export default {
   modules: ['@pinia/nuxt'],
   pinia: {
     autoImports: ['defineStore'],
+  },
+  app: {
+    baseURL: '/',
   },
   runtimeConfig: {
     public: {
