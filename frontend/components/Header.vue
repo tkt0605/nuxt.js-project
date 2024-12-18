@@ -22,7 +22,9 @@
                 <div class="lists">
                   <li v-for="todo in todolist" :key="todo?.id" >
                     <div class="todo-item">
-                      <p class="todo-title">{{ todo?.title || "タイトルなし" }}</p>
+                      <NuxtLink v-if="todo.id" :to="`/t/${todo.id}`" class="todo_id" >
+                        <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
+                      </NuxtLink>
                     </div>
                   </li>
                   <li v-if="todolist.length === 0" class="empty-message">

@@ -82,6 +82,9 @@ li .create_todo{
     align-items: center;
     /* margin-left: 15px; */
 }
+li .todo_id{
+    text-decoration: none;
+}
 li .new_todo{
     font-size: 20px;
     padding: 10px 10px;
