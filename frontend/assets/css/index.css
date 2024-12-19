@@ -29,6 +29,11 @@
     justify-content: space-between; /* 各要素を左右に分散配置 */
     height: auto;
   }
+  .item-text{
+    text-align: center;
+    align-items: center;
+    
+  }
   .details{
     position: relative;
     top: -20px;

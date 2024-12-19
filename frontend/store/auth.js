@@ -145,6 +145,36 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        async getToDOId(id) {
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/todolist/${id}/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`,
+                    },
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "ToDO取得に失敗しました。");
+                };
+                const data = await response.json();
+                console.log('取得したToDOリスト:', data);
+                if (!Array.isArray(data)){
+                    throw new Error('APIレスポンスが並列となっていない。');
+                };
+                return data.map(todo =>({
+                    id: todo?.id,
+                    title: todo?.title,
+                    todo: todo?.todo,
+                    created_at: todo?.created_at,
+                }));
+            }catch(error){
+                console.error("ToDOの取得エラー:", error);
+                throw error;
+            }
+        },
         async AsideTitle() {
             const config = useRuntimeConfig();
             try{

@@ -2,11 +2,16 @@
   <Header/>
   <div class="bord">
     <div class="todo_list">
-      <div class="item" v-for="todo in todolist" :key="todo?.id">
+      <!-- <div v-if="todo?.todo" class="item" v-for="todo in todolist" :key="todo?.id">
         <input type="checkbox" class="checkboxs"/>
         <div class="details">
           <p class="time">{{ formatDate(todo?.created_at) }}</p>
           <p class="text">{{ todo?.todo  }}</p>
+        </div>
+      </div> -->
+      <div>
+        <div class="item-text">
+          <h1>何かToDOはありますか？</h1>
         </div>
       </div>
     </div>
@@ -14,7 +19,7 @@
       <div class="">
         <div class="form">
           <div class="texter" id="texter">
-            <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのToDOを記入" >
+            <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのすべきことは？" >
               <p></p>
             </div>
           </div>
@@ -93,18 +98,6 @@ onMounted(async () => {
     console.error('初期データのロードに失敗しました。', error);
   }
 });
-function formatDate(date){
-  if (!date) return  '日付不明';
-  const options = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: "2-digit",
-    hour12: true,
-    minute: "2-digit",
-  };
-  return new Date(date).toLocaleDateString('ja-jp', options);
-}
 const submitToDO = async() => {
   const todoElement = document.getElementById('text_keybord');
   const todoContent = todoElement.innerText.trim();
@@ -117,6 +110,7 @@ const submitToDO = async() => {
     const newtodo = await authStore.createToDO('create todo', todoContent);
     todolist.value = await authStore.getToDO();
     todolist.value.unshift(newtodo);
+    todo.value = todolist.value.find((item) => item.id === route.params.id);
     todoElement.innerText = "";
     console.log('todoが作成されました。');
   }catch(error){
