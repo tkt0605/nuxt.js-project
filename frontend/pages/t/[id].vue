@@ -40,11 +40,11 @@ import { ref, onMounted } from 'vue';
 import Header from '../../components/Header.vue';
 const route = useRoute();
 const authStore = useAuthStore();
-const todo = ref(null);
+const todo = ref([]);
 onMounted(async () => {
   try {
-    const todos = await authStore.getToDOId(route.params.id);
-    todo.value = todos.find((item) => item.id === route.params.id);
+    todo.value = await authStore.getToDOByid(route.params.id);
+    // todo.value = todos.find((item) => item.id === route.params.id);
     if (!todo.value) {
       console.error('該当のToDoが見つかりません。');
     }

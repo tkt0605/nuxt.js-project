@@ -86,14 +86,20 @@ import "../assets/css/index.css";
 import Header from "../components/Header.vue"
 import { useAuthStore } from "../store/auth";
 import { useRouter } from "nuxt/app";
+import { useRoute } from "nuxt/app";
 import { computed, onMounted } from "vue";
 const authStore = useAuthStore();
 const router = useRouter();
 const todolist = ref([]);
-
+const route = useRoute();
 onMounted(async () => {
   try{
-    todolist.value = await authStore.getToDO();
+    const todos = await authStore.getToDO();
+    if(Array.isArray(todos)){
+      todolist.value = todos;
+    }else{
+      console.error(error);
+    }
   }catch(error){
     console.error('初期データのロードに失敗しました。', error);
   }
@@ -109,14 +115,12 @@ const submitToDO = async() => {
   try{
     const newtodo = await authStore.createToDO('create todo', todoContent);
     todolist.value = await authStore.getToDO();
-    todolist.value.unshift(newtodo);
-    todo.value = todolist.value.find((item) => item.id === route.params.id);
     todoElement.innerText = "";
     console.log('todoが作成されました。');
+    return router.push(`/t/${newtodo.id}`);
   }catch(error){
     console.error("todoの作成に失敗しました。", error);
     throw error;
   }
 };
-
 </script>

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import ToDOList
+from .models import ToDOList, addToDO
 User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,4 +36,8 @@ class LogoutSerializer(serializers.Serializer):
 class ToDOListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ToDOList
+        fields = '__all__'
+class AddToDOSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = addToDO
         fields = '__all__'

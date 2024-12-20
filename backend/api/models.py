@@ -38,5 +38,10 @@ class ToDOList(models.Model):
     todo = models.TextField(verbose_name='ToDO')
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
-        return self.title
-    
+        return str(self.id)
+class addToDO(models.Model):
+    todo_tag = models.ForeignKey(ToDOList, on_delete=models.CASCADE)
+    todo = models.TextField(verbose_name="Add ToDO")
+    created_at = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return self.todo

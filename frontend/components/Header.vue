@@ -24,6 +24,7 @@
                     <div class="todo-item">
                       <NuxtLink v-if="todo.id" :to="`/t/${todo.id}`" data-discover="true" class="todo_id" >
                         <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
+                        <!-- <p class="todo-title">{{ formatDate(todo?.created_at) }}</p> -->
                       </NuxtLink>
                     </div>
                   </li>

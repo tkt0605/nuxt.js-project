@@ -98,18 +98,21 @@ export const useAuthStore = defineStore('auth', {
                     throw new Error(errorData.detail || "ToDOの作成に失敗しました。");
                 }
                 const data = await response.json();
-                this.todo_post = {
-                    title: title.trim(),
-                    todo: todo.trim(),
-                };
-                this.title = data.title;
-                this.todo = data.todo;
-                localStorage.setItem('title', this.title);
-                localStorage.setItem('todo', this.todo);
-                // storage.set('title', this.title);
-                // storage.set('todo', this.todo);
-
-                return data.todo_post;
+                return {
+                    id: data.id,         // 作成したToDoのID
+                    title: data.title,   // 作成したToDoのタイトル
+                    todo: data.todo,     // 作成したToDoの内容
+                    created_at: data.created_at,
+                  };
+                // this.todo_post = {
+                //     title: title.trim(),
+                //     todo: todo.trim(),
+                // };
+                // this.title = data.title;
+                // this.todo = data.todo;
+                // localStorage.setItem('title', this.title);
+                // localStorage.setItem('todo', this.todo);
+                // return data.todo_post;
             }catch(error){
                 console.error('ToDO作成に失敗しました。:', error);
                 throw error;
@@ -134,18 +137,18 @@ export const useAuthStore = defineStore('auth', {
                 if (!Array.isArray(data)) {
                     throw new Error('APIレスポンスが配列ではありません。');
                 }
-                return data.map(todo => ({
-                    id: todo?.id,
-                    title: todo?.title, // titleがない場合はデフォルト値
-                    todo: todo?.todo,           // todoがない場合は空文字
-                    created_at: todo?.created_at, // created_atがない場合はデフォルト値
-                }));
+                return {
+                    id: data.id,
+                    title: data.title, // titleがない場合はデフォルト値
+                    todo: data.todo,           // todoがない場合は空文字
+                    created_at: data.created_at, // created_atがない場合はデフォルト値
+                };
             }catch(error){
                 console.error('ToDOリスト取得エラー:', error);
                 throw error;
             }
         },
-        async getToDOId(id) {
+        async getToDOByid(id) {
             const config = useRuntimeConfig();
             try{
                 const response = await fetch(`${config.public.apiBase}/todolist/${id}/`, {
@@ -161,15 +164,12 @@ export const useAuthStore = defineStore('auth', {
                 };
                 const data = await response.json();
                 console.log('取得したToDOリスト:', data);
-                if (!Array.isArray(data)){
-                    throw new Error('APIレスポンスが並列となっていない。');
+                return {
+                    id: data.id,
+                    title: data.title,
+                    todo: data.todo,
+                    created_at: data.created_at,
                 };
-                return data.map(todo =>({
-                    id: todo?.id,
-                    title: todo?.title,
-                    todo: todo?.todo,
-                    created_at: todo?.created_at,
-                }));
             }catch(error){
                 console.error("ToDOの取得エラー:", error);
                 throw error;
@@ -204,13 +204,6 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        // async TabToDO() {
-        //     const config = useRuntimeConfig();
-
-        //     try{
-        //         const response = await get(`${config.public.apiBase}/todolist/`)
-        //     }
-        // },
         async login(email, password){
             const config = useRuntimeConfig();
             try{

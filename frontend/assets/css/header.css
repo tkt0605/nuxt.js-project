@@ -73,9 +73,25 @@ li{
     align-items: center;
     list-style: none;
 }
-.lists{
-    position:  relative;
-    top: 10px;
+.lists {
+    width: 230px;
+    max-height: 817px; /* スクロール可能な最大高さ */
+    overflow-y: auto; /* 縦方向のスクロールを有効化 */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.lists::-webkit-scrollbar {
+    width: 8px; /* スクロールバーの幅 */
+}
+
+.lists::-webkit-scrollbar-thumb {
+    background-color: #888; /* スクロールバーの色 */
+    border-radius: 4px;
+}
+
+.lists::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* ホバー時の色 */
 }
 li .create_todo{
     font-size: 20px;
