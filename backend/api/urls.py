@@ -8,7 +8,6 @@ from api import views
 router = routers.DefaultRouter()
 router.register('todolist', views.ToDOViewset)
 router.register('addtodo', views.AddToDOViewset)
-# router.register('hello', IndexAPI(), basename="api_hello")
 urlpatterns = [
     path('', include(router.urls)),
     path('hello/', IndexAPI.as_view(), name='api-hello'),

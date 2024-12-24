@@ -33,7 +33,7 @@ class AddToDODetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = addToDO.objects.all()
     serializer_class = AddToDOSerializer
 
-    
+
 class IndexAPI(APIView):
     def get(self, request):
         return Response({'message': 'Hello world!!!!'})

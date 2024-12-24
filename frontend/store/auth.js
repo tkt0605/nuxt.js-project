@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
 import { useRouter } from "nuxt/app";
+import { resolveComponent } from "vue";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         todolist: [],
@@ -118,6 +119,59 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        async addToDO(todo_tag, todo){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/addtodo/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${this.accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        todo_tag: todo_tag.trim(),
+                        todo: todo.trim(),
+                    })
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "todoの追加失敗。");
+                };
+                const data = await response.json();
+                return {
+                    todo_tag: data.todo_tag,
+                    todo: data.todo,
+                    created_at: data.created_at,
+                };
+            }catch(error){
+                console.error('ToDO追加作成:', error);
+                throw error;
+            }
+        },
+        async getAddedToDO() {
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/addtodo/`, {
+                    method: "GET",
+                    headers:{
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`,
+                     },
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "追加ToDOの取得に失敗しました。");
+                };
+                const data = await response.json();
+                if (!Array.isArray(data)){
+                    throw new Error('APIレスポンスが配列ではありません。')
+                };
+                return data;
+            }catch(error){
+                console.error("エラー:", error);
+                throw error;
+            }
+        },
         async getToDO(){
             const config = useRuntimeConfig();
             try{
@@ -172,6 +226,27 @@ export const useAuthStore = defineStore('auth', {
                 };
             }catch(error){
                 console.error("ToDOの取得エラー:", error);
+                throw error;
+            }
+        },
+        async getAddedTodoId(){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/addtodo/${data.id}/`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`
+                    },
+                });
+                if (!response.ok){
+                    const errorData =  await response.json();
+                    throw new Error(errorData.detail || "Error");
+                };
+                const data = await response.json();
+                return data;
+            }catch(error){
+                console.error(error);
                 throw error;
             }
         },
