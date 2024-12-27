@@ -1,21 +1,14 @@
 <template>
   <Header/>
   <div class="bord">
-    <div class="todo_list">
-      <!-- <div v-if="todo?.todo" class="item" v-for="todo in todolist" :key="todo?.id">
-        <input type="checkbox" class="checkboxs"/>
-        <div class="details">
-          <p class="time">{{ formatDate(todo?.created_at) }}</p>
-          <p class="text">{{ todo?.todo  }}</p>
-        </div>
-      </div> -->
-      <div>
-        <div class="item-text">
-          <h1>何かToDOはありますか？</h1>
+    <div class="text-base">
+      <div class="todo_list">
+        <div>
+          <div class="item-text">
+            <h1>何かToDOはありますか？</h1>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="text-base">
       <div class="">
         <div class="form">
           <div class="texter" id="texter">
@@ -37,52 +30,9 @@
     </div>
   </div>
 </template>
-<!-- <script >
-import '../assets/css/index.css';
-import Header from '../components/Header.vue';
-export default {
-  layout: 'default',
-  components: {
-    Header,
-  },
-  name: 'IndexPage',
-  methods: {
-    handlePlaceholder(event) {
-      const editable = event.target;
-      if (event.type === 'focus' && editable.classList.contains('placeholder')) {
-        editable.classList.remove('placeholder');
-        editable.innerText = '';
-      }
-
-      if (event.type === 'blur' && editable.innerText.trim() === '') {
-        editable.classList.add('placeholder');
-        editable.innerText = editable.getAttribute('data-placeholder');
-      }
-    },
-  },
-  mounted() {
-    if (process.client){
-      const editable = this.$refs.textKeybord;
-      if (!editable) return;
-      this.handlePlaceholder({ type: 'blur', target: editable });
-      editable.addEventListener('focus', this.handlePlaceholder);
-      editable.addEventListener('blur', this.handlePlaceholder);
-    }
-
-  },
-  beforeUnmount(){
-    const editable = this.$refs.textKeybord;
-    if (editable){
-        editable.removeEventListener('focus', this.handlePlaceholder);
-        editable.removeEventListener('blur', this.handlePlaceholder);
-    }
-  }
-};
-</script> -->
-
 
 <script setup>
-import "../assets/css/index.css";
+import "../assets/css/pages/index.css";
 import Header from "../components/Header.vue"
 import { useAuthStore } from "../store/auth";
 import { useRouter } from "nuxt/app";
@@ -123,4 +73,5 @@ const submitToDO = async() => {
     throw error;
   }
 };
+
 </script>

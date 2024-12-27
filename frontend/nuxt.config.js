@@ -27,6 +27,7 @@ export default {
     ]
   },
   css: [
+    
   ],
   // plugins: [],
   plugins: ['~/plugins/pinia.js'],

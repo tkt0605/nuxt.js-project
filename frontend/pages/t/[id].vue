@@ -1,7 +1,7 @@
 <template>
   <Header/>
-  <div class="bord">
-    <div class="todo_list">
+  <div class="id_bord">
+    <div class="id_todo_list">
       <div class="item">
         <input type="checkbox" class="checkboxs"/>
         <div class="details">
@@ -9,7 +9,6 @@
           <p class="text">{{ todolist?.todo  }}</p>
         </div>
       </div>
-      <br>
       <div v-if="addtodo.length > 0">
         <div v-for="todo in addtodo" :key="todo.id" class="item">
           <input type="checkbox" class="checkboxs"/>
@@ -46,6 +45,7 @@
 </template>
 
 <script setup>
+import "../assets/css/pages/id.css";
 import { useAuthStore } from '~/store/auth';
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
@@ -54,93 +54,46 @@ const route = useRoute();
 const authStore = useAuthStore();
 const todolist = ref([]);
 const addtodo = ref([]);
-// onMounted(async () => {
-//   try {
-//     const route_id = route.params.id;
-//     const todos = await authStore.getAddedToDO();
-//     if (!Array.isArray(todos)){
-//       addtodo.value = todos;
-//     // if (todos.todo_tag === todolist.value.id ) {
-//       addtodo.value = todos;
-//     }else{
-//       console.error(error)
-//     }
-//     todolist.value = await authStore.getToDOByid(route_id);
-//     addtodo.value = await authStore.getAddedTodoId(todos.id);
-//     if (!todolist.value || !addtodo.value) {
-//       console.error('該当のToDoが見つかりません。');
-//     }
-//   } catch (error) {
-//     console.error('データ取得エラー:', error);
-//   }
-// });
-// const submitAddToDO = async() =>{
-//   const todoElement = document.getElementById('text_keybord');
-//   const todoContent = todoElement.innerText.trim();
-//   const todotagId = route.params.id;
-//   if  (!todoContent) {
-//     console.log('追加できませんでした。');
-//     return;
-//   };
-//   try{
-//     const addtodo = await authStore.addToDO(todotagId, todoContent);
-//     if (todotagId === addtodo.todo_tag){
-//       // const addtodo = await authStore.addToDO(todotagId, todoContent);
-//       addtodo.value = await authStore.getAddedToDO();
-//       todoElement.innerText = '';
-//     }
-//     console.log('todoが作成されました。');
-//     return addtodo;
-//   }catch(error){
-//     console.error("追加に失敗しました。", error);
-//     throw error;
-//   }
-// };
-
-onMounted(async () => {
-  try {
+onMounted(async() => {
+  try{
+    // urlでのidを取得する引数を定義
     const routeId = route.params.id;
+    // 取得したidをgetoDOByid()関数で該当するDBを持って来る。
     todolist.value = await authStore.getToDOByid(routeId);
+    // getAddedToDO()を持って来る引数を定義する。
     const todos = await authStore.getAddedToDO();
-    console.log('取得した追加ToDoリスト:', todos);
-    if (Array.isArray(todos)) {
-      addtodo.value = todos.filter(addedtodo => addedtodo.todo_tag === routeId);
-    } else {
-      console.error('追加ToDoの取得に失敗しました。');
+    // todosでのtodo_tagと該当するrouteIdを抽出。
+    if (Array.isArray(todos)){
+      addtodo.value = todos.filter(addtodo => addtodo.todo_tag === routeId);
+    }else{
+      console.error('追加todoの取得に失敗しました。', error);
     }
-  } catch (error) {
-    console.error('データ取得エラー:', error);
+  }catch(error){
+    console.error("データの取得エラー:", error);
   }
 });
-
-const submitAddToDO = async () => {
+const submitAddToDO = async()=>{
   const todoElement = document.getElementById('text_keybord');
   const todoContent = todoElement?.innerText.trim();
   const todoTagId = route.params.id;
-
-  // 入力内容が空の場合は処理しない
-  if (!todoContent) {
-    console.log('ToDoの内容が空です。');
-    return;
+  if (!todoContent){
+    console.log('ToDOの内容が空です。');
   }
-
-  try {
-    // ToDoを追加
+  try{
     const newAddToDo = await authStore.addToDO(todoTagId, todoContent);
-
-    // 追加されたToDoが現在のルートIDに対応している場合のみ追加
-    if (newAddToDo.todo_tag === todoTagId) {
-      addtodo.value.unshift(newAddToDo); // 新しいToDoをリストに追加
-      todoElement.innerText = ''; // 入力フィールドをクリア
-      console.log('ToDoが作成されました。');
-    } else {
-      console.error('追加されたToDoのタグが一致しません。');
+    // もし、
+    if (newAddToDo.todo_tag === todoTagId){
+      addtodo.value.unshift(newAddToDo);
+      todoElement.innerText = '';
+      console.log('ToDOが作成されました。');
+    }else{
+      console.error('追加されたToDOのタグが一致しません。');
     }
-  } catch (error) {
-    console.error('ToDoの追加に失敗しました:', error);
+  }catch(error){
+    console.error("todoが追加されませんでした。", error);
     throw error;
   }
-};
+}
 function formatDate(date){
   if (!date) return  '日付不明';
   const options = {

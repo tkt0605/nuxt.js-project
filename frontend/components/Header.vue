@@ -16,15 +16,19 @@
         </div>
         <aside>
             <ul>
-                <li class="create_todo">
-                    <NuxtLink class="new_todo" to="/">New ToDO</NuxtLink>
-                </li>
                 <div class="lists">
+                  <li class="create_todo">
+                    <div class="todo-item">
+                      <NuxtLink to="/" class="todo_id" >
+                        <p class="todo-title">新しいToDO</p>
+                      </NuxtLink>
+                    </div>
+                  </li>
                   <li v-for="todo in todolist" :key="todo.id" >
                     <div class="todo-item">
                       <NuxtLink v-if="todo.id" :to="`/t/${todo.id}`" data-discover="true" class="todo_id" >
                         <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
-                        <!-- <p class="todo-title">{{ formatDate(todo?.created_at) }}</p> -->
+                        <!-- <p class="todo-title">{{ formatDate(todo.created_at) }}</p> -->
                       </NuxtLink>
                     </div>
                   </li>
@@ -37,7 +41,7 @@
     </div>
 </template>
 <script setup>
-import '../assets/css/header.css';
+import '../assets/css/components/header.css';
 import { useRouter } from 'nuxt/app';
 import { useAuthStore } from '../store/auth';
 import { ref, computed, onMounted } from 'vue';
@@ -71,6 +75,18 @@ const gotoLogin = () => {
 const gotoSignup = () => {
   router.push('/auth/signup');
 };
-
+function formatDate(date){
+  if (!date) return  '日付不明';
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: "2-digit",
+    hour12: true,
+    minute: "2-digit",
+  };
+  return new Date(date).toLocaleDateString('ja-jp', options);
+};
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 </script>
+

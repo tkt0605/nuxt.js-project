@@ -1,4 +1,4 @@
-.bord{
+.id_bord{
     background: rgb(226, 226, 226);
     top: 100px;
     left: 30%;
@@ -6,10 +6,10 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 85vh;
+    height: 86vh;
     position: relative;
 }
-  .todo_list{
+  .id_todo_list{
     padding: 20px;
     border-radius: 10px;
     box-shadow: inset;
@@ -32,11 +32,11 @@
   .item-text{
     text-align: center;
     align-items: center;
-    
+
   }
   .details{
     position: relative;
-    top: -20px;
+    top: -25px;
     left: 25px;
   }
   .item:last-child {
