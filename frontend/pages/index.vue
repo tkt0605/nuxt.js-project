@@ -1,19 +1,17 @@
 <template>
   <Header/>
   <div class="bord">
-    <div class="text-base">
+    <div v-if="isAuthenticated" class="text-base">
       <div class="todo_list">
-        <div>
-          <div class="item-text">
-            <h1>何かToDOはありますか？</h1>
-          </div>
+        <div class="item-text">
+          <h1>何かToDOはありますか？</h1>
         </div>
       </div>
-      <div class="">
-        <div class="form">
+      <div class="form">
           <div class="texter" id="texter">
-            <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのすべきことは？" >
-              <p></p>
+            <!-- <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのすべきことは？" > -->
+            <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" :class="{ placeholder: isPlaceholderVisible }" @focus="handleFocus" @blur="handleBlur">
+              <p v-if="isPlaceholderVisible">{{ placeholderText }}</p>
             </div>
           </div>
           <div class="flex-button">
@@ -25,6 +23,12 @@
               </button>
             </span>
           </div>
+      </div>
+    </div>
+    <div v-else>
+      <div class="todo_list">
+        <div class="item-text">
+          <h1>ログイン・サインアップしてください。</h1>
         </div>
       </div>
     </div>
@@ -37,11 +41,12 @@ import Header from "../components/Header.vue"
 import { useAuthStore } from "../store/auth";
 import { useRouter } from "nuxt/app";
 import { useRoute } from "nuxt/app";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 const authStore = useAuthStore();
 const router = useRouter();
 const todolist = ref([]);
 const route = useRoute();
+const isAuthenticated = computed(() => authStore.isAuthenticated);
 onMounted(async () => {
   try{
     const todos = await authStore.getToDO();
@@ -73,5 +78,16 @@ const submitToDO = async() => {
     throw error;
   }
 };
-
+const placeholderText = ref('あなたのToDO') ;
+const isPlaceholderVisible = ref(true);
+const handleFocus  = ()=>{
+  if (isPlaceholderVisible.value) {
+    isPlaceholderVisible.value = false;
+  }
+};
+const handleBlur = (event) =>{
+  if (!event.target.innerText.trim()){
+    isPlaceholderVisible.value = true;
+  }
+};
 </script>

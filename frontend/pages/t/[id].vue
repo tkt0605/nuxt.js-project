@@ -25,8 +25,8 @@
       <div class="">
         <div class="form">
           <div class="texter" id="texter">
-            <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのすべきことは？" >
-              <p></p>
+            <div id="text_keybord" class="text_keybord" ref="textKeybord" contenteditable="true" :class="{ placeholder: isPlaceholderVisible }" @focus="handleFocus" @blur="handleBlur">
+              <p v-if="isPlaceholderVisible">{{ placeholderText }}</p>
             </div>
           </div>
           <div class="flex-button">
@@ -105,5 +105,17 @@ function formatDate(date){
     minute: "2-digit",
   };
   return new Date(date).toLocaleDateString('ja-jp', options);
+}
+const placeholderText = ref('あなたのToDO');
+const isPlaceholderVisible = ref(true);
+const handleFocus = () =>{
+  if (isPlaceholderVisible.value) {
+    isPlaceholderVisible.value = false;
+  }
+}
+const handleBlur = (event)=> {
+  if (!event.target.innerText.trim()){
+    isPlaceholderVisible.value = true;
+  }
 }
 </script>

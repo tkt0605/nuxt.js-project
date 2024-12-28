@@ -7,6 +7,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer
 from .models import CustomUser, ToDOList, addToDO
 from rest_framework import generics, viewsets
+# import environ
+# env = environ.Env()
+# api_key_GPT = env('api_key_GPT')
+# def GPT_titile_summary(request):
+
+
 User = get_user_model()
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()

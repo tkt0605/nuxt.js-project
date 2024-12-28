@@ -32,8 +32,8 @@
                       </NuxtLink>
                     </div>
                   </li>
-                  <li v-if="todolist.length === 0" class="empty-message">
-                    <p>ログイン・サインアップしてください。</p>
+                  <li v-if="todolist.length === 0 && isAuthenticated" class="empty-message">
+                    <p>ToDOを作成してください。</p>
                   </li>
                 </div>
             </ul>

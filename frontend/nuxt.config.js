@@ -3,6 +3,7 @@ export default {
   // target: 'static',
   target: 'server',
   ssr: true,
+  compatibilityDate: '2024-12-27',
   // ここで、ポートを設定しないと、Nuxt.jsのインデックスページにアクセスできない。
   server: {
     host: "0.0.0.0",
@@ -27,7 +28,7 @@ export default {
     ]
   },
   css: [
-    
+
   ],
   // plugins: [],
   plugins: ['~/plugins/pinia.js'],
