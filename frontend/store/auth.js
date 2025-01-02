@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
 import { useRouter } from "nuxt/app";
-import { resolveComponent } from "vue";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         todolist: [],
@@ -273,6 +272,7 @@ export const useAuthStore = defineStore('auth', {
                 return data.map(todo => ({
                     id: todo?.id,
                     title: todo?.title,
+                    created_at: todo?.created_at,
                 }));
             }catch(error){
                 console.error("Titleの取得に失敗しました。", error);

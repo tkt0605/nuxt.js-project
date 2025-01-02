@@ -59,16 +59,23 @@ onMounted(async () => {
     console.error('初期データのロードに失敗しました。', error);
   }
 });
+
 const submitToDO = async() => {
   const todoElement = document.getElementById('text_keybord');
   const todoContent = todoElement.innerText.trim();
-
+  // const todoTitle =
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0から始まるため+1
+  const day = String(now.getDate()).padStart(2, '0');
+  // const id = String(index + 1).padStart(2, '0');
+  const tempTitle = `${year}年${month}月${day}日 ToDO`;
   if(!todoContent) {
     console.log('todoが作成されました。')
     return;
   };
   try{
-    const newtodo = await authStore.createToDO('create todo', todoContent);
+    const newtodo = await authStore.createToDO(tempTitle, todoContent);
     todolist.value = await authStore.getToDO();
     todoElement.innerText = "";
     console.log('todoが作成されました。');
