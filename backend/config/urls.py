@@ -23,6 +23,7 @@ from api import views
 router = routers.DefaultRouter()
 router.register('todolist', views.ToDOViewset)
 router.register('addtodo', views.AddToDOViewset)
+router.register('user', views.CustomUserViewset)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include("api.urls")),

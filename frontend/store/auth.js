@@ -79,9 +79,42 @@ export const useAuthStore = defineStore('auth', {
               throw error;
             }
         },
-        async createToDO(title, todo) {
+        async getUserInfo() {
+            const config = useRuntimeConfig();
+            try {
+                const response = await fetch(`${config.public.apiBase}/user/`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`,
+                    },
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "ユーザー情報の取得に失敗しました。");
+                }
+
+                const data = await response.json();
+
+                // サーバーが単一のユーザーを返す場合
+                if (!Array.isArray(data)) {
+                    return { id: data.id, email: data.email };
+                }
+
+                // サーバーが複数のユーザーを返す場合
+                return data.map(user => ({
+                    id: user?.id,
+                    email: user?.email,
+                }));
+            } catch (error) {
+                console.error("ユーザー情報取得エラー:", error);
+                throw error;
+            }
+        },
+        async createToDO(auther, todo) {
             const config = useRuntimeConfig();
             try{
+
                 const response = await fetch(`${config.public.apiBase}/todolist/`, {
                     method: 'POST',
                     headers: {
@@ -89,7 +122,7 @@ export const useAuthStore = defineStore('auth', {
                         'Authorization': `Bearer ${this.accessToken}`,
                     },
                     body: JSON.stringify({
-                        title: title.trim(),
+                        auther: auther,
                         todo: todo.trim(),
                     }),
                 });
@@ -100,19 +133,10 @@ export const useAuthStore = defineStore('auth', {
                 const data = await response.json();
                 return {
                     id: data.id,         // 作成したToDoのID
-                    title: data.title,   // 作成したToDoのタイトル
+                    auther: data.auther,   // 作成したToDoのタイトル
                     todo: data.todo,     // 作成したToDoの内容
                     created_at: data.created_at,
-                  };
-                // this.todo_post = {
-                //     title: title.trim(),
-                //     todo: todo.trim(),
-                // };
-                // this.title = data.title;
-                // this.todo = data.todo;
-                // localStorage.setItem('title', this.title);
-                // localStorage.setItem('todo', this.todo);
-                // return data.todo_post;
+                };
             }catch(error){
                 console.error('ToDO作成に失敗しました。:', error);
                 throw error;
@@ -279,15 +303,46 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        async login(email, password){
+        // async login(email, password){
+        //     const config = useRuntimeConfig();
+        //     try{
+        //         const response = await fetch(`${config.public.apiBase}/token/`, {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //                 // 'Authorization': 'Bearer',
+        //                 "Authorization": `Bearer ${this.accessToken}`,
+        //             },
+        //             body: JSON.stringify({
+        //                 email: email.trim(),
+        //                 password: password.trim(),
+        //             }),
+        //         });
+        //         if (!response.ok) {
+        //             const errorData = await response.json();
+        //             throw new Error(errorData.detail || 'ログインに失敗しました');
+        //         }
+        //         const data = await response.json();
+        //         this.user = { user: email.trim() };
+        //         this.accessToken = data.access;
+        //         this.refreshToken = data.refresh;
+
+        //         localStorage.setItem('access_token', this.accessToken);
+        //         localStorage.setItem('refresh_token', this.refreshToken);
+
+        //         return data.user;
+        //     }catch(error){
+        //         console.error('ログインエラー:', error);
+        //         throw error;
+        //     }
+        // },
+        async login(email, password) {
             const config = useRuntimeConfig();
-            try{
+            try {
                 const response = await fetch(`${config.public.apiBase}/token/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        // 'Authorization': 'Bearer',
-                        "Authorization": `Bearer ${this.accessToken}`,
                     },
                     body: JSON.stringify({
                         email: email.trim(),
@@ -299,17 +354,20 @@ export const useAuthStore = defineStore('auth', {
                     throw new Error(errorData.detail || 'ログインに失敗しました');
                 }
                 const data = await response.json();
-                this.user = { user: email.trim() };
                 this.accessToken = data.access;
                 this.refreshToken = data.refresh;
 
+                // ログイン後、ユーザー情報を取得
+                const userResponse = await this.getUserInfo();
+                this.user = userResponse.find(u => u.email === email.trim());
+
+                // ローカルストレージに保存
                 localStorage.setItem('access_token', this.accessToken);
                 localStorage.setItem('refresh_token', this.refreshToken);
-                // storage.set('access_token', this.accessToken);
-                // storage.set('refresh_token', this.refreshToken);
+                localStorage.setItem('user', JSON.stringify(this.user));
 
-                return data.user;
-            }catch(error){
+                return this.user;
+            } catch (error) {
                 console.error('ログインエラー:', error);
                 throw error;
             }
@@ -337,53 +395,60 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        // async logout() {
+        //     const config = useRuntimeConfig();
+        //     try{
+        //         const refreshToken = this.refreshToken;
+        //         const response = await fetch(`${config.public.apiBase}/token/logout/`, {
+        //             method: "POST",
+        //             headers: {
+        //                 'Content-type': 'application/json',
+        //             },
+        //             body: JSON.stringify({refresh: refreshToken}),
+        //         });
+        //         if (!response.ok) {
+        //             const errorData = await response.json();
+        //             throw new Error(errorData.detail || 'ログアウトに失敗しました');
+        //         }
+        //         this.clearAuth();
+        //     }catch(error){
+        //         console.error('ログアウトエラー:', error);
+        //         throw error;
+        //     }
+        // },
         async logout() {
             const config = useRuntimeConfig();
-            try{
+            try {
                 const refreshToken = this.refreshToken;
                 const response = await fetch(`${config.public.apiBase}/token/logout/`, {
                     method: "POST",
                     headers: {
-                        'Content-type': 'application/json',
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({refresh: refreshToken}),
+                    body: JSON.stringify({ refresh: refreshToken }),
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || 'ログアウトに失敗しました');
                 }
                 this.clearAuth();
-            }catch(error){
+                console.log('ログアウト成功');
+            } catch (error) {
                 console.error('ログアウトエラー:', error);
                 throw error;
             }
-        },
-        // async refreshToken() {
-        //     const config = useRuntimeConfig();
-        //     try{
-        //         const refreshToken = localStorage.getItem('refresh_token');
-        //         const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
-        //             method: "POST",
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //             },
-        //             body: JSON.stringify({refresh: refreshToken}),
-        //         });
-        //         this.accessToken = response.access;
-        //         localStorage.setItem('access_token', this.accessToken);
-        //         return this.accessToken;
-        //     }catch(error){
-        //         console.error('トークンリフレッシュエラー:', error);
-        //         throw error;
-        //     }
-        // },
+        }
+
     },
     getters: {
         isAuthenticated(state){
             return !!state.accessToken;
         },
-        currentUser(state){
-            return state.user;
-        },
+        currentUser(state) {
+            if (state.user && typeof state.user === 'object') {
+                return { id: state.user.id, email: state.user.email };
+            }
+            return null; // 未ログインの場合は null を返す
+        }
     },
 });

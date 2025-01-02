@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer
+from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer
 from .models import CustomUser, ToDOList, addToDO
 from rest_framework import generics, viewsets
 # import environ
@@ -14,6 +14,16 @@ from rest_framework import generics, viewsets
 
 
 User = get_user_model()
+class CustomUserViewset(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+class CustomUserListView(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = ToDOListSerializer
+class CustomUserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = ToDOListSerializer
+
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -22,13 +32,15 @@ class RegisterView(generics.CreateAPIView):
 class ToDOViewset(viewsets.ModelViewSet):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
+    permission_classes = [IsAuthenticated]
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
+    permission_classes = [IsAuthenticated]
 class ToDODetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
-
+    permission_classes = [IsAuthenticated]
 class AddToDOViewset(viewsets.ModelViewSet):
     queryset = addToDO.objects.all()
     serializer_class =AddToDOSerializer

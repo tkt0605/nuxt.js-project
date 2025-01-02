@@ -23,6 +23,11 @@
     </div>
     <aside>
       <ul>
+        <li v-if="isAuthenticated" class="account-auth-email">
+          <div class="account-auth">
+            <p class="auth-new">{{ currentUser.email || "ゲスト" }}</p>
+          </div>
+        </li>
         <li class="create_todo">
           <div class="todo-item">
             <NuxtLink to="/" class="todo_id">
@@ -33,7 +38,7 @@
         <div v-if="isAuthenticated && categorizedTodos" class="lists">
           <li>
             <h5>今日の予定</h5>
-            <ul>
+            <ul class="aside-todo-padding">
               <li v-for="todo in categorizedTodos.today" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
@@ -44,7 +49,7 @@
 
           <li>
             <h5>昨日</h5>
-            <ul>
+            <ul class="aside-todo-padding">
               <li v-for="todo in categorizedTodos.yesterday" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
@@ -55,7 +60,7 @@
 
           <li>
             <h5>過去7日間</h5>
-            <ul>
+            <ul class="aside-todo-padding">
               <li v-for="todo in categorizedTodos.lastsevendays" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
@@ -66,7 +71,7 @@
 
           <li>
             <h5>それ以前</h5>
-            <ul>
+            <ul class="aside-todo-padding">
               <li v-for="todo in categorizedTodos.older" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
@@ -91,13 +96,21 @@ import "../assets/css/components/header.css";
 import { useRouter } from "nuxt/app";
 import { useAuthStore } from "../store/auth";
 import { ref, computed, onMounted } from "vue";
-
 const router = useRouter();
 const authStore = useAuthStore();
 const todolist = ref([]);
-
+const user = ref(null);
 onMounted(async () => {
   try {
+    if(authStore.isAuthenticated){
+      try{
+        user.value = await authStore.getUserInfo();
+        console.log('ユーザー情報取得:', user.value);
+      }catch(error){
+        console.error("ユーザー情報取得:", error);
+        throw error;
+      }
+    };
     todolist.value = await authStore.AsideTitle();
     const categorized = categorizeTodos(todolist.value);
     categorizedTodos.value = { ...categorized };
@@ -136,6 +149,7 @@ function formatDate(date) {
   return new Date(date).toLocaleDateString("ja-jp", options);
 }
 const isAuthenticated = computed(() => authStore.isAuthenticated);
+const currentUser = computed(() => authStore.currentUser);
 const categorizeTodos = (todolist) => {
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
