@@ -26,7 +26,7 @@
         <li class="create_todo">
           <div class="todo-item">
             <NuxtLink to="/" class="todo_id">
-              <p class="todo-title">新しいToDO</p>
+              <p class="todo-title-new">新しいToDO</p>
             </NuxtLink>
           </div>
         </li>
@@ -36,7 +36,7 @@
             <ul>
               <li v-for="todo in categorizedTodos.today" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
-                  <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
+                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
             </ul>
@@ -47,7 +47,7 @@
             <ul>
               <li v-for="todo in categorizedTodos.yesterday" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
-                  <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
+                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
             </ul>
@@ -58,7 +58,7 @@
             <ul>
               <li v-for="todo in categorizedTodos.lastsevendays" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
-                  <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
+                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
             </ul>
@@ -69,7 +69,7 @@
             <ul>
               <li v-for="todo in categorizedTodos.older" :key="todo.id">
                 <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
-                  <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
+                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
             </ul>
@@ -84,30 +84,6 @@
         </div>
       </ul>
     </aside>
-
-    <!-- <aside>
-            <ul>
-                <div class="lists">
-                  <li class="create_todo">
-                    <div class="todo-item">
-                      <NuxtLink to="/" class="todo_id" >
-                        <p class="todo-title">新しいToDO</p>
-                      </NuxtLink>
-                    </div>
-                  </li>
-                  <li v-for="todo in todolist" :key="todo.id" >
-                    <div class="todo-item">
-                      <NuxtLink v-if="todo.id" :to="`/t/${todo.id}`" data-discover="true" class="todo_id" >
-                        <p class="todo-title">{{ todo.title || "タイトルなし" }}</p>
-                      </NuxtLink>
-                    </div>
-                  </li>
-                  <li v-if="todolist.length === 0 && isAuthenticated" class="empty-message">
-                    <p>ToDOを作成してください。</p>
-                  </li>
-                </div>
-            </ul>
-        </aside> -->
   </div>
 </template>
 <script setup>
@@ -166,34 +142,26 @@ const categorizeTodos = (todolist) => {
   const startOfYesterday = new Date(startOfToday.getTime() - 24 * 60 * 60 * 1000);
   const startOfLastSevenDays = new Date(startOfToday.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  console.log("UTC 開始時刻 - 今日:", startOfToday);
-  console.log("UTC 開始時刻 - 昨日:", startOfYesterday);
-  console.log("UTC 開始時刻 - 過去7日間:", startOfLastSevenDays);
-
-  todolist.forEach((todo) => {
-    const createdDate = new Date(todo.created_at);
-    console.log(`ToDo Title: ${todo.title}, created_at: ${todo.created_at}, time:${createdDate}`);
-  });
+  // todolist.forEach((todo) => {
+  //   const createdDate = new Date(todo.created_at);
+  //   console.log(`ToDo Title: ${todo.title}, created_at: ${todo.created_at}, time:${createdDate}`);
+  // });
 
   return {
     today: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);
-      console.log(`ToDo Title: ${todo.title}, 判定: 今日 =`, createdDate >= startOfToday);
       return createdDate >= startOfToday;
     }),
     yesterday: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);
-      console.log(`ToDo Title: ${todo.title}, 判定: 昨日 =`, createdDate >= startOfYesterday && createdDate < startOfToday);
       return createdDate >= startOfYesterday && createdDate < startOfToday;
     }),
     lastsevendays: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);
-      console.log(`ToDo Title: ${todo.title}, 判定: 過去7日間 =`, createdDate >= startOfLastSevenDays && createdDate < startOfYesterday);
       return createdDate >= startOfLastSevenDays && createdDate < startOfYesterday;
     }),
     older: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);
-      console.log(`ToDo Title: ${todo.title}, 判定: それ以前 =`, createdDate < startOfLastSevenDays);
       return createdDate < startOfLastSevenDays;
     }),
   };
