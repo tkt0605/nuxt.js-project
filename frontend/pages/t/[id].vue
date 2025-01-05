@@ -56,6 +56,8 @@ const todolist = ref([]);
 const addtodo = ref([]);
 onMounted(async() => {
   try{
+    await authStore.restoreSession();
+    console.log("セッション復元成功。");
     // urlでのidを取得する引数を定義
     const routeId = route.params.id;
     // 取得したidをgetoDOByid()関数で該当するDBを持って来る。

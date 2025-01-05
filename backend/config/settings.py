@@ -88,10 +88,10 @@ REST_AUTH_SERIALIZERS = {
 }
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # アクセストークンの有効期間
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),    # リフレッシュトークンの有効期間
-    'ROTATE_REFRESH_TOKENS': True,                 # リフレッシュ時に新しいリフレッシュトークンを発行
-    'BLACKLIST_AFTER_ROTATION': True,              # 古いリフレッシュトークンを無効化
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # アクセストークンの有効期間
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),    # リフレッシュトークンの有効期間
+    'ROTATE_REFRESH_TOKENS': True,                 # リフレッシュ時に新しいリフレッシュトークンを発
+    "BLACKLIST_ALTER_ROTATION": False,
 }
 
 # CORS_ORIGINS_ALLOW_ALL = True

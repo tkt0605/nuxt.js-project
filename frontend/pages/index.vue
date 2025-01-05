@@ -71,15 +71,15 @@ const isAuthenticated = computed(() => authStore.isAuthenticated);
 const currentUser = computed(() => authStore.currentUser);
 onMounted(async () => {
   try {
+    await authStore.restoreSession();
+    console.log("セッション復元成功。");
     const todos = await authStore.getToDO();
     const usr = await authStore.getUserInfo();
     user.value = usr;
     console.log("ログインユーザー情報取得:", user.value);
     if (Array.isArray(todos)) {
       todolist.value = todos;
-    } else {
-      console.error(error);
-    }
+    };
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }

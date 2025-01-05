@@ -104,6 +104,8 @@ const user = ref(null);
 const userMap = ref({});
 onMounted(async () => {
   try {
+    await authStore.restoreSession();
+    console.log("セッション復元成功。");
     //カスタムユーザーによる情報
     if(authStore.isAuthenticated){
       try{
@@ -117,7 +119,7 @@ onMounted(async () => {
     todolist.value = await authStore.AsideTitle();
     const categorized = categorizeTodos(todolist.value);
     categorizedTodos.value = { ...categorized };
-    console.log(categorizedTodos.value);  
+    console.log(categorizedTodos.value);
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
