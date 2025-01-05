@@ -22,6 +22,7 @@
       </div>
     </div>
     <aside>
+      <!--  -->
       <ul>
         <li v-if="isAuthenticated" class="account-auth-email">
           <div class="account-auth">
@@ -39,8 +40,8 @@
           <li>
             <h5>今日の予定</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.today" :key="todo.id">
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
+              <li v-for="todo in categorizedTodos.today" :key="todo.id" >
+                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -50,8 +51,8 @@
           <li>
             <h5>昨日</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.yesterday" :key="todo.id">
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
+              <li v-for="todo in categorizedTodos.yesterday" :key="todo.id" >
+                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -61,8 +62,8 @@
           <li>
             <h5>過去7日間</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.lastsevendays" :key="todo.id">
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
+              <li v-for="todo in categorizedTodos.lastsevendays" :key="todo.id" >
+                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -72,8 +73,8 @@
           <li>
             <h5>それ以前</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.older" :key="todo.id">
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id">
+              <li v-for="todo in categorizedTodos.older" :key="todo.id" >
+                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -100,8 +101,10 @@ const router = useRouter();
 const authStore = useAuthStore();
 const todolist = ref([]);
 const user = ref(null);
+const userMap = ref({});
 onMounted(async () => {
   try {
+    //カスタムユーザーによる情報
     if(authStore.isAuthenticated){
       try{
         user.value = await authStore.getUserInfo();
@@ -114,6 +117,7 @@ onMounted(async () => {
     todolist.value = await authStore.AsideTitle();
     const categorized = categorizeTodos(todolist.value);
     categorizedTodos.value = { ...categorized };
+    console.log(categorizedTodos.value);  
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -128,7 +132,6 @@ const logout = async () => {
     alert("ログアウトに失敗しました。時間をおいて再試行してください。");
   }
 };
-
 const gotoLogin = () => {
   router.push("/auth/login");
 };
@@ -150,17 +153,15 @@ function formatDate(date) {
 }
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const currentUser = computed(() => authStore.currentUser);
+// const currentUserId = computed(() => authStore.currentUser?.id);
+// const filteringToDO = computed(() => {
+//   return todolist.value.filter(todo => todo.auther === currentUserId.value);
+// })
 const categorizeTodos = (todolist) => {
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startOfYesterday = new Date(startOfToday.getTime() - 24 * 60 * 60 * 1000);
   const startOfLastSevenDays = new Date(startOfToday.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-  // todolist.forEach((todo) => {
-  //   const createdDate = new Date(todo.created_at);
-  //   console.log(`ToDo Title: ${todo.title}, created_at: ${todo.created_at}, time:${createdDate}`);
-  // });
-
   return {
     today: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);

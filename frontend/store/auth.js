@@ -296,6 +296,7 @@ export const useAuthStore = defineStore('auth', {
                 return data.map(todo => ({
                     id: todo?.id,
                     title: todo?.title,
+                    auther: todo?.auther,
                     created_at: todo?.created_at,
                 }));
             }catch(error){
