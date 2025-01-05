@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import ToDOList, addToDO
@@ -41,3 +42,8 @@ class AddToDOSerializer(serializers.ModelSerializer):
     class Meta:
         model = addToDO
         fields = '__all__'
+# class ToDOChecklistSerializer(APIView):
+#     def get(self, request, id):
+#         try:
+#             todo = ToDOList.objects.get(id=id)
+

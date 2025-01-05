@@ -370,7 +370,9 @@ export const useAuthStore = defineStore('auth', {
                 };
                 const data = await response.json();
                 return {
+                    id: data.id,
                     todo_tag: data.todo_tag,
+                    checklist: data.checklist,
                     todo: data.todo,
                     created_at: data.created_at,
                 };
@@ -425,6 +427,7 @@ export const useAuthStore = defineStore('auth', {
                 return {
                     id: data.id,
                     title: data.title, // titleがない場合はデフォルト値
+                    checklist: data.checklist,
                     todo: data.todo,           // todoがない場合は空文字
                     created_at: data.created_at, // created_atがない場合はデフォルト値
                 };
@@ -451,6 +454,7 @@ export const useAuthStore = defineStore('auth', {
                 console.log('取得したToDOリスト:', data);
                 return {
                     id: data.id,
+                    checklist: data.checklist,
                     title: data.title,
                     todo: data.todo,
                     created_at: data.created_at,
@@ -512,7 +516,67 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-
+        async ToDOchecklist(id, isCheck) {
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/todolist/${id}/`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        checklist: isCheck,
+                    })
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "todoのチェックに失敗しました。" );
+                };
+                const data = await response.json();
+                console.log("todoのチェック成功");
+                return {
+                    id: data.id,
+                    title: data.title,
+                    checklist: data.checklist,
+                    created_at: data.created_at,
+                }
+            }catch(error){
+                console.error("ToDOのチェック機能エラー:", error);
+                throw error;
+            }
+        },
+        async AddToDOchecklist(id, todo_tag , isCheck){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/addtodo/${id}/`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        checklist: isCheck,
+                        todo_tag: todo_tag,
+                    }),
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "addtodoのチェックに失敗しました。");
+                };
+                const data = await response.json();
+                console.log("addtodoのチェック成功");
+                return {
+                    id: data.id,
+                    todo_tag: data.todo_tag,
+                    checklist: data.checklist,
+                    created_at: data.created_at,
+                };
+            }catch(error){
+                console.error("AddToDOのチェック機能エラー", error);
+                throw error;
+            }
+        }
     },
     getters: {
         isAuthenticated(state){

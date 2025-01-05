@@ -23,12 +23,7 @@
     </div>
     <aside>
       <!--  -->
-      <ul>
-        <li v-if="isAuthenticated" class="account-auth-email">
-          <div class="account-auth">
-            <p class="auth-new">{{ currentUser.email || "ゲスト" }}</p>
-          </div>
-        </li>
+      <ul class="mains">
         <li class="create_todo">
           <div class="todo-item">
             <NuxtLink to="/" class="todo_id">
