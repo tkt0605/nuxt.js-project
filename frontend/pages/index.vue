@@ -9,7 +9,6 @@
       </div>
       <div class="form">
         <div class="texter" id="texter">
-          <!-- <div id="text_keybord" ref="textKeybord" class="text_keybord" contenteditable="true" data-placeholder="あなたのすべきことは？" > -->
           <div
             id="text_keybord"
             ref="textKeybord"
@@ -84,7 +83,18 @@ onMounted(async () => {
     console.error("初期データのロードに失敗しました。", error);
   }
 });
-
+const placeholderText = ref("あなたのToDO");
+const isPlaceholderVisible = ref(true);
+const handleFocus = () => {
+  if (isPlaceholderVisible.value) {
+    isPlaceholderVisible.value = false;
+  }
+};
+const handleBlur = (event) => {
+  if (!event.target.innerText.trim()) {
+    isPlaceholderVisible.value = true;
+  }
+};
 const submitToDO = async () => {
   const todoElement = document.getElementById("text_keybord");
   const todoContent = todoElement.innerText.trim();
@@ -95,7 +105,7 @@ const submitToDO = async () => {
   const auther = authStore.user?.id || "default@example.com"; // 現在のユーザーIDを取得
 
   // 入力チェック
-  if (!todoContent) {
+  if (!todoContent || todoContent === "あなたのToDO") {
     console.log("ToDoの内容が空です。作成できません。");
     return;
   }
@@ -114,18 +124,6 @@ const submitToDO = async () => {
   } catch (error) {
     console.error("todoの作成に失敗しました。", error);
     throw error;
-  }
-};
-const placeholderText = ref("あなたのToDO");
-const isPlaceholderVisible = ref(true);
-const handleFocus = () => {
-  if (isPlaceholderVisible.value) {
-    isPlaceholderVisible.value = false;
-  }
-};
-const handleBlur = (event) => {
-  if (!event.target.innerText.trim()) {
-    isPlaceholderVisible.value = true;
   }
 };
 </script>

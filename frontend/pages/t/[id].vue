@@ -25,9 +25,9 @@
       </div>
       <div v-else></div>
     </div>
-    <div class="text-base">
+    <div class="text-base_id">
       <div class="">
-        <div class="form">
+        <div class="form_id">
           <div class="texter" id="texter">
             <div
               id="text_keybord"
@@ -82,6 +82,18 @@ const route = useRoute();
 const authStore = useAuthStore();
 const todolist = ref([]);
 const addtodo = ref([]);
+const placeholderText = ref("あなたのToDO");
+const isPlaceholderVisible = ref(true);
+const handleFocus = () => {
+  if (isPlaceholderVisible.value) {
+    isPlaceholderVisible.value = false;
+  }
+};
+const handleBlur = (event) => {
+  if (!event.target.innerText.trim()) {
+    isPlaceholderVisible.value = true;
+  }
+};
 onMounted(async () => {
   try {
     await authStore.restoreSession();
@@ -139,18 +151,20 @@ const submitAddToDO = async () => {
   const todoElement = document.getElementById("text_keybord");
   const todoContent = todoElement?.innerText.trim();
   const todoTagId = route.params.id;
-  if (!todoContent) {
-    console.log("ToDOの内容が空です。");
+  if(!todoContent || todoContent === "あなたのToDO"){
+    alert('有効なToDOの内容にしてください。');
+    return;
   }
   try {
     const newAddToDo = await authStore.addToDO(todoTagId, todoContent);
     // もし、
-    if (newAddToDo.todo_tag === todoTagId) {
+    if (newAddToDo.todo_tag === todoTagId && !isPlaceholderVisible) {
+    // if(newAddToDo.todo_tag === todoTagId && !todoContent === "あなたのToDO"){
       addtodo.value.unshift(newAddToDo);
       todoElement.innerText = "";
       console.log("ToDOが作成されました。");
-    } else {
-      console.error("追加されたToDOのタグが一致しません。");
+    }else{
+      console.log('あなたのToDO');
     }
   } catch (error) {
     console.error("todoが追加されませんでした。", error);
@@ -169,16 +183,4 @@ function formatDate(date) {
   };
   return new Date(date).toLocaleDateString("ja-jp", options);
 }
-const placeholderText = ref("あなたのToDO");
-const isPlaceholderVisible = ref(true);
-const handleFocus = () => {
-  if (isPlaceholderVisible.value) {
-    isPlaceholderVisible.value = false;
-  }
-};
-const handleBlur = (event) => {
-  if (!event.target.innerText.trim()) {
-    isPlaceholderVisible.value = true;
-  }
-};
 </script>

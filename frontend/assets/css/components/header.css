@@ -16,6 +16,11 @@ aside{
     margin: 0;
     position: fixed;
     border-right: 1px solid #ccc;
+    transform: translateX(-100%);
+    z-index: 1000;
+}
+aside.open{
+    transform: translateX(0);
 }
 /* .todo_title{
 
@@ -47,6 +52,48 @@ aside{
     margin-left: auto;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+.header_down{
+    background: rgb(226, 226, 226);
+    padding: 1rem;
+    position: fixed;
+    top: 0px;
+    left: 10px;
+    width:calc(100% - 10px);
+
+}
+.headerline_down{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.container_down{
+    padding-right: 20px;
+    padding-left: 20px;
+    margin-right: auto;
+    margin-left: auto;
+    left: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.downarea{
+    display: flex;
+    align-items: center;
+}
+.icon_down{
+    position: relative;
+    top: -2px;
+    right: 41.5px;
+}
+.logo_down{
+    font-size: 25px;
+    position: relative;
+    left: -82.5vh;
+    font-weight: bold;
+    padding: 15px 15px;
+    align-items: center;
 }
 .logo{
     font-size: 25px;
@@ -70,7 +117,7 @@ ul{
 }
 .mains {
     position: relative;
-    top: 40px;
+    top: 15px;
 }
 ul .aside-todo-padding{
     padding: 10px 15px;
@@ -81,6 +128,11 @@ li{
     /* text-align: center; */
     align-items: center;
     list-style: none;
+}
+.icon{
+    align-items: center;
+    position: relative;
+    left: 10px;
 }
 .lists {
     width: 230px;
@@ -194,4 +246,57 @@ li .log_todo{
     display: flex;
     gap: 10px;
     align-items: center;
+}
+aside.open ~ .container {
+    margin-left: 300px; /* aside が開いたときにコンテンツを調整 */
+  }
+
+@media (max-width: 768px) {
+    .headerline{
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .container{
+        padding-left: 20px;
+        padding-right: 20px;
+        margin-right: auto;
+        margin-left: auto;
+        display: flex;
+        justify-content: space-between;
+    }
+    .logo{
+        font-size: 20px;
+        font-weight: bold;
+        padding: 10px 10px;
+        align-items: center;
+    }
+    .header{
+        background: rgb(226, 226, 226);
+        padding: 1.0rem;
+        position: fixed;
+        top: 0;
+        left: 255px;
+        z-index: 10;
+    }
+    aside{
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 225px;
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+    aside.open{
+        transform: translateX(0);
+    }
+}
+@media (max-width: 480px) {
+    aside{
+        width: 200px;
+    }
+    /* .icon svg{
+        width: 20px;
+        height: 20px;
+    } */
 }

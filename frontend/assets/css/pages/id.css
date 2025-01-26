@@ -1,8 +1,9 @@
 .id_bord{
     background: rgb(226, 226, 226);
     top: 100px;
-    left: 30%;
-    width: calc(100% - 30%);
+    left: 36%;
+    max-width: 1280px;
+    width: calc(100% - 36%);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -10,23 +11,22 @@
     position: relative;
 }
   .id_todo_list{
-    padding: 20px;
-    border-radius: 10px;
+    left: 0%;
     box-shadow: inset;
-    max-width: 680px;
+    max-width: 1300px;
     width: 100%;
     overflow: auto;
     align-items: center;
     height: 100%;
   }
   .item {
-    background-color: white;
+    max-width: 768px;
+    width: 100%;
     padding: 20px;
     border-bottom: 1px solid #eceff1;
     transition: background-color 0.3s ease;
-    /* display: flex; */
-    align-items: center; /* チェックボックス、時間、テキストを縦方向中央揃え */
-    justify-content: space-between; /* 各要素を左右に分散配置 */
+    align-items: center;
+    justify-content: space-between; 
     height: auto;
   }
   .item-text{
@@ -85,9 +85,10 @@
     margin-top: 0px;
   }
   /* Add some padding around the list */
-  .form{
-    max-width: 680px;
+  .form_id{
+    max-width: 768px;
     width: 100%;
+    /* left: 0%; */
     height: auto;
     background-color: white;
     border: 1px solid #ccc;
@@ -177,53 +178,13 @@
   padding-right: 0.75rem;
 }
 
-@media (min-width: 768px) {
-  .m-auto {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .m-auto {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .m-auto {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-}
-
 /* 内部フレックスコンテナ */
 .mx-auto {
   margin: auto;
   display: flex;
   flex: 1;
   gap: 1rem;
-}
 
-@media (min-width: 768px) {
-  .mx-auto {
-    gap: 1.25rem;
-    max-width: 48rem; /* md:max-w-3xl */
-  }
-}
-
-@media (min-width: 1024px) {
-  .mx-auto {
-    gap: 1.5rem;
-    max-width: 40rem; /* lg:max-w-[40rem] */
-  }
-}
-
-@media (min-width: 1280px) {
-  .mx-auto {
-    max-width: 48rem; /* xl:max-w-[48rem] */
-  }
 }
 
 /* フォームスタイル */
@@ -313,15 +274,15 @@ button {
   align-items: center;
   justify-content: center;
   border: none;
-  background: transparent;
+  /* background: transparent; */
   cursor: pointer;
   /* transition: background-color 0.3s ease; */
 }
 
 /* アイコンボタン */
-button svg {
-  width: 1.5rem;
-  height: 1.5rem;
+.submit_button svg {
+  width: 2.5rem;
+  height: 2.5rem;
   fill: currentColor;
 }
 
@@ -359,15 +320,4 @@ button[data-testid="composer-speech-button"]:hover {
   opacity: 0.8;
 }
 
-/* レスポンシブ */
-@media (min-width: 768px) {
-  button {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
 
-  button svg {
-    width: 2rem;
-    height: 2rem;
-  }
-}

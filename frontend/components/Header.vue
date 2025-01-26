@@ -1,9 +1,8 @@
 <template>
   <div>
-    <div class="header">
+    <div class="header" v-if="isAsideOpen">
       <div class="headerline">
         <div class="container">
-          <!-- <a class="logo">ToDO<small class="logo_small"> By Typewriter</small></a> -->
           <a class="logo">TDBT</a>
           <div v-if="isAuthenticated" class="account_form">
             <button class="logout" type="button" @click="logout">
@@ -21,9 +20,63 @@
         </div>
       </div>
     </div>
-    <aside>
+    <div class="header_down" v-else>
+      <div class="headerline_down">
+        <div class="container_down">
+          <button class="icon_down" @click="toggleAsideTag">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              class="bi bi-layout-text-window-reverse"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M13 6.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"
+              />
+              <path
+                d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM2 1a1 1 0 0 0-1 1v1h14V2a1 1 0 0 0-1-1zM1 4v10a1 1 0 0 0 1 1h2V4zm4 0v11h9a1 1 0 0 0 1-1V4z"
+              />
+            </svg>
+          </button>
+          <a class="logo_down">TDBT</a>
+          <div v-if="isAuthenticated" class="account_form">
+            <button class="logout" type="button" @click="logout">
+              ログアウト
+            </button>
+          </div>
+          <div v-else class="account_form">
+            <button class="login" type="button" @click="gotoLogin">
+              ログイン
+            </button>
+            <button class="signup" type="button" @click="gotoSignup">
+              サインアップ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside :class="{ open: isAsideOpen }">
       <!--  -->
       <ul class="mains">
+        <button class="icon" @click="toggleAsideTag">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            fill="currentColor"
+            class="bi bi-layout-text-window-reverse"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M13 6.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"
+            />
+            <path
+              d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM2 1a1 1 0 0 0-1 1v1h14V2a1 1 0 0 0-1-1zM1 4v10a1 1 0 0 0 1 1h2V4zm4 0v11h9a1 1 0 0 0 1-1V4z"
+            />
+          </svg>
+        </button>
         <li class="create_todo">
           <div class="todo-item">
             <NuxtLink to="/" class="todo_id">
@@ -35,8 +88,12 @@
           <li>
             <h5>今日の予定</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.today" :key="todo.id" >
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
+              <li v-for="todo in categorizedTodos.today" :key="todo.id">
+                <NuxtLink
+                  :to="`/t/${todo.id}`"
+                  class="todo_id"
+                  v-if="todo.auther === currentUser.id"
+                >
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -46,8 +103,12 @@
           <li>
             <h5>昨日</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.yesterday" :key="todo.id" >
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
+              <li v-for="todo in categorizedTodos.yesterday" :key="todo.id">
+                <NuxtLink
+                  :to="`/t/${todo.id}`"
+                  class="todo_id"
+                  v-if="todo.auther === currentUser.id"
+                >
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -57,8 +118,12 @@
           <li>
             <h5>過去7日間</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.lastsevendays" :key="todo.id" >
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
+              <li v-for="todo in categorizedTodos.lastsevendays" :key="todo.id">
+                <NuxtLink
+                  :to="`/t/${todo.id}`"
+                  class="todo_id"
+                  v-if="todo.auther === currentUser.id"
+                >
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -68,8 +133,12 @@
           <li>
             <h5>それ以前</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.older" :key="todo.id" >
-                <NuxtLink :to="`/t/${todo.id}`" class="todo_id" v-if="todo.auther === currentUser.id">
+              <li v-for="todo in categorizedTodos.older" :key="todo.id">
+                <NuxtLink
+                  :to="`/t/${todo.id}`"
+                  class="todo_id"
+                  v-if="todo.auther === currentUser.id"
+                >
                   <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
                 </NuxtLink>
               </li>
@@ -96,21 +165,22 @@ const router = useRouter();
 const authStore = useAuthStore();
 const todolist = ref([]);
 const user = ref(null);
+const isAsideOpen = ref(true);
 const userMap = ref({});
 onMounted(async () => {
   try {
     await authStore.restoreSession();
     console.log("セッション復元成功。");
     //カスタムユーザーによる情報
-    if(authStore.isAuthenticated){
-      try{
+    if (authStore.isAuthenticated) {
+      try {
         user.value = await authStore.getUserInfo();
-        console.log('ユーザー情報取得:', user.value);
-      }catch(error){
+        console.log("ユーザー情報取得:", user.value);
+      } catch (error) {
         console.error("ユーザー情報取得:", error);
         throw error;
       }
-    };
+    }
     todolist.value = await authStore.AsideTitle();
     const categorized = categorizeTodos(todolist.value);
     categorizedTodos.value = { ...categorized };
@@ -119,6 +189,9 @@ onMounted(async () => {
     console.error("初期データのロードに失敗しました。", error);
   }
 });
+const toggleAsideTag = () => {
+  isAsideOpen.value = !isAsideOpen.value;
+};
 const logout = async () => {
   try {
     await authStore.logout();
@@ -150,15 +223,19 @@ function formatDate(date) {
 }
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const currentUser = computed(() => authStore.currentUser);
-// const currentUserId = computed(() => authStore.currentUser?.id);
-// const filteringToDO = computed(() => {
-//   return todolist.value.filter(todo => todo.auther === currentUserId.value);
-// })
 const categorizeTodos = (todolist) => {
   const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startOfYesterday = new Date(startOfToday.getTime() - 24 * 60 * 60 * 1000);
-  const startOfLastSevenDays = new Date(startOfToday.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+  const startOfYesterday = new Date(
+    startOfToday.getTime() - 24 * 60 * 60 * 1000
+  );
+  const startOfLastSevenDays = new Date(
+    startOfToday.getTime() - 7 * 24 * 60 * 60 * 1000
+  );
   return {
     today: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);
@@ -170,7 +247,9 @@ const categorizeTodos = (todolist) => {
     }),
     lastsevendays: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);
-      return createdDate >= startOfLastSevenDays && createdDate < startOfYesterday;
+      return (
+        createdDate >= startOfLastSevenDays && createdDate < startOfYesterday
+      );
     }),
     older: todolist.filter((todo) => {
       const createdDate = new Date(todo.created_at);
@@ -178,7 +257,6 @@ const categorizeTodos = (todolist) => {
     }),
   };
 };
-
 
 const categorizedTodos = ref({
   today: [],
