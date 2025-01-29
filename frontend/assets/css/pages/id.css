@@ -1,9 +1,9 @@
 .id_bord{
     background: rgb(226, 226, 226);
     top: 100px;
-    left: 36%;
+    left: 33%;
     max-width: 1280px;
-    width: calc(100% - 36%);
+    width: calc(100% - 37.5%);
     display: flex;
     flex-direction: column;
     justify-content: space-between;

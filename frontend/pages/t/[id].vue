@@ -151,20 +151,16 @@ const submitAddToDO = async () => {
   const todoElement = document.getElementById("text_keybord");
   const todoContent = todoElement?.innerText.trim();
   const todoTagId = route.params.id;
-  if(!todoContent || todoContent === "あなたのToDO"){
+  if(!todoContent || todoContent === "あなたのToDO") {
     alert('有効なToDOの内容にしてください。');
     return;
   }
   try {
     const newAddToDo = await authStore.addToDO(todoTagId, todoContent);
-    // もし、
-    if (newAddToDo.todo_tag === todoTagId && !isPlaceholderVisible) {
-    // if(newAddToDo.todo_tag === todoTagId && !todoContent === "あなたのToDO"){
+    if (newAddToDo.todo_tag === todoTagId) {
       addtodo.value.unshift(newAddToDo);
       todoElement.innerText = "";
       console.log("ToDOが作成されました。");
-    }else{
-      console.log('あなたのToDO');
     }
   } catch (error) {
     console.error("todoが追加されませんでした。", error);
