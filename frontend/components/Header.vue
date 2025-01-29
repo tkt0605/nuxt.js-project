@@ -133,13 +133,33 @@
           <li>
             <h5>今日の予定</h5>
             <ul class="aside-todo-padding">
-              <li v-for="todo in categorizedTodos.today" :key="todo.id">
+              <li
+                v-for="todo in categorizedTodos.today"
+                :key="todo.id"
+                class="todo-content"
+              >
                 <NuxtLink
                   :to="`/t/${todo.id}`"
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
+                  <p class="todo-title">
+                    {{ formatDate(todo.created_at) }}
+                    <div class="option">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-three-dots-vertical"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                        />
+                      </svg>
+                    </div>
+                  </p>
                 </NuxtLink>
               </li>
             </ul>
@@ -154,7 +174,23 @@
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
+                  <p class="todo-title">
+                    {{ formatDate(todo.created_at) }}
+                    <div class="option">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-three-dots-vertical"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                        />
+                      </svg>
+                    </div>
+                  </p>
                 </NuxtLink>
               </li>
             </ul>
@@ -169,7 +205,23 @@
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
+                  <p class="todo-title">
+                    {{ formatDate(todo.created_at) }}
+                    <div class="option">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-three-dots-vertical"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                        />
+                      </svg>
+                    </div>
+                  </p>
                 </NuxtLink>
               </li>
             </ul>
@@ -184,7 +236,23 @@
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">{{ formatDate(todo.created_at) }}</p>
+                  <p class="todo-title">
+                    {{ formatDate(todo.created_at) }}
+                    <div class="option">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-three-dots-vertical"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                        />
+                      </svg>
+                    </div>
+                  </p>
                 </NuxtLink>
               </li>
             </ul>
@@ -236,8 +304,12 @@ onMounted(async () => {
       }
     }
     todolist.value = await authStore.AsideTitle();
+    todolist.value.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
     const categorized = categorizeTodos(todolist.value);
-    categorizedTodos.value = { ...categorized };
+    categorizedTodos.value =
+      { ...categorized } && categorizeTodos(todolist.value);
     console.log(categorizedTodos.value);
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
@@ -294,24 +366,29 @@ const categorizeTodos = (todolist) => {
     startOfToday.getTime() - 7 * 24 * 60 * 60 * 1000
   );
   return {
-    today: todolist.filter((todo) => {
-      const createdDate = new Date(todo.created_at);
-      return createdDate >= startOfToday;
-    }),
-    yesterday: todolist.filter((todo) => {
-      const createdDate = new Date(todo.created_at);
-      return createdDate >= startOfYesterday && createdDate < startOfToday;
-    }),
-    lastsevendays: todolist.filter((todo) => {
-      const createdDate = new Date(todo.created_at);
-      return (
-        createdDate >= startOfLastSevenDays && createdDate < startOfYesterday
-      );
-    }),
-    older: todolist.filter((todo) => {
-      const createdDate = new Date(todo.created_at);
-      return createdDate < startOfLastSevenDays;
-    }),
+    today: todolist
+      .filter((todo) => new Date(todo.created_at) >= startOfToday)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+
+    yesterday: todolist
+      .filter(
+        (todo) =>
+          new Date(todo.created_at) >= startOfYesterday &&
+          new Date(todo.created_at) < startOfToday
+      )
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+
+    lastsevendays: todolist
+      .filter(
+        (todo) =>
+          new Date(todo.created_at) >= startOfLastSevenDays &&
+          new Date(todo.created_at) < startOfYesterday
+      )
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+
+    older: todolist
+      .filter((todo) => new Date(todo.created_at) < startOfLastSevenDays)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
   };
 };
 

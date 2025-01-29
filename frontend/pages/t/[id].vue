@@ -11,7 +11,8 @@
         />
         <div class="details">
           <p class="time">{{ formatDate(todolist?.created_at) }}</p>
-          <p class="text">{{ todolist?.todo }}</p>
+          <!-- <p class="text">{{ todolist?.todo }}</p> -->
+           <p class="text" v-html="convertLinks(todo?.todo)"></p>
         </div>
       </div>
       <div v-if="addtodo.length > 0">
@@ -19,7 +20,8 @@
           <input type="checkbox" :checked="todo.checklist" @change="checkAddToDO(todo.id, todo.todo_tag, $event.target.checked)" class="checkboxs" />
           <div class="details">
             <p class="time">{{ formatDate(todo?.created_at) }}</p>
-            <p class="text">{{ todo?.todo }}</p>
+            <!-- <p class="text">{{ todo?.todo }}</p> -->
+            <p class="text" v-html="convertLinks(todo?.todo)"></p>
           </div>
         </div>
       </div>
@@ -78,6 +80,7 @@ import { useAuthStore } from "~/store/auth";
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
 import Header from "../../components/Header.vue";
+const textKeybord = ref(null);
 const route = useRoute();
 const authStore = useAuthStore();
 const todolist = ref([]);
@@ -94,19 +97,29 @@ const handleBlur = (event) => {
     isPlaceholderVisible.value = true;
   }
 };
+const convertLinks = (text) => {
+  if (!text) return "";
+  return text.replace(
+    /(https?:\/\/[^\s]+|www\.[^\s]+)/g,
+    (url) => {
+      let href = url;
+      if (!url.startsWith("http")) {
+        href = "https://" + url;
+      }
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    }
+  );
+};
 onMounted(async () => {
   try {
     await authStore.restoreSession();
     console.log("セッション復元成功。");
-    // urlでのidを取得する引数を定義
     const routeId = route.params.id;
-    // 取得したidをgetoDOByid()関数で該当するDBを持って来る。
     todolist.value = await authStore.getToDOByid(routeId);
-    // getAddedToDO()を持って来る引数を定義する。
     const todos = await authStore.getAddedToDO();
-    // todosでのtodo_tagと該当するrouteIdを抽出。
     if (Array.isArray(todos)) {
-      addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId);
+      // addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId);
+      addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     } else {
       console.error("追加todoの取得に失敗しました。", error);
     }
@@ -148,8 +161,9 @@ const checkAddToDO = async(id, todo_tag, isCheck) => {
   }
 }
 const submitAddToDO = async () => {
-  const todoElement = document.getElementById("text_keybord");
-  const todoContent = todoElement?.innerText.trim();
+  // const todoElement = document.getElementById('text_keybord');
+  // const todoContent = todoElement?.innerText.trim();
+  const todoContent = textKeybord.value?.innerText.trim();
   const todoTagId = route.params.id;
   if(!todoContent || todoContent === "あなたのToDO") {
     alert('有効なToDOの内容にしてください。');
@@ -159,7 +173,10 @@ const submitAddToDO = async () => {
     const newAddToDo = await authStore.addToDO(todoTagId, todoContent);
     if (newAddToDo.todo_tag === todoTagId) {
       addtodo.value.unshift(newAddToDo);
-      todoElement.innerText = "";
+      addtodo.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      // todoElement.innerText = "";
+      textKeybord.value.innerText = "";
+      isPlaceholderVisible.value = true;
       console.log("ToDOが作成されました。");
     }
   } catch (error) {
