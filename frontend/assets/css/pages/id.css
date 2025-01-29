@@ -13,8 +13,7 @@
   .id_todo_list{
     left: 0%;
     box-shadow: inset;
-    max-width: 1300px;
-    width: 100%;
+    width: 1280px;
     overflow: auto;
     align-items: center;
     height: 100%;
