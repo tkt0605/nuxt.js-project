@@ -18,29 +18,16 @@ aside{
     border-right: 1px solid #ccc;
     transform: translateX(-100%);
     z-index: 1000;
+    transition: transform 0.4s ease-in-out, opacity 0.3s ease-in-out;
 }
 aside.open{
     transform: translateX(0);
+    opacity: 1;
 }
-/* .todo_title{
-
+aside.closed{
+    transform: translateX(-100%);
+    opacity: 0;
 }
-.todo-item{
-    position:  relative;
-    top: 25px;
-}
-.todo-title{
-    align-items: center ;
-    text-align: center;
-    padding: 20px 20px;
-    font-size: 15px;
-    border-radius: 5px;
-    color: black;
-    text-decoration: none;
-}
-.todo-title:hover{
-    background-color: #ccc
-} */
 .headerline{
     padding-left: 20px;
     padding-right: 20px;
@@ -56,12 +43,12 @@ aside.open{
 }
 .header_down{
     background: rgb(226, 226, 226);
-    padding: 1rem;
+    /* padding: 1rem; */
     position: fixed;
     top: 0px;
-    left: 10px;
+    left: 0px;
     width:calc(100% - 10px);
-
+    z-index: 10;
 }
 .headerline_down{
     padding-left: 20px;
@@ -69,8 +56,8 @@ aside.open{
 }
 
 .container_down{
-    padding-right: 20px;
-    padding-left: 20px;
+    /* padding-right: 20px;
+    padding-left: 20px; */
     margin-right: auto;
     margin-left: auto;
     left: 0px;
@@ -82,15 +69,10 @@ aside.open{
     display: flex;
     align-items: center;
 }
-.icon_down{
-    position: relative;
-    top: -2px;
-    right: 41.5px;
-}
 .logo_down{
     font-size: 25px;
     position: relative;
-    left: -82.5vh;
+    left: 0vh;
     font-weight: bold;
     padding: 15px 15px;
     align-items: center;
@@ -100,10 +82,19 @@ aside.open{
     font-weight: bold;
     padding: 15px 15px;
     align-items: center;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+aside.open .logo {
+    transform: translateX(0);
+    opacity: 1;
+}
+aside.closed .logo {
+    transform: translateX(-50px); /* ロゴを左へスライド */
+    opacity: 0; /* フェードアウト */
 }
 .header{
     background: rgb(226, 226, 226);
-    padding: 1.0rem;
+    /* padding: 1.0rem; */
     position: fixed;
     top: 0;
     left: 255px;
@@ -112,16 +103,16 @@ aside.open{
 }
 ul{
     padding: 15px 20px;
-    padding-left: 15px;
+    /* padding-left: 15px; */
     font-weight: bold;
 }
 .mains {
     position: relative;
-    top: 15px;
+    top: 0px;
 }
 ul .aside-todo-padding{
     padding: 10px 15px;
-    padding-left: 15px;
+    padding-left: 5px;
     font-weight: bold;
 }
 li{
@@ -132,7 +123,54 @@ li{
 .icon{
     align-items: center;
     position: relative;
-    left: 10px;
+    left: 0px;
+    top: 0px;
+    margin-bottom: 10px;
+    padding: 10px 10px;
+    background: rgb(230, 230, 230);
+    border-radius: 10%;
+}
+.icon :hover{
+    background: rgb(226, 226, 226);
+}
+.create_icon{
+    align-items: center;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    margin-bottom: 10px;
+    padding: 10px 10px;
+    background: rgb(230, 230, 230);
+    border-radius: 10%;
+}
+.create_icon :hover{
+    background: rgb(226, 226, 226);
+}
+.create_icon_color{
+    color: black;
+}
+.icon_down{
+    position: relative;
+    padding: 10px 10px;
+    background: rgb(226, 226, 226);
+    border-radius: 10%;
+}
+.icon_down :hover{
+    background: rgb(230, 230, 230);
+}
+.create_icon_down{
+    position: relative;
+    padding: 10px 10px;
+    background: rgb(226, 226, 226);
+    border-radius: 10%;
+}
+.create_icon_down :hover{
+    background: rgb(230, 230, 230);
+}
+.line_down{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .lists {
     width: 230px;
@@ -250,53 +288,167 @@ li .log_todo{
 aside.open ~ .container {
     margin-left: 300px; /* aside が開いたときにコンテンツを調整 */
   }
-
+.button_line{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 @media (max-width: 768px) {
-    .headerline{
-        padding-left: 20px;
-        padding-right: 20px;
+    .header {
+      left: 0;
+      width: 100%;
     }
-    .container{
-        padding-left: 20px;
-        padding-right: 20px;
+    aside {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 225px;
+      transform: translateX(-100%);
+      z-index: 1000;
+    }
+    aside.open {
+      transform: translateX(0);
+    }
+    .headerline{
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .container {
+        padding-right: 10px;
+        padding-left: 10px;
         margin-right: auto;
         margin-left: auto;
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
-    .logo{
-        font-size: 20px;
+    .logo {
+      font-size: 20px;
+    }
+}
+  /* メディアクエリ: スマートフォン向け (480px以下) */
+@media (max-width: 480px) {
+    aside {
+      width: 200px;
+    }
+    .logo {
+      font-size: 18px;
+    }
+    .lists {
+      width: 100%;
+      padding: 10px;
+    }
+    .login{
+        background-color: black;
+        padding: 10px;
+        /* margin: 0px; */
+        color: white;
+        border-radius: 20px;
+        border: 1px solid rgb(226, 226, 226);
+        width: 75px;
+        font-size: 10px;
         font-weight: bold;
+    }
+    .signup{
+        padding: 10px;
+        /* margin: 0px; */
+        border-radius: 20px;
+        border: 1px solid rgb(255, 255, 255);
+        width: 100px;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    .logout{
+        padding: 10px;
+        border-radius: 20px;
+        border: 1px solid rgb(255, 255, 255);
+        width: 75px;
+        height: 30;
+        color: black;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    .account_form{
+        left: 150px;
+        top: 0;
+        margin-left: 20px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .headerline{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    .container {
+        padding-right: 10px;
+        padding-left: 10px;
+        margin-right: auto;
+        margin-left: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .header_down{
+        background: rgb(226, 226, 226);
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width:calc(100% - 0px);
+        z-index: 10;
+    }
+    .headerline_down{
+        padding-left: 2.5px;
+        padding-right: 2.5px;
+    }
+    aside.open ~ .container {
+        margin-left: 300px; /* aside が開いたときにコンテンツを調整 */
+    }
+    .container_down{
+        padding-left: 5px;
+        padding-right: 5px;
+        margin-right: auto;
+        margin-left: auto;
+        left: 0px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .downarea{
+        display: flex;
+        align-items: center;
+    }
+    .icon_down{
+        position: relative;
         padding: 10px 10px;
+        background: rgb(226, 226, 226);
+        border-radius: 10%;
+    }
+    .create_icon_down{
+        position: relative;
+        padding: 10px 10px;
+        background: rgb(226, 226, 226);
+        border-radius: 10%;
+    }
+    .logo_down{
+        font-size: 25px;
+        position: relative;
+        /* left: -10vh; */
+        font-weight: bold;
         align-items: center;
     }
     .header{
         background: rgb(226, 226, 226);
-        padding: 1.0rem;
         position: fixed;
         top: 0;
-        left: 255px;
+        left: 5px;
+        width: calc(100% - 5px);
         z-index: 10;
     }
-    aside{
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 225px;
-        transform: translateX(-100%);
-        z-index: 1000;
+    .line_down{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
-    aside.open{
-        transform: translateX(0);
-    }
-}
-@media (max-width: 480px) {
-    aside{
-        width: 200px;
-    }
-    /* .icon svg{
-        width: 20px;
-        height: 20px;
-    } */
-}
+  }

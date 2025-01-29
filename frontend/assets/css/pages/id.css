@@ -26,7 +26,7 @@
     border-bottom: 1px solid #eceff1;
     transition: background-color 0.3s ease;
     align-items: center;
-    justify-content: space-between; 
+    justify-content: space-between;
     height: auto;
   }
   .item-text{
@@ -320,4 +320,89 @@ button[data-testid="composer-speech-button"]:hover {
   opacity: 0.8;
 }
 
+
+/* レスポンシブデザイン: タブレット向け (768px以下) */
+@media (max-width: 768px) {
+  .id_bord {
+    left: 10%;
+    width: calc(100% - 20%);
+    height: auto;
+    padding: 20px;
+  }
+
+  .id_todo_list {
+    padding: 10px;
+  }
+
+  .item {
+    max-width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .form_id {
+    padding: 12px;
+  }
+
+  .text_keybord {
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  .submit_button {
+    height: 2rem;
+    width: 2rem;
+    font-size: 18px;
+  }
+}
+
+/* レスポンシブデザイン: スマートフォン向け (480px以下) */
+@media (max-width: 480px) {
+  .id_bord {
+    left: 5%;
+    width: calc(100% - 10%);
+    padding: 10px;
+  }
+
+  .id_todo_list {
+    max-width: 100%;
+  }
+
+  .item {
+    padding: 15px;
+    font-size: 14px;
+    gap: 5px;
+  }
+
+  .text_keybord {
+    padding: 8px;
+    font-size: 13px;
+    max-width: 100%;
+  }
+  .item-text{
+    text-align: center;
+    align-items: center;
+    font-size: 15px;
+  }
+  .form_id {
+    padding: 10px;
+
+    width: 100%;
+    /* left: 0%; */
+    height: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 4px 10px;
+    position: relative;
+    /* display: flex;
+    align-items: center; */
+  }
+  .submit_button {
+    height: 1.8rem;
+    width: 1.8rem;
+    font-size: 16px;
+  }
+}
 

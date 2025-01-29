@@ -23,7 +23,65 @@
     <div class="header_down" v-else>
       <div class="headerline_down">
         <div class="container_down">
-          <button class="icon_down" @click="toggleAsideTag">
+          <div class="line_down">
+            <button class="icon_down" @click="toggleAsideTag">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                class="bi bi-layout-text-window-reverse"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M13 6.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"
+                />
+                <path
+                  d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM2 1a1 1 0 0 0-1 1v1h14V2a1 1 0 0 0-1-1zM1 4v10a1 1 0 0 0 1 1h2V4zm4 0v11h9a1 1 0 0 0 1-1V4z"
+                />
+              </svg>
+            </button>
+            <button class="create_icon_down">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-pencil-square"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+                />
+              </svg>
+            </button>
+            <a class="logo_down">TDBT</a>
+          </div>
+          <div v-if="isAuthenticated" class="account_form">
+            <button class="logout" type="button" @click="logout">
+              <b>ログアウト</b>
+            </button>
+          </div>
+          <div v-else class="account_form">
+            <button class="login" type="button" @click="gotoLogin">
+              <b>ログイン</b>
+            </button>
+            <button class="signup" type="button" @click="gotoSignup">
+              <b>サインアップ</b>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <aside :class="{ open: isAsideOpen }">
+      <!--  -->
+      <ul class="mains">
+        <div class="button_line">
+          <button class="icon" @click="toggleAsideTag">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -31,6 +89,7 @@
               fill="currentColor"
               class="bi bi-layout-text-window-reverse"
               viewBox="0 0 16 16"
+              style="background-color: rgb(230, 230, 230)"
             >
               <path
                 d="M13 6.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"
@@ -40,43 +99,27 @@
               />
             </svg>
           </button>
-          <a class="logo_down">TDBT</a>
-          <div v-if="isAuthenticated" class="account_form">
-            <button class="logout" type="button" @click="logout">
-              ログアウト
-            </button>
-          </div>
-          <div v-else class="account_form">
-            <button class="login" type="button" @click="gotoLogin">
-              ログイン
-            </button>
-            <button class="signup" type="button" @click="gotoSignup">
-              サインアップ
-            </button>
-          </div>
+          <button class="create_icon">
+            <NuxtLink to="/" class="create_icon_color">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-pencil-square"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+                />
+              </svg>
+            </NuxtLink>
+          </button>
         </div>
-      </div>
-    </div>
-    <aside :class="{ open: isAsideOpen }">
-      <!--  -->
-      <ul class="mains">
-        <button class="icon" @click="toggleAsideTag">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            fill="currentColor"
-            class="bi bi-layout-text-window-reverse"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M13 6.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m0 3a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5m-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1z"
-            />
-            <path
-              d="M14 0a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zM2 1a1 1 0 0 0-1 1v1h14V2a1 1 0 0 0-1-1zM1 4v10a1 1 0 0 0 1 1h2V4zm4 0v11h9a1 1 0 0 0 1-1V4z"
-            />
-          </svg>
-        </button>
         <li class="create_todo">
           <div class="todo-item">
             <NuxtLink to="/" class="todo_id">
@@ -160,18 +203,27 @@
 import "../assets/css/components/header.css";
 import { useRouter } from "nuxt/app";
 import { useAuthStore } from "../store/auth";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 const router = useRouter();
 const authStore = useAuthStore();
 const todolist = ref([]);
 const user = ref(null);
 const isAsideOpen = ref(true);
 const userMap = ref({});
+const checkWindow = () => {
+  if (window.innerWidth < 768) {
+    isAsideOpen.value = false;
+  } else {
+    isAsideOpen.value = true;
+  }
+};
 onMounted(async () => {
   try {
     await authStore.restoreSession();
     console.log("セッション復元成功。");
     //カスタムユーザーによる情報
+    checkWindow();
+    window.addEventListener("resize", checkWindow);
     if (authStore.isAuthenticated) {
       try {
         user.value = await authStore.getUserInfo();
@@ -188,6 +240,9 @@ onMounted(async () => {
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
+});
+onBeforeUnmount(async () => {
+  window.removeEventListener("resize", checkWindow);
 });
 const toggleAsideTag = () => {
   isAsideOpen.value = !isAsideOpen.value;
