@@ -76,3 +76,12 @@ class LogoutView(APIView):
             serializer.save()
             return Response({'message': "Successfully Logout"}, status=200)
         return Response(serializer.errors, status=400)
+def delete_todo(request, id):
+    try:
+        todo = ToDOList.objects.get(id=id)
+        todo.delete()
+        return Response({'message': "削除成功"})
+    except ToDOList.DoesNotExist:
+        return ({"error": "ToDOが見つかりません。"})
+    except Exception as e:
+        return ({"error": str(e)})

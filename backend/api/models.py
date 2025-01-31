@@ -35,14 +35,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class ToDOList(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100, blank=True)
-    auther = models.ForeignKey(CustomUser, on_delete=models.PROTECT,null=True , related_name='todos')
+    auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True , related_name='todos')
     todo = models.TextField(verbose_name='ToDO')
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return str(self.id)
 class addToDO(models.Model):
-    todo_tag = models.ForeignKey(ToDOList, on_delete=models.PROTECT, null=True, related_name="tasks")
+    todo_tag = models.ForeignKey(ToDOList, on_delete=models.CASCADE, null=True, related_name="tasks")
     todo = models.TextField(verbose_name="Add ToDO")
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)

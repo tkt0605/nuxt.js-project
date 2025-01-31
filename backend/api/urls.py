@@ -18,6 +18,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/logout/', TokenBlacklistView.as_view(), name='token_logout'),
     path('signup/', RegisterView.as_view(), name='signup'),
+    path("api/todolist/<uuid:id>/", views.delete_todo, name="delete_todo"),
     # path('t/', ToDOsListView.as_view(), name='todo_list'),
     # path('t/<uuid:pk>/', ToDODetailView.as_view(), name="todo_details")
 ]

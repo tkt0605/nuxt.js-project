@@ -143,23 +143,33 @@
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">
-                    {{ formatDate(todo.created_at) }}
-                    <div class="option">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-three-dots-vertical"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
-                        />
-                      </svg>
+                  <div class="todo-title">
+                    <span v-if="todo.title === ''">{{
+                      formatDate(todo.created_at)
+                    }}</span>
+                    <span v-else>{{ todo.title }}</span>
+                    <div class="opeion-wrapper">
+                      <div class="oprion-icon" @click="toggleOptions(todo.id)">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-three-dots-vertical"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                          />
+                        </svg>
+                      </div>
+                      <div class="option-menu" v-if="openOptions === todo.id">
+                        <p class="option-title">オプション</p>
+                        <button @click="editTitle(todo.id)">タイトルを変更</button>
+                        <button @click="deleteToDO(todo.id)">削除</button>
+                      </div>
                     </div>
-                  </p>
+                  </div>
                 </NuxtLink>
               </li>
             </ul>
@@ -174,23 +184,33 @@
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">
-                    {{ formatDate(todo.created_at) }}
-                    <div class="option">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-three-dots-vertical"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
-                        />
-                      </svg>
+                  <div class="todo-title">
+                    <span v-if="todo.title === ''">{{
+                      formatDate(todo.created_at)
+                    }}</span>
+                    <span v-else>{{ todo.title }}</span>
+                    <div class="opeion-wrapper">
+                      <div class="oprion-icon" @click="toggleOptions(todo.id)">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-three-dots-vertical"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                          />
+                        </svg>
+                      </div>
+                      <div class="option-menu" v-if="openOptions === todo.id">
+                        <p class="option-title">オプション</p>
+                        <button @click="editTitle(todo.id)">タイトルを変更</button>
+                        <button @click="deleteToDO(todo.id)">削除</button>
+                      </div>
                     </div>
-                  </p>
+                  </div>
                 </NuxtLink>
               </li>
             </ul>
@@ -205,23 +225,33 @@
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">
-                    {{ formatDate(todo.created_at) }}
-                    <div class="option">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-three-dots-vertical"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
-                        />
-                      </svg>
+                  <div class="todo-title">
+                    <span v-if="todo.title === ''">{{
+                      formatDate(todo.created_at)
+                    }}</span>
+                    <span v-else>{{ todo.title }}</span>
+                    <div class="opeion-wrapper">
+                      <div class="oprion-icon" @click="toggleOptions(todo.id)">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-three-dots-vertical"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                          />
+                        </svg>
+                      </div>
+                      <div class="option-menu" v-if="openOptions === todo.id">
+                        <p class="option-title">オプション</p>
+                        <button @click="editTitle(todo.id)">タイトルを変更</button>
+                        <button @click="deleteToDO(todo.id)">削除</button>
+                      </div>
                     </div>
-                  </p>
+                  </div>
                 </NuxtLink>
               </li>
             </ul>
@@ -236,23 +266,33 @@
                   class="todo_id"
                   v-if="todo.auther === currentUser.id"
                 >
-                  <p class="todo-title">
-                    {{ formatDate(todo.created_at) }}
-                    <div class="option">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-three-dots-vertical"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
-                        />
-                      </svg>
+                  <div class="todo-title">
+                    <span v-if="todo.title === ''">{{
+                      formatDate(todo.created_at)
+                    }}</span>
+                    <span v-else>{{ todo.title }}</span>
+                    <div class="opeion-wrapper">
+                      <div class="oprion-icon" @click="toggleOptions(todo.id)">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-three-dots-vertical"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                          />
+                        </svg>
+                      </div>
+                      <div class="option-menu" v-if="openOptions === todo.id">
+                        <p class="option-title">オプション</p>
+                        <button @click="editTitle(todo.id)">タイトルを変更</button>
+                        <button @click="deleteToDO(todo.id)">削除</button>
+                      </div>
                     </div>
-                  </p>
+                  </div>
                 </NuxtLink>
               </li>
             </ul>
@@ -280,13 +320,7 @@ const todolist = ref([]);
 const user = ref(null);
 const isAsideOpen = ref(true);
 const userMap = ref({});
-const checkWindow = () => {
-  if (window.innerWidth < 768) {
-    isAsideOpen.value = false;
-  } else {
-    isAsideOpen.value = true;
-  }
-};
+const openOptions = ref(null);
 onMounted(async () => {
   try {
     await authStore.restoreSession();
@@ -318,6 +352,58 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   window.removeEventListener("resize", checkWindow);
 });
+
+const toggleOptions = (todoId) => {
+  if (openOptions.value === todoId){
+    openOptions.value = null;
+  }else{
+    openOptions.value = todoId;
+  }
+};
+
+const props = defineProps({
+  todolist: {
+    type: Array,
+    default: () => [],
+  },
+});
+const editTitle = async (todoId) => {
+  const todo = props.todolist.find(todo => todo.id === todoId);
+  if ( todo ) return;
+  const newTitle = prompt('新しいタイトル');
+  if ( !newTitle || newTitle.trim() === "" ) return;
+  try{
+    const EditToDO = await authStore.editTitleId(todoId, newTitle.trim());
+    console.log('タイトルの変更', EditToDO);
+  }catch(error){
+    console.error(error);
+    throw error;
+  }
+};
+const deleteToDO = async (todoId) => {
+  if (!props.todolist) {
+    console.error("todolist が未定義です。");
+    return;
+  }
+  const todo = props.todolist.findIndex(todo => todo.id === todoId);
+  const isConfirm = confirm('ToDOを削除しますか？');
+  if ( !todo && isConfirm) return;
+  try{
+    await authStore.deleteTodoId(todoId);
+    console.log("削除の命令・実行");
+  }catch(error){
+    console.error(error);
+    throw error;
+  }
+};
+const checkWindow = () => {
+  if (window.innerWidth < 768) {
+    isAsideOpen.value = false;
+  } else {
+    isAsideOpen.value = true;
+  }
+};
+
 const toggleAsideTag = () => {
   isAsideOpen.value = !isAsideOpen.value;
 };

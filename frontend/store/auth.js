@@ -464,6 +464,51 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        async deleteTodoId(id){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/todolist/${id}/`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`
+                        // "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                    },
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "ERROR");
+                };
+                console.log("削除成功");
+            }catch(error){
+                console.error('削除失敗:', error);
+                throw error;
+            }
+        },
+        async editTitleId(id, newTitle){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/todolist/${id}/`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`
+                        // "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+                    },
+                    body: JSON.stringify({
+                        title: newTitle
+                    }),
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "Error");
+                };
+                return await response.json();
+            }catch(error){
+                console.error(error);
+                throw error;
+            }
+        },
         async getAddedTodoId(){
             const config = useRuntimeConfig();
             try{
@@ -472,6 +517,7 @@ export const useAuthStore = defineStore('auth', {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${this.accessToken}`
+                        // "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
                     },
                 });
                 if (!response.ok){
