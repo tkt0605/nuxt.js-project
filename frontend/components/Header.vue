@@ -170,7 +170,7 @@
                         </svg>
                       </div>
                       <div class="option-menu" v-if="openOptions === todo.id">
-                        <p class="option-title">オプション</p>
+                        <div @click="toggleOptions(todo.id)" class="option-title">オプション</div>
                         <button @click="editTitle(todo.id)">タイトルを変更</button>
                         <button @click="deleteToDO(todo.id)">削除</button>
                       </div>

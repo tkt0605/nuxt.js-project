@@ -270,11 +270,10 @@ li .todo-title{
     cursor: pointer;
     padding: 5px;
   }
-
   .option-menu {
     position: absolute;
-    top: 20px;
-    right: 0;
+    top: 65px;
+    right: -35px;
     background: white;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -282,7 +281,7 @@ li .todo-title{
     padding: 5px 10px;
     display: flex;
     flex-direction: column;
-    z-index: 100;
+    z-index: 50;
   }
 
   .option-menu button {
@@ -295,6 +294,9 @@ li .todo-title{
 
   .option-menu button:hover {
     background: #f0f0f0;
+  }
+  .option-title{
+    padding: 5px;
   }
 
 li .todo-title:hover{

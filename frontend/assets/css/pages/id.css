@@ -359,6 +359,7 @@ button[data-testid="composer-speech-button"]:hover {
 /* レスポンシブデザイン: スマートフォン向け (480px以下) */
 @media (max-width: 480px) {
   .id_bord {
+    height: 86vh;
     left: 5%;
     width: calc(100% - 10%);
     padding: 10px;
