@@ -11,7 +11,7 @@
       <p class="other-page">すでにアカウントをお持ちですか？<a href='http://localhost:3000/auth/login'>ログイン</a></p>
   </div>
 </template>
-  
+
 <script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '../../store/auth';
@@ -29,6 +29,6 @@ const signup = async() =>{
     console.error('アカウント登録エラー:', error);
     throw error;
   }
-}; 
+};
+
 </script>
-  

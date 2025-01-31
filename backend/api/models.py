@@ -5,6 +5,10 @@ from django.utils import timezone
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 import uuid
+def generate_avatar_url(email):
+    """メールアドレスを基にアバター URL を生成"""
+    seed = email.split("@")[0] if email else "default"
+    return f"https://api.dicebear.com/7.x/identicon/svg?seed={seed}"
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=False, **extra_fields):
         if not email:
@@ -20,6 +24,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
+    avatar = models.URLField(blank=True, null=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     is_active = models.BooleanField(default=True)
@@ -30,6 +35,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     user_permissions = models.ManyToManyField(Permission, related_name="custom_user_permissions", blank=True, help_text="このユーザーに対する特定の権限", related_query_name="user")
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+    def save(self, *args, **kwargs):
+        """新規作成時に `avatar` が空なら `email` から生成"""
+        if not self.avatar:
+            self.avatar = generate_avatar_url(self.email)
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.email
 class ToDOList(models.Model):

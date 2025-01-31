@@ -12,7 +12,7 @@
         <div class="details">
           <p class="time">{{ formatDate(todolist?.created_at) }}</p>
           <!-- <p class="text">{{ todolist?.todo }}</p> -->
-           <p class="text" v-html="convertLinks(todo?.todo)"></p>
+           <p class="text" v-html="convertLinks(todolist?.todo)"></p>
         </div>
       </div>
       <div v-if="addtodo.length > 0">

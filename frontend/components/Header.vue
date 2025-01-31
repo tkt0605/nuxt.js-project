@@ -5,6 +5,9 @@
         <div class="container">
           <a class="logo">TDBT</a>
           <div v-if="isAuthenticated" class="account_form">
+            <div class="icon_bord">
+               <img v-if="currentUser" :src="currentUser.avatar" class="icon_img"alt="User Avatar"/>
+            </div>
             <button class="logout" type="button" @click="logout">
               <b>ログアウト</b>
             </button>
@@ -64,6 +67,9 @@
             <a class="logo_down">TDBT</a>
           </div>
           <div v-if="isAuthenticated" class="account_form">
+            <div class="icon_bord">
+               <img v-if="currentUser" :src="currentUser.avatar" class="icon_img"alt="User Avatar"/>
+            </div>
             <button class="logout" type="button" @click="logout">
               <b>ログアウト</b>
             </button>

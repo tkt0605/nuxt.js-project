@@ -206,6 +206,7 @@ export const useAuthStore = defineStore('auth', {
         //         throw error;
         //     }
         // },
+
         async login(email, password) {
             const config = useRuntimeConfig();
             try {
@@ -244,7 +245,11 @@ export const useAuthStore = defineStore('auth', {
         },
         async signup(email, password){
             const config = useRuntimeConfig();
+            const generateAvatar = (email) => {
+                return `https://api.dicebear.com/7.x/identicon/svg?seed=${email}`;
+            };
             try{
+                const avatarUrl = generateAvatar(email);
                 const response = await fetch(`${config.public.apiBase}/signup/`, {
                     method: "POST",
                     headers:{
@@ -253,13 +258,14 @@ export const useAuthStore = defineStore('auth', {
                     body: JSON.stringify({
                         email: email.trim(),
                         password: password.trim(),
+                        avatar: avatarUrl,
                     }),
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || 'アカウント登録に失敗しました');
                 }
-                await this.login(email, password);
+                await this.login(email, password, avatar);
             }catch(error){
                 console.error("アカウント登録エラー:", error);
                 throw error;
@@ -306,13 +312,14 @@ export const useAuthStore = defineStore('auth', {
 
                 // サーバーが単一のユーザーを返す場合
                 if (!Array.isArray(data)) {
-                    return { id: data.id, email: data.email };
+                    return { id: data.id, email: data.email, avatar: data.avatar };
                 }
 
                 // サーバーが複数のユーザーを返す場合
                 return data.map(user => ({
                     id: user?.id,
                     email: user?.email,
+                    avatar: user?.avatar
                 }));
             } catch (error) {
                 console.error("ユーザー情報取得エラー:", error);
@@ -479,6 +486,7 @@ export const useAuthStore = defineStore('auth', {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || "ERROR");
                 };
+                window.location.reload();
                 console.log("削除成功");
             }catch(error){
                 console.error('削除失敗:', error);
@@ -503,6 +511,7 @@ export const useAuthStore = defineStore('auth', {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || "Error");
                 };
+                window.location.reload();
                 return await response.json();
             }catch(error){
                 console.error(error);
@@ -629,8 +638,15 @@ export const useAuthStore = defineStore('auth', {
             return !!state.accessToken;
         },
         currentUser(state) {
+            console.log("Vuex state.user:", state.user);
             if (state.user && typeof state.user === 'object') {
-                return { id: state.user.id, email: state.user.email };
+                return {
+                    id: state.user.id,
+                    email: state.user.email,
+                    avatar: state.user.avatar
+                };
+                // return {id: state.user.id, email: state.user.email};
+
             }
             return null; // 未ログインの場合は null を返す
         }
