@@ -1,516 +1,671 @@
-*{
-    margin: 0;
-    padding: 0;
-    font-family: 'Courier New', Courier, monospace;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Courier New", Courier, monospace;
+  box-sizing: border-box;
 }
-body{
-    background: rgb(226, 226, 226);
+body {
+  background: rgb(226, 226, 226);
 }
-aside{
-    background: rgb(230, 230, 230);
-    max-width: 270px;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    position: fixed;
-    border-right: 1px solid #ccc;
-    transform: translateX(-100%);
-    z-index: 1000;
-    transition: transform 0.4s ease-in-out, opacity 0.3s ease-in-out;
+aside {
+  background: rgb(230, 230, 230);
+  max-width: 270px;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  position: fixed;
+  border-right: 1px solid #ccc;
+  transform: translateX(-100%);
+  z-index: 1000;
+  transition: transform 0.4s ease-in-out, opacity 0.3s ease-in-out;
 }
-aside.open{
-    transform: translateX(0);
-    opacity: 1;
+aside.open {
+  transform: translateX(0);
+  opacity: 1;
 }
-aside.closed{
-    transform: translateX(-100%);
-    opacity: 0;
+aside.closed {
+  transform: translateX(-100%);
+  opacity: 0;
 }
-.headerline{
-    padding-left: 20px;
-    padding-right: 20px;
+.headerline {
+  padding-left: 20px;
+  padding-right: 20px;
 }
-.container{
-    padding-right: 20px;
-    padding-left: 20px;
-    margin-right: auto;
-    margin-left: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.container {
+  padding-right: 20px;
+  padding-left: 20px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.header_down{
-    background: rgb(226, 226, 226);
-    /* padding: 1rem; */
-    position: fixed;
-    top: 0px;
-    left: 0px;
-    width:calc(100% - 10px);
-    z-index: 10;
+.header_down {
+  background: rgb(226, 226, 226);
+  /* padding: 1rem; */
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: calc(100% - 10px);
+  z-index: 10;
 }
-.headerline_down{
-    padding-left: 20px;
-    padding-right: 20px;
+.headerline_down {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-.container_down{
-    /* padding-right: 20px;
+.container_down {
+  /* padding-right: 20px;
     padding-left: 20px; */
-    margin-right: auto;
-    margin-left: auto;
-    left: 0px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  margin-right: auto;
+  margin-left: auto;
+  left: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.downarea{
-    display: flex;
-    align-items: center;
+.downarea {
+  display: flex;
+  align-items: center;
 }
-.logo_down{
-    font-size: 25px;
-    position: relative;
-    left: 0vh;
-    font-weight: bold;
-    padding: 15px 15px;
-    align-items: center;
+.logo_down {
+  font-size: 25px;
+  position: relative;
+  left: 0vh;
+  font-weight: bold;
+  padding: 15px 15px;
+  align-items: center;
 }
-.logo{
-    font-size: 25px;
-    font-weight: bold;
-    padding: 15px 15px;
-    align-items: center;
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  padding: 15px 15px;
+  align-items: center;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 aside.open .logo {
-    transform: translateX(0);
-    opacity: 1;
+  transform: translateX(0);
+  opacity: 1;
 }
 aside.closed .logo {
-    transform: translateX(-50px); /* ロゴを左へスライド */
-    opacity: 0; /* フェードアウト */
+  transform: translateX(-50px); /* ロゴを左へスライド */
+  opacity: 0; /* フェードアウト */
 }
-.header{
-    background: rgb(226, 226, 226);
-    /* padding: 1.0rem; */
-    position: fixed;
-    top: 0;
-    left: 255px;
-    width: calc(100% - 255px);
-    z-index: 10;
+.header {
+  background: rgb(226, 226, 226);
+  /* padding: 1.0rem; */
+  position: fixed;
+  top: 0;
+  left: 255px;
+  width: calc(100% - 255px);
+  z-index: 10;
 }
-ul{
-    padding: 15px 20px;
-    /* padding-left: 15px; */
-    font-weight: bold;
+ul {
+  padding: 15px 20px;
+  /* padding-left: 15px; */
+  font-weight: bold;
 }
 .mains {
-    position: relative;
-    top: 0px;
+  position: relative;
+  top: 0px;
 }
-ul .aside-todo-padding{
-    padding: 10px 15px;
-    padding-left: 5px;
-    font-weight: bold;
+ul .aside-todo-padding {
+  padding: 10px 15px;
+  padding-left: 5px;
+  font-weight: bold;
 }
-li{
-    /* text-align: center; */
-    align-items: center;
-    list-style: none;
+li {
+  /* text-align: center; */
+  align-items: center;
+  list-style: none;
 }
-.icon{
-    align-items: center;
-    position: relative;
-    left: 0px;
-    top: 0px;
-    margin-bottom: 10px;
-    padding: 10px 10px;
-    background: rgb(230, 230, 230);
-    border-radius: 10%;
+.icon {
+  align-items: center;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+  background: rgb(230, 230, 230);
+  border-radius: 10%;
 }
-.icon :hover{
-    background: rgb(226, 226, 226);
+.icon :hover {
+  background: rgb(226, 226, 226);
 }
-.create_icon{
-    align-items: center;
-    position: relative;
-    left: 0px;
-    top: 0px;
-    margin-bottom: 10px;
-    padding: 10px 10px;
-    background: rgb(230, 230, 230);
-    border-radius: 10%;
+.create_icon {
+  align-items: center;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+  background: rgb(230, 230, 230);
+  border-radius: 10%;
 }
-.create_icon :hover{
-    background: rgb(226, 226, 226);
+.create_icon :hover {
+  background: rgb(226, 226, 226);
 }
-.create_icon_color{
-    color: black;
+.create_icon_color {
+  color: black;
 }
-.icon_down{
-    position: relative;
-    padding: 10px 10px;
-    background: rgb(226, 226, 226);
-    border-radius: 10%;
+.icon_down {
+  position: relative;
+  padding: 10px 10px;
+  background: rgb(226, 226, 226);
+  border-radius: 10%;
 }
-.icon_down :hover{
-    background: rgb(230, 230, 230);
+.icon_down :hover {
+  background: rgb(230, 230, 230);
 }
-.create_icon_down{
-    position: relative;
-    padding: 10px 10px;
-    background: rgb(226, 226, 226);
-    border-radius: 10%;
+.create_icon_down {
+  position: relative;
+  padding: 10px 10px;
+  background: rgb(226, 226, 226);
+  border-radius: 10%;
 }
-.create_icon_down :hover{
-    background: rgb(230, 230, 230);
+.create_icon_down :hover {
+  background: rgb(230, 230, 230);
 }
-.line_down{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.line_down {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .lists {
-    width: 240px;
-    max-height: 817px; /* スクロール可能な最大高さ */
-    overflow-y: auto; /* 縦方向のスクロールを有効化 */
-    padding: 10px;
-    box-sizing: border-box;
+  width: 240px;
+  max-height: 817px; /* スクロール可能な最大高さ */
+  overflow-y: auto; /* 縦方向のスクロールを有効化 */
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .lists::-webkit-scrollbar {
-    width: 8px; /* スクロールバーの幅 */
+  width: 8px; /* スクロールバーの幅 */
 }
 
 .lists::-webkit-scrollbar-thumb {
-    background-color: #888; /* スクロールバーの色 */
-    border-radius: 4px;
+  background-color: #888; /* スクロールバーの色 */
+  border-radius: 4px;
 }
 
 .lists::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* ホバー時の色 */
+  background-color: #555; /* ホバー時の色 */
 }
-li .account-auth-email{
-    font-size: 20px;
-    align-items: center;
-    margin-left: 15px;
+li .account-auth-email {
+  font-size: 20px;
+  align-items: center;
+  margin-left: 15px;
 }
-li .create_todo{
-    font-size: 20px;
-    align-items: center;
-    margin-left: 15px;
+li .create_todo {
+  font-size: 20px;
+  align-items: center;
+  margin-left: 15px;
 }
-li .todo_id{
-    text-decoration: none;
+li .todo_id {
+  text-decoration: none;
 }
-li .new_todo{
-    margin-left: 15px;
-    font-size: 20px;
-    padding: 10px 10px;
-    border-radius: 5px;
-    color: black;
-    text-decoration: none;
+li .new_todo {
+  margin-left: 15px;
+  font-size: 20px;
+  padding: 10px 10px;
+  border-radius: 5px;
+  color: black;
+  text-decoration: none;
 }
-li .new_todo:hover{
-    background-color: #ccc
+li .new_todo:hover {
+  background-color: #ccc;
 }
-li .todo-item{
-    align-items: center;
-    /* margin-left: 15px; */
+li .todo-item {
+  align-items: center;
+  /* margin-left: 15px; */
 }
-li .todo-title-new{
-    font-size: 17.5px;
-    padding: 10px 10px;
-    border-radius: 5px;
-    color: black;
-    text-decoration: none;
+li .todo-title-new {
+  font-size: 17.5px;
+  padding: 10px 10px;
+  border-radius: 5px;
+  color: black;
+  text-decoration: none;
 }
-li .todo-title-new:hover{
-    background-color: #ccc; /* ホバー時の色 */
+li .todo-title-new:hover {
+  background-color: #ccc; /* ホバー時の色 */
 }
-li .todo-title{
-    font-size: 13px;
-    padding: 10px 10px;
-    border-radius: 5px;
-    color: black;
-    text-decoration: none;
-    display: flex;
-    gap: 13px;
+li .todo-title {
+  font-size: 13px;
+  padding: 10px 10px;
+  border-radius: 5px;
+  color: black;
+  text-decoration: none;
+  display: flex;
+  gap: 13px;
 }
-.icon_bord{
-    position: relative;
-    display: flex;
+.icon_bord {
+  position: relative;
+  display: flex;
 }
-.icon_img{
-    width: 35px;
-    height: 35px;
-    border-radius: .125rem;
-    height: auto;
-    max-width: 100%;
-    background-color: var(--avatar-bgColor);
-    border-radius: var(--borderRadius-medium);
-    box-shadow: 0 0 0 1px var(--avatar-borderColor);
-    display: inline-block;
-    flex-shrink: 0;
-    line-height: 1;
-    overflow: hidden;
-    vertical-align: middle;
-    border-radius: var(--borderRadius-full, 50%) !important;
-    border: #ffffff solid 1.0px;
+.icon_img {
+  width: 35px;
+  height: 35px;
+  border-radius: 0.125rem;
+  height: auto;
+  max-width: 100%;
+  background-color: var(--avatar-bgColor);
+  border-radius: var(--borderRadius-medium);
+  box-shadow: 0 0 0 1px var(--avatar-borderColor);
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 1;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: var(--borderRadius-full, 50%) !important;
+  border: #ffffff solid 1px;
 }
-.option{
+.create-project {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  justify-content: space-between;
+}
+.project-title {
+  font-size: 12.5px;
+}
+.create-project-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: rgb(230, 230, 230);
+  border-radius: 5px;
+  padding: 2.5px 2.5px;
+}
+.icon-manager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.icon-md {
+  stroke-width: 1.5;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+/* ダイアログの背景 */
+.modal-overlay {
+  position: fixed; /* ページ全体に表示 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* ビューポート幅 */
+  height: 100vh; /* ビューポート高さ */
+  background: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* 他の要素の上に表示 */
+}
+
+/* モーダルコンテンツ */
+.modal-content {
+  background: white;
+  /* padding: 20px; */
+  border-radius: 10px;
+  width: 512px; /* 適度な横幅 */
+  height: 312px;
+  text-align: center;
+  position: relative; /* オーバーレイ内で中央配置 */
+}
+.flex-closed-btn{
+  display: flex;
+  position: relative;
+  padding: 1.5rem;
+  justify-content: space-between;
+}
+.flex-closed-btn h3{
+  display: flex;
+  position: relative;
+  align-items: center;
+}
+.closed-button{
+  display: flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: .5rem;
+}
+.create-form{
+  margin-top: 2px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-bottom: 0.75rem;
+}
+.input-field {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button-group{
+  display: flex;
+  /* justify-content: space-between; */
+  gap: .75rem;
+  justify-content:  flex-start;
+  flex-direction: row-reverse;
+}
+
+.create-button {
+  background: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background: gray;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+}
+.exlplain-bord{
+  margin-top: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  position: relative;
+  padding: 1rem;
+  background: #d3d3d3;
+  border-radius: 10px;
+}
+.explain-svg {
+  margin-right: .5rem;
+}
+.sub-svg{
+  height: 100%;
+  display: flex;
+  position: relative;
+}
+.md-bord-exp {
+  padding: 0.75rem;
+  width: 100%;
+  height: auto;
+  background: #ccc;
+  border-radius: 10px;
+  border: #888 solid 1px;
+}
+/* .edfede{
+  text-align: left;
+
+} */
+.strong{
+  text-align: left;
+  display: block;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1rem;
+}
+.explain{
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-align: left;
+  font-weight: 400;
+}
+.button-group{
+  padding-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 .option-wrapper {
-    position: relative;
-    display: inline-block;
-  }
+  position: relative;
+  display: inline-block;
+}
 
-  .option-icon {
-    cursor: pointer;
-    padding: 5px;
+.option-icon {
+  cursor: pointer;
+  padding: 5px;
+}
+.option-menu {
+  position: absolute;
+  top: 65px;
+  right: -35px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+}
+
+.option-menu button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.option-menu button:hover {
+  background: #f0f0f0;
+}
+.option-title {
+  padding: 5px;
+}
+
+li .todo-title:hover {
+  background-color: #ccc;
+}
+.todo_tab {
+  padding: 5px 10px;
+  border-radius: 5px;
+  color: black;
+  text-decoration: none;
+}
+.todo_tab:hover {
+  background-color: #ccc;
+}
+li .log_todo {
+  padding: 10px;
+  margin: 10px;
+  list-style: none;
+}
+.login {
+  background-color: black;
+  padding: 10px;
+  /* margin: 0px; */
+  color: white;
+  border-radius: 20px;
+  border: 1px solid rgb(226, 226, 226);
+  width: 100px;
+}
+.signup {
+  padding: 10px;
+  /* margin: 0px; */
+  border-radius: 20px;
+  border: 1px solid rgb(255, 255, 255);
+  width: 120px;
+}
+.logout {
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid rgb(255, 255, 255);
+  width: 100px;
+  color: black;
+}
+.account_form {
+  left: 150px;
+  top: 0;
+  margin-left: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+aside.open ~ .container {
+  margin-left: 300px; /* aside が開いたときにコンテンツを調整 */
+}
+.button_line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .header {
+    left: 0;
+    width: 100%;
   }
-  .option-menu {
-    position: absolute;
-    top: 65px;
-    right: -35px;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-    padding: 5px 10px;
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 225px;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+  aside.open {
+    transform: translateX(0);
+  }
+  .headerline {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .container {
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: auto;
+    margin-left: auto;
     display: flex;
-    flex-direction: column;
-    z-index: 50;
+    justify-content: space-between;
+    align-items: center;
   }
-
-  .option-menu button {
-    background: none;
-    border: none;
-    padding: 5px;
-    cursor: pointer;
-    text-align: left;
+  .logo {
+    font-size: 20px;
   }
-
-  .option-menu button:hover {
-    background: #f0f0f0;
-  }
-  .option-title{
-    padding: 5px;
-  }
-
-li .todo-title:hover{
-    background-color: #ccc;
 }
-.todo_tab{
-    padding: 5px 10px;
-    border-radius: 5px;
-    color: black;
-    text-decoration: none;
-}
-.todo_tab:hover{
-    background-color: #ccc;
-}
-li .log_todo{
+/* メディアクエリ: スマートフォン向け (480px以下) */
+@media (max-width: 480px) {
+  aside {
+    width: 200px;
+  }
+  .logo {
+    font-size: 18px;
+  }
+  .lists {
+    width: 100%;
     padding: 10px;
-    margin: 10px;
-    list-style: none;
-}
-.login{
+  }
+  .login {
     background-color: black;
     padding: 10px;
     /* margin: 0px; */
     color: white;
     border-radius: 20px;
     border: 1px solid rgb(226, 226, 226);
-    width: 100px;
-}
-.signup{
+    width: 75px;
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .signup {
     padding: 10px;
     /* margin: 0px; */
     border-radius: 20px;
     border: 1px solid rgb(255, 255, 255);
-    width: 120px;
-}
-.logout{
+    width: 100px;
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .logout {
     padding: 10px;
     border-radius: 20px;
     border: 1px solid rgb(255, 255, 255);
-    width: 100px;
+    width: 75px;
+    height: 30;
     color: black;
-}
-.account_form{
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .account_form {
     left: 150px;
     top: 0;
     margin-left: 20px;
     display: flex;
     gap: 10px;
     align-items: center;
-}
-aside.open ~ .container {
-    margin-left: 300px; /* aside が開いたときにコンテンツを調整 */
   }
-.button_line{
+  .headerline {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .container {
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-right: auto;
+    margin-left: auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-@media (max-width: 768px) {
-    .header {
-      left: 0;
-      width: 100%;
-    }
-    aside {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 225px;
-      transform: translateX(-100%);
-      z-index: 1000;
-    }
-    aside.open {
-      transform: translateX(0);
-    }
-    .headerline{
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-    .container {
-        padding-right: 10px;
-        padding-left: 10px;
-        margin-right: auto;
-        margin-left: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .logo {
-      font-size: 20px;
-    }
-}
-  /* メディアクエリ: スマートフォン向け (480px以下) */
-@media (max-width: 480px) {
-    aside {
-      width: 200px;
-    }
-    .logo {
-      font-size: 18px;
-    }
-    .lists {
-      width: 100%;
-      padding: 10px;
-    }
-    .login{
-        background-color: black;
-        padding: 10px;
-        /* margin: 0px; */
-        color: white;
-        border-radius: 20px;
-        border: 1px solid rgb(226, 226, 226);
-        width: 75px;
-        font-size: 10px;
-        font-weight: bold;
-    }
-    .signup{
-        padding: 10px;
-        /* margin: 0px; */
-        border-radius: 20px;
-        border: 1px solid rgb(255, 255, 255);
-        width: 100px;
-        font-size: 10px;
-        font-weight: bold;
-    }
-    .logout{
-        padding: 10px;
-        border-radius: 20px;
-        border: 1px solid rgb(255, 255, 255);
-        width: 75px;
-        height: 30;
-        color: black;
-        font-size: 10px;
-        font-weight: bold;
-    }
-    .account_form{
-        left: 150px;
-        top: 0;
-        margin-left: 20px;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-    .headerline{
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-    .container {
-        padding-right: 10px;
-        padding-left: 10px;
-        margin-right: auto;
-        margin-left: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .header_down{
-        background: rgb(226, 226, 226);
-        position: fixed;
-        top: 0px;
-        left: 0px;
-        width:calc(100% - 0px);
-        z-index: 10;
-    }
-    .headerline_down{
-        padding-left: 2.5px;
-        padding-right: 2.5px;
-    }
-    aside.open ~ .container {
-        margin-left: 300px; /* aside が開いたときにコンテンツを調整 */
-    }
-    .container_down{
-        padding-left: 5px;
-        padding-right: 5px;
-        margin-right: auto;
-        margin-left: auto;
-        left: 0px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .downarea{
-        display: flex;
-        align-items: center;
-    }
-    .icon_down{
-        position: relative;
-        padding: 10px 10px;
-        background: rgb(226, 226, 226);
-        border-radius: 10%;
-    }
-    .create_icon_down{
-        position: relative;
-        padding: 10px 10px;
-        background: rgb(226, 226, 226);
-        border-radius: 10%;
-    }
-    .logo_down{
-        font-size: 25px;
-        position: relative;
-        /* left: -10vh; */
-        font-weight: bold;
-        align-items: center;
-    }
-    .header{
-        background: rgb(226, 226, 226);
-        position: fixed;
-        top: 0;
-        left: 5px;
-        width: calc(100% - 5px);
-        z-index: 10;
-    }
-    .line_down{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
   }
+  .header_down {
+    background: rgb(226, 226, 226);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: calc(100% - 0px);
+    z-index: 10;
+  }
+  .headerline_down {
+    padding-left: 2.5px;
+    padding-right: 2.5px;
+  }
+  aside.open ~ .container {
+    margin-left: 300px; /* aside が開いたときにコンテンツを調整 */
+  }
+  .container_down {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-right: auto;
+    margin-left: auto;
+    left: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .downarea {
+    display: flex;
+    align-items: center;
+  }
+  .icon_down {
+    position: relative;
+    padding: 10px 10px;
+    background: rgb(226, 226, 226);
+    border-radius: 10%;
+  }
+  .create_icon_down {
+    position: relative;
+    padding: 10px 10px;
+    background: rgb(226, 226, 226);
+    border-radius: 10%;
+  }
+  .logo_down {
+    font-size: 25px;
+    position: relative;
+    /* left: -10vh; */
+    font-weight: bold;
+    align-items: center;
+  }
+  .header {
+    background: rgb(226, 226, 226);
+    position: fixed;
+    top: 0;
+    left: 5px;
+    width: calc(100% - 5px);
+    z-index: 10;
+  }
+  .line_down {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
