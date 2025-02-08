@@ -58,3 +58,17 @@ class addToDO(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return self.todo
+class Library(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=50, blank=False)
+    members = models.ManyToManyField(CustomUser, related_name='libraries')
+    created_at = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return self.id
+class LibraryToDO(models.Model):
+    linrary = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
+    todo = models.TextField(verbose_name="task")
+    checklist = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    def __str__(self):
+        return f"{self.linrary.name}=>{self.todo}"

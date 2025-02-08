@@ -4,8 +4,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer
-from .models import CustomUser, ToDOList, addToDO
+from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer
+from .models import CustomUser, ToDOList, addToDO, LibraryToDO, Library
 from rest_framework import generics, viewsets
 # import environ
 # env = environ.Env()
@@ -33,6 +33,12 @@ class ToDOViewset(viewsets.ModelViewSet):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
     permission_classes = [IsAuthenticated]
+
+class LibraryViewset(viewsets.ModelViewSet):
+    queryset = Library.objects.all()
+    serializer_class = LibrarySerializer
+    permission_classes = [IsAuthenticated]
+
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
@@ -50,7 +56,12 @@ class AddToDOListView(generics.ListCreateAPIView):
 class AddToDODetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = addToDO.objects.all()
     serializer_class = AddToDOSerializer
-
+class LibraryListDetail(generics.ListCreateAPIView):
+    queryset = Library.objects.all()
+    serializer_class = LibrarySerializer
+class LibraryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Library.objects.all()
+    serializer_class = LibrarySerializer
 
 class IndexAPI(APIView):
     def get(self, request):

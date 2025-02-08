@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ToDOList, CustomUser, addToDO
+from .models import ToDOList, CustomUser, addToDO, Library, LibraryToDO
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
@@ -19,3 +19,5 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 admin.site.register(ToDOList)
 admin.site.register(addToDO)
+admin.site.register(LibraryToDO)
+admin.site.register(Library)

@@ -146,10 +146,10 @@
           </div>
         </li>
         <div class="create-project">
-          <h2 id="snor-newproject" class="project-title">プロジェクト</h2>
+          <h2 id="snor-newproject" class="project-title">ライブラリ</h2>
           <span class :data-allow-mismatch="closed">
             <button
-              aria-label="新しいプロジェクト作成"
+              aria-label="新しいライブラリ作成"
               class="create-project-button"
               @click="openDialog"
             >
