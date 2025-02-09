@@ -456,9 +456,11 @@
 import "../assets/css/components/header.css";
 import { defineNuxtLink, useRouter } from "nuxt/app";
 import { useAuthStore } from "../store/auth";
+import { useLibraryStore } from "../store/libraryStore";
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 const router = useRouter();
 const authStore = useAuthStore();
+const libraryStore = useLibraryStore();
 const todolist = ref([]);
 const libraryName = ref([]);
 const libraries = ref([]);
@@ -482,7 +484,7 @@ onMounted(async () => {
         throw error;
       }
     }
-    libraries.value = await authStore.ShowLibrary();
+    libraries.value = await libraryStore.fetchLibraries();
     todolist.value = await authStore.AsideTitle();
     todolist.value.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
@@ -525,11 +527,10 @@ const createLibrary = async () => {
   const owner = authStore.user?.id;
   const members = authStore.user?.id ? [authStore.user?.id] : [];
   try {
-    const createLib = await authStore.createLibrary(libname, owner, members);
+    const createLib = await libraryStore.createLibrary(libname, owner, members);
     console.log("作成成功:", createLib);
-    libraries.value = await authStore.ShowLibrary();
+    libraries.value = await libraryStore.fetchLibraries();
     closeDialog();
-    window.location.reload();
   } catch (error) {
     console.error("ライブラリ作成失敗", error);
     alert("ライブラリ作成の失敗。");

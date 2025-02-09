@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
 import { useRouter } from "nuxt/app";
-// import jwtDecode from 'jwt-decode';
 import { jwtDecode } from 'jwt-decode';
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -109,103 +108,6 @@ export const useAuthStore = defineStore('auth', {
                 this.clearAuth(); // トークンやユーザー情報がない場合はログアウト状態にする
             }
         },
-        // async restoreSession() {
-        //     if (process.server) return; // サーバーサイドでは何もしない
-        //     const accessToken = localStorage.getItem('access_token');
-        //     const refreshToken = localStorage.getItem('refresh_token');
-        //     const user = JSON.parse(localStorage.getItem('user'));
-
-        //     if (accessToken && refreshToken && user) {
-        //         this.accessToken = accessToken;
-        //         this.refreshToken = refreshToken;
-        //         this.user = user;
-        //         try {
-        //             const refresh_token = await refreshToken();
-        //             return refresh_token;
-        //         } catch (error) {
-        //             console.error('トークン検証またはリフレッシュに失敗しました:', error);
-        //             this.clearAuth();
-        //         }
-        //     } else {
-        //         this.clearAuth();
-        //     }
-        // },
-        // async apiRequest(url, options={}){
-        //     const config = useRuntimeConfig();
-        //     try{
-        //         const response = await fetch(`${config.public.apiBase}${url}`, {
-        //             ...options,
-        //             headers: {
-        //                 ...options.headers,
-        //                 "Authorization": `Bearer ${this.accessToken}`,
-        //             },
-        //         });
-        //         if (response.status === 401){
-        //             console.warn("アクセストークンが無効です。リフレッシュトークンを使用して再試行します。");
-        //             await this.refreshToken();
-
-        //             const retryResponse = await fetch(`${config.public.apiBase}${url}`, {
-        //                 ...options,
-        //                 headers: {
-        //                     ...options.headers,
-        //                     "Authorization": `Bearer ${this.accessToken}`,
-        //                 },
-        //             });
-        //             if (!retryResponse.ok){
-        //                 throw new Error("リトライAPIリクエストの失敗");
-        //             };
-        //             const data = await retryResponse.json();
-        //             return data;
-        //         };
-        //         if (!response.ok){
-        //             const errorData = await response.json();
-        //             throw new Error(errorData.detail || "APIリクエストの失敗。");
-        //         };
-        //         const data = await response.json();
-        //         return data;
-        //     }catch(error){
-        //         console.error("APIリクエストエラー:", error);
-        //         throw error;
-        //     }
-        // },
-        // async refreshToken() {
-        //     const config = useRuntimeConfig();
-        //     const router = useRouter();
-        //     const refreshToken = localStorage.getItem("refresh_token");
-
-        //     if (!refreshToken) {
-        //         console.error("リフレッシュトークンがありません。ログインが必要です。");
-        //         this.clearAuth();
-        //         router.push("/auth/login");
-        //         throw new Error("リフレッシュトークンが存在しません。");
-        //     }
-
-        //     try {
-        //         const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
-        //             method: "POST",
-        //             headers: { "Content-Type": "application/json" },
-        //             body: JSON.stringify({ refresh: refreshToken }),
-        //         });
-
-        //         if (!response.ok) {
-        //             const errorData = await response.json();
-        //             console.error("トークンのリフレッシュに失敗しました:", errorData);
-        //             router.push("/auth/login");
-        //             this.clearAuth();
-        //             throw new Error(`リフレッシュトークンエラー: ${errorData.detail}`);
-        //         }
-
-        //         const data = await response.json();
-        //         this.accessToken = data.access;
-        //         localStorage.setItem("access_token", data.access);
-        //         console.log("アクセストークンがリフレッシュされました:", data.access);
-        //         return data.access;
-        //     } catch (error) {
-        //         console.error("リフレッシュトークン処理中のエラー:", error.message);
-        //         router.push("/auth/login");
-        //         throw error;
-        //     }
-        // },
 
         async login(email, password) {
             const config = useRuntimeConfig();
@@ -357,38 +259,6 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        async createLibrary(name, owner, members){
-            const config = useRuntimeConfig();
-            try{
-                const response = await fetch(`${config.public.apiBase}/library/`, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${this.accessToken}`,
-                    },
-                    body: JSON.stringify({
-                        name: name.trim(),
-                        owner: owner,
-                        members: members,
-                    })
-                });
-                if (!response.ok){
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || "ライブラリの作成に失敗しました。")
-                }
-                const data = await response.json();
-                return {
-                    id: data.id,
-                    name: data.name,
-                    owner: data.owner,
-                    members: data.members,
-                    created_at: data.created_at
-                };
-            }catch(error){
-                console.error(error);
-                throw error;
-            }
-        },
         async addToDO(todo_tag, todo){
             const config = useRuntimeConfig();
             try{
@@ -417,33 +287,6 @@ export const useAuthStore = defineStore('auth', {
                 };
             }catch(error){
                 console.error('ToDO追加作成:', error);
-                throw error;
-            }
-        },
-        async ShowLibrary(){
-            const config = useRuntimeConfig();
-            try{
-                const response = await fetch(`${config.public.apiBase}/library/`, {
-                    method: 'GET',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${this.accessToken}`
-                    },
-                });
-                if (!response.ok){
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || "Library名の取得にあいっぱいしました。");
-                }
-                const data = await response.json();
-                return data.map(library => ({
-                    id: library?.id,
-                    name: library?.name,
-                    owner: library?.owner,
-                    members: library?.members,
-                    created_at: library?.created_at,
-                }));
-            }catch(error){
-                console.error('Error発生:', error);
                 throw error;
             }
         },
