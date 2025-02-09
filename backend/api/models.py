@@ -61,6 +61,7 @@ class addToDO(models.Model):
 class Library(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50, blank=False)
+    owner =  models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='Owner')
     members = models.ManyToManyField(CustomUser, related_name='libraries')
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):

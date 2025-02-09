@@ -357,6 +357,38 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+        async createLibrary(name, owner, members){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/library/`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`,
+                    },
+                    body: JSON.stringify({
+                        name: name.trim(),
+                        owner: owner,
+                        members: members,
+                    })
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "ライブラリの作成に失敗しました。")
+                }
+                const data = await response.json();
+                return {
+                    id: data.id,
+                    name: data.name,
+                    owner: data.owner,
+                    members: data.members,
+                    created_at: data.created_at
+                };
+            }catch(error){
+                console.error(error);
+                throw error;
+            }
+        },
         async addToDO(todo_tag, todo){
             const config = useRuntimeConfig();
             try{
@@ -385,6 +417,33 @@ export const useAuthStore = defineStore('auth', {
                 };
             }catch(error){
                 console.error('ToDO追加作成:', error);
+                throw error;
+            }
+        },
+        async ShowLibrary(){
+            const config = useRuntimeConfig();
+            try{
+                const response = await fetch(`${config.public.apiBase}/library/`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${this.accessToken}`
+                    },
+                });
+                if (!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || "Library名の取得にあいっぱいしました。");
+                }
+                const data = await response.json();
+                return data.map(library => ({
+                    id: library?.id,
+                    name: library?.name,
+                    owner: library?.owner,
+                    members: library?.members,
+                    created_at: library?.created_at,
+                }));
+            }catch(error){
+                console.error('Error発生:', error);
                 throw error;
             }
         },

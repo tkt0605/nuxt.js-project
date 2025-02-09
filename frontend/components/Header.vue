@@ -171,6 +171,17 @@
             </button>
           </span>
         </div>
+        <div class="lib-fields">
+          <ul class="lib-menu">
+            <li v-for="library in libraries" :key="library.id" class="lib-line">
+              <div v-if="library.owner === currentUser.id" class="lib-tmp">
+                <NuxtLink :to="`/lib/${library.id}`" class="lib-turn-page">
+                  {{ library?.name }}
+                </NuxtLink>
+              </div>
+            </li>
+          </ul>
+        </div>
         <div v-if="isDialogOpen" class="modal-overlay">
           <div class="modal-content">
             <div class="flex-closed-btn">
@@ -200,7 +211,8 @@
             </div>
             <div class="create-form">
               <input
-                v-model="projectName"
+                id="createName"
+                v-model="libraryName"
                 type="text"
                 placeholder="ライブラリ名"
                 class="input-field"
@@ -238,13 +250,13 @@
               </div>
             </div>
             <div class="button-group">
-                <button @click="createProject" class="create-button">
-                  <div class="">ライブラリを作成する</div>
-                </button>
-                <button @click="closeDialog" class="cancel-button">
-                  <div>キャンセル</div>
-                </button>
-              </div>
+              <button @click="createLibrary" class="create-button">
+                <div class="">ライブラリを作成する</div>
+              </button>
+              <button @click="closeDialog" class="cancel-button">
+                <div>キャンセル</div>
+              </button>
+            </div>
           </div>
         </div>
         <div v-if="isAuthenticated && categorizedTodos" class="lists">
@@ -442,12 +454,14 @@
 </template>
 <script setup>
 import "../assets/css/components/header.css";
-import { useRouter } from "nuxt/app";
+import { defineNuxtLink, useRouter } from "nuxt/app";
 import { useAuthStore } from "../store/auth";
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 const router = useRouter();
 const authStore = useAuthStore();
 const todolist = ref([]);
+const libraryName = ref([]);
+const libraries = ref([]);
 const user = ref(null);
 const isAsideOpen = ref(true);
 const userMap = ref({});
@@ -468,6 +482,7 @@ onMounted(async () => {
         throw error;
       }
     }
+    libraries.value = await authStore.ShowLibrary();
     todolist.value = await authStore.AsideTitle();
     todolist.value.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
@@ -501,17 +516,25 @@ const closeDialog = () => {
   isDialogOpen.value = false;
 };
 
-const createProject = () => {
-  if (!projectName.value.trim()) {
-    alert("プロジェクト名を入力してください。");
+const createLibrary = async () => {
+  const libname = libraryName.value.trim();
+  if (!libname) {
+    alert("ライブラリ名を入力してください。");
     return;
   }
-  console.log("新規プロジェクト:", {
-    name: projectName.value,
-  });
-  alert("プロジェクトが作成成功");
-  projectName.value = "";
-  closeDialog();
+  const owner = authStore.user?.id;
+  const members = authStore.user?.id ? [authStore.user?.id] : [];
+  try {
+    const createLib = await authStore.createLibrary(libname, owner, members);
+    console.log("作成成功:", createLib);
+    libraries.value = await authStore.ShowLibrary();
+    closeDialog();
+    window.location.reload();
+  } catch (error) {
+    console.error("ライブラリ作成失敗", error);
+    alert("ライブラリ作成の失敗。");
+    throw error;
+  }
 };
 const props = defineProps({
   todolist: {
