@@ -5,6 +5,10 @@ from django.utils import timezone
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 import uuid
+# from django.contrib.auth import get_user_model
+# from .blockchain import BlockChain
+# User = get_user_model()
+# blockchain = BlockChain()
 def generate_avatar_url(email):
     """メールアドレスを基にアバター URL を生成"""
     seed = email.split("@")[0] if email else "default"
