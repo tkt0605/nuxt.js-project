@@ -5,9 +5,10 @@ import {
   decryptData,
   generateSecretKey,
 } from "@/utils/encrypt.js";
-import { useRuntimeConfig } from "nuxt/app";
+import { definePayloadPlugin, useRuntimeConfig } from "nuxt/app";
 import { useRouter } from "nuxt/app";
 import { useAuthStore } from "~/store/auth";
+import { renderSlot } from "vue";
 export const useLibraryStore = defineStore("library", {
   state: () => ({
     libraries: [],
@@ -36,13 +37,6 @@ export const useLibraryStore = defineStore("library", {
         const data = await response.json();
         localStorage.setItem(`library_key_${data.id}`, secretKey); // 🔑 秘密鍵を保存
         this.libraries.push(data);
-        // return {
-        //   id: data.id,
-        //   name: this.decryptLibraryName(data),
-        //   owner: data.owner,
-        //   members: data.members,
-        //   created_at: data.created_at,
-        // };
         return data;
       } catch (error) {
         console.error("ライブラリ作成失敗:", error);
@@ -55,6 +49,7 @@ export const useLibraryStore = defineStore("library", {
       const config = useRuntimeConfig();
       try {
         const response = await fetch(`${config.public.apiBase}/library/`, {
+          // method: "GET",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${authStore.accessToken}`,
@@ -63,19 +58,52 @@ export const useLibraryStore = defineStore("library", {
 
         if (!response.ok) throw new Error("ライブラリ取得エラー");
         const data = await response.json();
+        // フックになる引数がない場合では、dataオブジェクトをmapとしてlibraryという引数を新規定義
         return data.map((library) => ({
           id: library.id,
+          // 新規定義している引数libraryを元データとして秘密鍵の解析を実行。
           name: this.decryptLibraryName(library),
           owner: library.owner,
           members: library.members,
           created_at: library.created_at,
         }));
-      } catch (error) {
+      }catch(error){
         console.error("ライブラリ取得失敗:", error);
         throw error;
       }
     },
-
+    async getLibraryId(id){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          }
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Libraryの取得に失敗しました。");
+        }
+        const data = await response.json();
+        console.log(`取得したLibrary:${data.name}`);
+        return {
+          id: data.id,
+          // 元のdataというobjectから、秘密鍵を解析して名前を取得している
+          name: this.decryptLibraryName(data),
+          owner: data.owner,
+          goal: data.goal,
+          members: data.members,
+          created_at: data.created_at,
+        };
+        // return data;
+      }catch(error){
+        console.error('Libraryの取得に失敗しました。');
+        throw new error;
+      }
+    },
     decryptLibraryName(library) {
         const secretKey = localStorage.getItem(`library_key_${library.id}`);
         if (!secretKey){
@@ -87,8 +115,8 @@ export const useLibraryStore = defineStore("library", {
             let decrypted = bytes.toString(CryptoJS.enc.Utf8);
             decrypted = decrypted.replace(/^"|"$/g, "");
             if (!decrypted){
-                const errorData = console.error();
-                throw new Error(errorData);
+              const errorData = console.error();
+              throw new Error(errorData);
             }
             return decrypted;
         }catch(error){
@@ -96,5 +124,56 @@ export const useLibraryStore = defineStore("library", {
             return "復号エラー";
         }
     },
+    async LibraryCreategoal(id, goal){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+          body: JSON.stringify({
+            goal: goal.trim(),
+          })
+        });
+        if (!response){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Libraryの取得失敗");
+        }
+        console.log('GOALの作成完了');
+        const data = await response.json();
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new error;
+      }
+    },
+    async fetchLibraryId(id) {
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+        });
+        if (!response){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "取得失敗");
+        }
+        const data = await response.json();
+        return {
+          goal: data.goal,
+        }
+      }catch(error){
+        console.error(error);
+        throw new error;
+      }
+    },
+
   },
 });

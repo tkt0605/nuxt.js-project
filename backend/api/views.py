@@ -38,7 +38,7 @@ class ToDOViewset(viewsets.ModelViewSet):
 class LibraryViewset(viewsets.ModelViewSet):
     queryset = Library.objects.all()
     serializer_class = LibrarySerializer
-    permission_classes = [IsAuthenticated, IslibraryMember]
+    permission_classes = [IsAuthenticated]
 
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()

@@ -5,10 +5,8 @@ from django.utils import timezone
 from django.conf import settings
 from rest_framework.authtoken.models import Token
 import uuid
-# from django.contrib.auth import get_user_model
-# from .blockchain import BlockChain
-# User = get_user_model()
-# blockchain = BlockChain()
+from .blockchain import BlockChain
+blockchain = BlockChain()
 def generate_avatar_url(email):
     """メールアドレスを基にアバター URL を生成"""
     seed = email.split("@")[0] if email else "default"
@@ -67,9 +65,25 @@ class Library(models.Model):
     name = models.CharField(max_length=50, blank=False)
     owner =  models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='Owner')
     members = models.ManyToManyField(CustomUser, related_name='libraries')
+    goal = models.TextField(verbose_name="goal", blank=True)
     created_at = models.DateTimeField(default=timezone.now)
+    def save(self, *args, **kwargs):
+        if not self.id:
+            if not self.members.exists():
+                return ValueError('メンバーは最低一人必要です。')
+        super().save(*args, **kwargs)
+
+        blockchain.add_member(self.id, self.owner.id)
+        for member in self.members.all():
+            blockchain.add_member(self.id, member.id)
+    def add_member(self, user):
+        if user not in self.members.all():
+            self.members.add(user)
+            blockchain.add_member(self.id, user.id)
+            self.save()
     def __str__(self):
         return self.id
+
 class LibraryToDO(models.Model):
     linrary = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
     todo = models.TextField(verbose_name="task")
