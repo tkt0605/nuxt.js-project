@@ -20,14 +20,93 @@
     margin-bottom: 1.5rem;
 }
 .lib-name{
+    position: relative;
+    top: 10px;
     font-weight: 600;
     text-align: left;
     margin-left: .25rem;
     font-size: 2.25rem;
     line-height: 2.5rem;
 }
-.text-bord{
+.text-bord-lib{
+}
+.text_keybord-lib{
+    position: relative;
+    width: 100%;
+    max-width: 680px;
+    min-height: 40px;
+    max-height: 150px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #ffffff;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    resize: none;
+    transform-origin: bottom; /* 底辺を基準に拡張 */
+}
+.text_keybord-lib::before{
+    content: attr(placeholder);
+    color: #999;
+    pointer-events: none;
+    display: block;
+}
+.text_keybord-lib:focus{
+    border-color: #ffffff; /* フォーカス時も通常時と同じ色 */
+    overflow: auto;
+}
+.text_keybord-lib:focus::before{
+    content: "";
+}
+.form_id-lib{
+    max-width: 768px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 5px 10px;
+    position: relative;
+}
+.texter-lib{
+    position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse; /* 上から追加するために逆方向 */
+}
 
+.flex-button-lib{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: 8px;
+    margin-right: 8px;
+    position: relative;
+
+}
+.flex-button-span-lib{
+    min-width: 2rem;
+    position: relative;
+}
+.submit_button-lib{
+    position: relative;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+    height: 2.5rem;
+    width: 2.5rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .svg-pro{
     display: flex;
@@ -161,7 +240,7 @@
 .create-form{
     margin-top: 2px;
     padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-right: 1.75rem;
     padding-bottom: 0.75rem;
 }
 .exp{
@@ -209,4 +288,59 @@
 .asdas{
     justify-content: center;
     align-items: center;
+}
+.modal-overlay-join{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.modal-content-join{
+    background: white;
+    border-radius: 10px;
+    width: 650px;
+    height: 240px;
+    text-align: left;
+    position: relative;
+}
+.join-form{
+    position: relative;
+    padding-left: 1.5rem;
+    padding-right: 1.75rem;
+}
+.exp{
+    font-size: 12.5px;
+    color: #454545;
+    padding-bottom: 1.25rem;
+}
+.join-btn{
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    gap: 1.25rem;
+    flex-direction: row-reverse;
+}
+.join-button{
+    border-radius: 25px;
+    border: 1px solid #999;
+    padding: 5px 10px;
+    font-weight: bold;
+    background: #000000;
+    color: white;
+}
+.join-button:hover{
+    background-color: #000000;
+    color: #ffffff;
+}
+.join-cancel{
+    border-radius: 25px;
+    border: 1px solid #999;
+    padding: 5px 10px;
+    font-weight: bold;
 }

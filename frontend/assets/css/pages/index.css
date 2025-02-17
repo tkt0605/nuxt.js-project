@@ -166,7 +166,8 @@
   padding-right: 0.75rem;
 }
 .icon-2xl{
-
+  width: 3rem;
+  height: 3rem;
 }
 .mx-auto {
   margin: auto;

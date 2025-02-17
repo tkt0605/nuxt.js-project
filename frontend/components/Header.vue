@@ -146,7 +146,7 @@
           </div>
         </li>
         <div class="create-project">
-          <h2 id="snor-newproject" class="project-title">ライブラリ</h2>
+          <h2 id="snor-newproject" class="project-title">マイ・ライブラリ</h2>
           <span class :data-allow-mismatch="closed">
             <button
               aria-label="新しいライブラリ作成"
@@ -174,7 +174,7 @@
         <div class="lib-fields">
           <ul class="lib-menu">
             <li v-for="library in libraries" :key="library.id" class="lib-line">
-              <div v-if="library.owner === currentUser.id" class="lib-tmp">
+              <div v-if="library.owner === currentUser.id || library.members === currentUser.id" class="lib-tmp">
                 <NuxtLink :to="`/lib/${library.id}`" class="lib-turn-page">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

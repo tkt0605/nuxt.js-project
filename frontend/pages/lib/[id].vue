@@ -18,12 +18,12 @@
       </button>
       <div class="lib-name">{{ library?.name }}</div>
     </div>
-    <div class="text-bord">
-      <div class="form_id">
-        <div class="texter" id="texter">
+    <div class="text-bord-lib">
+      <div class="form_id-lib">
+        <div class="texter-lib" id="texter">
           <div
             id="text_keybord"
-            class="text_keybord"
+            class="text_keybord-lib"
             ref="textKeybord"
             contenteditable="true"
             :class="{ placeholder: isPlaceholderVisible }"
@@ -33,9 +33,13 @@
             <p v-if="isPlaceholderVisible">{{ placeholderText }}</p>
           </div>
         </div>
-        <div class="flex-button">
-          <span class="flex-button-span">
-            <button type="button" class="submit_button" @click="submitAddToDO">
+        <div class="flex-button-lib">
+          <span class="flex-button-span-lib">
+            <button
+              type="button"
+              class="submit_button-lib"
+              @click="submitAddToDO"
+            >
               <svg
                 width="32"
                 height="32"
@@ -57,13 +61,13 @@
       </div>
     </div>
     <div class="info-bord">
-      <button class="members_bord">
+      <button class="members_bord" @click="openJoinDialog">
         <div class="mem-exp">
           <div>
             <div class="name-current">参加済み</div>
             <div class="current-mem">
               <div class="expsss">現在のメンバー</div>
-              <div class="svg-mem" @click="">
+              <div class="svg-mem" @click="openJoinDialog">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -87,6 +91,55 @@
           </div>
         </div>
       </button>
+      <div v-if="JoinDialogOpen" class="modal-overlay-join">
+        <div class="modal-content-join">
+          <div class="flex-closed-btn">
+            <h3>ライブラリに参加</h3>
+            <button
+              @click="closedJoinDialog"
+              class="closed-button"
+              data-textid="close-button"
+              aria-label="閉じる"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon-md"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div class="join-form">
+            <div class="exp-join">
+              <p>秘密鍵を持つユーザーのみが参加できる特別な空間</p>
+              <p>ライブラリの秘密鍵を入力してください</p>
+            </div>
+            <input
+              v-model="inputSecretKey"
+              type="password"
+              class="input-field"
+              placeholder="秘密鍵を入力"
+            />
+            <div class="join-btn">
+              <button class="join-button" @click="joinLibrary">
+                <div class="asdas">参加する</div>
+              </button>
+              <button class="join-cancel" @click="closedJoinDialog">
+                <div class="asdas">キャンセル</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <button class="main-inst" @click="openDialog">
         <div class="sub-inst">
           <div>
@@ -165,6 +218,11 @@
         </div>
       </div>
     </div>
+    <div>
+      <ul>
+        <li></li>
+      </ul>
+    </div>
   </div>
 </template>
 <script setup>
@@ -195,11 +253,18 @@ const handleBlur = (event) => {
   }
 };
 const isDialogOpen = ref(false);
+const JoinDialogOpen = ref(false);
 const openDialog = () => {
   isDialogOpen.value = true;
 };
 const closeDialog = () => {
   isDialogOpen.value = false;
+};
+const openJoinDialog = () => {
+  JoinDialogOpen.value = true;
+};
+const closedJoinDialog = () => {
+  JoinDialogOpen.value = false;
 };
 onMounted(async () => {
   try {
