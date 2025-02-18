@@ -82,7 +82,7 @@ class Library(models.Model):
             blockchain.add_member(self.id, user.id)
             self.save()
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 class LibraryToDO(models.Model):
     linrary = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
@@ -91,3 +91,8 @@ class LibraryToDO(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{self.linrary.name}=>{self.todo}"
+class LibraryToken(models.Model):
+    library = models.OneToOneField(Library, on_delete=models.CASCADE, related_name="token")
+    token = models.CharField(max_length=256, unique=True, default=uuid.uuid4)
+    def __str__(self):
+        return str(self.library)

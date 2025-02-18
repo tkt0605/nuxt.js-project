@@ -2,19 +2,48 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+import json
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IslibraryMember
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer
-from .models import CustomUser, ToDOList, addToDO, LibraryToDO, Library
+from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer, LibraryTokenSerializer
+from .models import CustomUser, ToDOList, addToDO, LibraryToDO, Library, LibraryToken
 from rest_framework import generics, viewsets
-# import environ
-# env = environ.Env()
-# api_key_GPT = env('api_key_GPT')
-# def GPT_titile_summary(request):
-
-
+from django.shortcuts import get_object_or_404
 User = get_user_model()
+@csrf_exempt
+@login_required
+def generate_token(request, library_id):
+    try:
+        library = Library.objects.get(id=library_id)
+        token, created = LibraryToken.objects.get_or_create(library=library)
+        return JsonResponse({"success": True, "token": token.token})
+    except Library.DoesNotExist:
+        return JsonResponse({"success": False, "message": "ライブラリが見つかりません"})
+    except Exception as e:
+        return JsonResponse({"success": False, "message": str(e)})
+
+@csrf_exempt
+@login_required
+def join_library_with_token(request):
+    try:
+        data = json(request.body)
+        user = request.user
+        token_input = data.get("token")
+        try:
+            library_token = LibraryToken.objects.get(token=token_input)
+            library = library_token.library
+        except LibraryToken.DoesNotExist:
+            return JsonResponse({"success": False, "message": "無効なトークン"})
+        if user in library.members.all():
+            return JsonResponse({"success": False, "message": "既にトークンが存在"})
+        library.members.add(user)
+        return JsonResponse({"success": True, "message": "ライブラリに参加！"})
+    except Exception as e:
+        return JsonResponse({"success": False, "message": str(e)})
 class CustomUserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -40,6 +69,15 @@ class LibraryViewset(viewsets.ModelViewSet):
     serializer_class = LibrarySerializer
     permission_classes = [IsAuthenticated]
 
+class LibraryTokenViewset(viewsets.ModelViewSet):
+    queryset = LibraryToken.objects.all()
+    serializer_class = LibraryTokenSerializer
+    permission_classes = [IsAuthenticated]
+    def get_object(self):
+        Library_id = self.kwargs.get("library_id")
+        library = get_object_or_404(Library, id=Library_id)
+        return get_object_or_404(LibraryToken, library=library)
+
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
@@ -54,6 +92,10 @@ class AddToDOViewset(viewsets.ModelViewSet):
 class AddToDOListView(generics.ListCreateAPIView):
     queryset = addToDO.objects.all()
     serializer_class = AddToDOSerializer
+class LibraryTokenListView(generics.ListCreateAPIView):
+    queryset = LibraryToken.objects.all()
+    serializer_class = LibraryTokenSerializer
+
 class AddToDODetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = addToDO.objects.all()
     serializer_class = AddToDOSerializer
@@ -63,6 +105,9 @@ class LibraryListDetail(generics.ListCreateAPIView):
 class LibraryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Library.objects.all()
     serializer_class = LibrarySerializer
+class LibraryTokenDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LibraryToken.objects.all()
+    serializer_class = LibraryTokenSerializer
 
 class IndexAPI(APIView):
     def get(self, request):

@@ -5,7 +5,7 @@ import {
   decryptData,
   generateSecretKey,
 } from "@/utils/encrypt.js";
-import { definePayloadPlugin, useRuntimeConfig } from "nuxt/app";
+import { definePayloadPlugin, useAppConfig, useRuntimeConfig } from "nuxt/app";
 import { useRouter } from "nuxt/app";
 import { useAuthStore } from "~/store/auth";
 import { renderSlot } from "vue";
@@ -174,6 +174,80 @@ export const useLibraryStore = defineStore("library", {
         throw new error;
       }
     },
-
+    async getLibraryToken(library){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/librarytoken/${library}/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          }
+        });
+        if(!response){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "トークンの取得失敗");
+        }
+        const data = await response.json();
+        return {
+          library: data.library,
+          token: data.token
+        }
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
+    },
+    async CreateLibraryToken(library) {
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/librarytoken/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+          body: JSON.stringify({
+            library: library,
+          })
+        });
+        if (!response){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Libraryのtoken作成の失敗");
+        }
+        const data = await response.json();
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new error;
+      }
+    },
+    async libraryToken(){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/librarytoken/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+        });
+        if (!response){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Libraryのtokenの取得失敗");
+        }
+        const data = await response.json();
+        return data.map((item) => ({
+          library: item.library,
+          token: item.token,
+        }));
+      }catch(error){
+        console.error(error);
+        throw new Error(error);
+      }
+    },
   },
 });

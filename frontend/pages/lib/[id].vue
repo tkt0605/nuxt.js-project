@@ -2,7 +2,7 @@
   <Header />
   <div class="lib-main-bord">
     <div class="sub-bord">
-      <button class="svg-pro">
+      <button class="svg-pro" @click="createToken">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -12,7 +12,7 @@
           viewBox="0 0 16 16"
         >
           <path
-            d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
+            d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 1H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
           />
         </svg>
       </button>
@@ -22,10 +22,10 @@
       <div class="form_id-lib">
         <div class="texter-lib" id="texter">
           <div
-            id="text_keybord"
+            :id="text_keybord"
             class="text_keybord-lib"
             ref="textKeybord"
-            contenteditable="true"
+            :contenteditable="true"
             :class="{ placeholder: isPlaceholderVisible }"
             @focus="handleFocus"
             @blur="handleBlur"
@@ -94,7 +94,7 @@
       <div v-if="JoinDialogOpen" class="modal-overlay-join">
         <div class="modal-content-join">
           <div class="flex-closed-btn">
-            <h3>ライブラリに参加</h3>
+            <h3>🚀 ライブラリに参加</h3>
             <button
               @click="closedJoinDialog"
               class="closed-button"
@@ -120,15 +120,9 @@
           </div>
           <div class="join-form">
             <div class="exp-join">
-              <p>秘密鍵を持つユーザーのみが参加できる特別な空間</p>
-              <p>ライブラリの秘密鍵を入力してください</p>
+              <p>🛠 ライブラリ・トークンを入力して、ライブラリに参加してください。</p>
             </div>
-            <input
-              v-model="inputSecretKey"
-              type="password"
-              class="input-field"
-              placeholder="秘密鍵を入力"
-            />
+            <input v-model="tokenInput" placeholder="トークンを入力" class="input-field" />
             <div class="join-btn">
               <button class="join-button" @click="joinLibrary">
                 <div class="asdas">参加する</div>
@@ -218,9 +212,11 @@
         </div>
       </div>
     </div>
-    <div>
+    <div v-if="library?.members?.includes(currentUser.id)">
       <ul>
-        <li></li>
+        <li>
+          <h2>komada</h2>
+        </li>
       </ul>
     </div>
   </div>
@@ -231,10 +227,9 @@ import { useRoute } from "nuxt/app";
 import { useAuthStore } from "../../store/auth";
 import { useLibraryStore } from "../../store/libraryStore";
 import "../assets/css/pages/lib-id.css";
-import { ref, onMounted } from "vue";
-import { lib } from "crypto-js";
+import { ref, onMounted, computed } from "vue";
 const library = ref([]);
-const project = ref([]);
+const libtoken = ref([]);
 const route = useRoute();
 const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
@@ -242,6 +237,8 @@ const placeholderText = ref("このライブラリの新しいプロジェクト
 const isPlaceholderVisible = ref(true);
 const openOptions = ref(null);
 const Goal = ref("");
+const ismouse = ref(false);
+const currentUser = computed(() => authStore.currentUser);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -250,6 +247,16 @@ const handleFocus = () => {
 const handleBlur = (event) => {
   if (!event.target.innerText.trim()) {
     isPlaceholderVisible.value = true;
+  }
+};
+const komada = () => {
+  if (ismouse.value){
+    ismouse.value = false
+  }
+};
+const unkomada = () => {
+  if (!ismouse.value){
+    ismouse.value = true
   }
 };
 const isDialogOpen = ref(false);
@@ -274,6 +281,7 @@ onMounted(async () => {
     //引数goalのみをＡＰＩで取得しているfetchLibraryId()という関数を持ってくる。
     const LibraryGoal = await libraryStore.fetchLibraryId(routeId);
     library.value = await libraryStore.getLibraryId(routeId);
+    libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
     Goal.value = LibraryGoal.goal || "";
   } catch (error) {
@@ -295,6 +303,26 @@ const createGoals = async () => {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+const createToken = async() => {
+  const routeId = route.params.id;
+  try{
+    const libtokens = await libraryStore.libraryToken();
+    // URLのidに該当するIDをもつLibraryを取得する。
+    const libtoken = await libtokens.find((item) => item.library === routeId);
+    if (currentUser.id === library.owner && (!libtoken.token || !libtoken)) {
+      const createtoken = await libraryStore.CreateLibraryToken(routeId);
+      alert('トークン作成完了');
+      console.log("token作成完了");
+      return createtoken;
+    }else{
+      alert("あなたは作成権限がありません");
+      throw new Error;
+    }
+  }catch(error){
+    console.error("トークン作成エラー:",error);
+    throw new Error(error);
   }
 };
 </script>
