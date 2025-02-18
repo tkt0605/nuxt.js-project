@@ -138,7 +138,7 @@ export const useLibraryStore = defineStore("library", {
             goal: goal.trim(),
           })
         });
-        if (!response){
+        if (!response.ok){
           const errorData = await response.json();
           throw new Error(errorData.detail || "Libraryの取得失敗");
         }
@@ -161,7 +161,7 @@ export const useLibraryStore = defineStore("library", {
             "Authorization": `Bearer ${authStore.accessToken}`
           },
         });
-        if (!response){
+        if (!response.ok){
           const errorData = await response.json();
           throw new Error(errorData.detail || "取得失敗");
         }
@@ -174,31 +174,31 @@ export const useLibraryStore = defineStore("library", {
         throw new error;
       }
     },
-    async getLibraryToken(library){
-      const config = useRuntimeConfig();
-      const authStore = useAuthStore();
-      try{
-        const response = await fetch(`${config.public.apiBase}/librarytoken/${library}/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
-          }
-        });
-        if(!response){
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "トークンの取得失敗");
-        }
-        const data = await response.json();
-        return {
-          library: data.library,
-          token: data.token
-        }
-      }catch(error){
-        console.error(error);
-        throw new Error(error);
-      }
-    },
+    // async getLibraryToken(library){
+    //   const config = useRuntimeConfig();
+    //   const authStore = useAuthStore();
+    //   try{
+    //     const response = await fetch(`${config.public.apiBase}/librarytoken/${library}/`, {
+    //       method: "GET",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${authStore.accessToken}`
+    //       }
+    //     });
+    //     if(!response){
+    //       const errorData = await response.json();
+    //       throw new Error(errorData.detail || "トークンの取得失敗");
+    //     }
+    //     const data = await response.json();
+    //     return {
+    //       library: data.library,
+    //       token: data.token
+    //     }
+    //   }catch(error){
+    //     console.error(error);
+    //     throw new Error(error);
+    //   }
+    // },
     async CreateLibraryToken(library) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
@@ -213,7 +213,7 @@ export const useLibraryStore = defineStore("library", {
             library: library,
           })
         });
-        if (!response){
+        if (!response.ok){
           const errorData = await response.json();
           throw new Error(errorData.detail || "Libraryのtoken作成の失敗");
         }
@@ -235,7 +235,7 @@ export const useLibraryStore = defineStore("library", {
             "Authorization": `Bearer ${authStore.accessToken}`
           },
         });
-        if (!response){
+        if (!response.ok){
           const errorData = await response.json();
           throw new Error(errorData.detail || "Libraryのtokenの取得失敗");
         }
@@ -247,6 +247,44 @@ export const useLibraryStore = defineStore("library", {
       }catch(error){
         console.error(error);
         throw new Error(error);
+      }
+    },
+    async joinToLibrary(id, add_memberId){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const currentlibraryResponse = await fetch(`${config.public.apiBase}/library/${id}/`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          }
+        });
+        if (!currentlibraryResponse.ok){
+          throw new Error('現在のライブラリの取得に失敗');
+        }
+        const currentDetail = await currentlibraryResponse.json();
+        const CurrentMembers = currentDetail.members;
+        const UpdateMember = [... new Set([...CurrentMembers, add_memberId])];
+        const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+          body: JSON.stringify({
+            members: UpdateMember,
+          })
+        });
+        const data = await response.json();
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "ライブラリの参加失敗");
+        }
+        console.log('ライブラリの参加完了：', data);
+        return data;
+      }catch(error){
+        console.error('参加失敗：', error);
+        throw new Error;
       }
     },
   },

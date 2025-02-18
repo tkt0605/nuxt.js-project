@@ -22,7 +22,7 @@
       <div class="form_id-lib">
         <div class="texter-lib" id="texter">
           <div
-            :id="text_keybord"
+            id="text_keybord"
             class="text_keybord-lib"
             ref="textKeybord"
             :contenteditable="true"
@@ -120,7 +120,7 @@
           </div>
           <div class="join-form">
             <div class="exp-join">
-              <p>🛠 ライブラリ・トークンを入力して、ライブラリに参加してください。</p>
+              <p>🔐 ライブラリ・トークンを入力して、ライブラリに参加してください。</p>
             </div>
             <input v-model="tokenInput" placeholder="トークンを入力" class="input-field" />
             <div class="join-btn">
@@ -237,6 +237,7 @@ const placeholderText = ref("このライブラリの新しいプロジェクト
 const isPlaceholderVisible = ref(true);
 const openOptions = ref(null);
 const Goal = ref("");
+const tokenInput = ref("");
 const ismouse = ref(false);
 const currentUser = computed(() => authStore.currentUser);
 const handleFocus = () => {
@@ -281,7 +282,7 @@ onMounted(async () => {
     //引数goalのみをＡＰＩで取得しているfetchLibraryId()という関数を持ってくる。
     const LibraryGoal = await libraryStore.fetchLibraryId(routeId);
     library.value = await libraryStore.getLibraryId(routeId);
-    libtoken.value = await libraryStore.getLibraryToken(routeId);
+    // libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
     Goal.value = LibraryGoal.goal || "";
   } catch (error) {
@@ -323,6 +324,31 @@ const createToken = async() => {
   }catch(error){
     console.error("トークン作成エラー:",error);
     throw new Error(error);
+  }
+};
+const joinLibrary = async () => {
+  const routeId = route.params.id;
+  const inputtoken = tokenInput.value.trim();
+  const add_member = authStore.user?.id;
+  try{
+    const libtokens = await libraryStore.libraryToken();
+    const libtoken = libtokens.find((item) => item.library === routeId);
+    if (library?.members?.includes(add_member)){
+      alert('⚠️ あなたは既にメンバーです。');
+      return;
+    }
+    if (libtoken.token === inputtoken && !library?.members?.includes(add_member)){
+      const joinlibrary = await libraryStore.joinToLibrary(routeId, add_member);
+      alert("🎉 正常に追加出来ました！！");
+      console.log('追加成功！', joinlibrary);
+      closeDialog();
+    }else{
+      alert('🚫 参加に失敗しました。');
+      throw new Error;
+    }
+  }catch(error){
+    console.error("Error!!:", error);
+    throw new Error("エラーの詳細内容", error);
   }
 };
 </script>

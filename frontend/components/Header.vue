@@ -174,7 +174,7 @@
         <div class="lib-fields">
           <ul class="lib-menu">
             <li v-for="library in libraries" :key="library.id" class="lib-line">
-              <div v-if="library.owner === currentUser.id || library.members === currentUser.id" class="lib-tmp">
+              <div v-if="library?.owner === currentUser.id || library?.members.includes(currentUser.id)" class="lib-tmp">
                 <NuxtLink :to="`/lib/${library.id}`" class="lib-turn-page">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -469,7 +469,7 @@ import "../assets/css/components/header.css";
 import { defineNuxtLink, useRouter } from "nuxt/app";
 import { useAuthStore } from "../store/auth";
 import { useLibraryStore } from "../store/libraryStore";
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, callWithErrorHandling } from "vue";
 const router = useRouter();
 const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
@@ -512,7 +512,17 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   window.removeEventListener("resize", checkWindow);
 });
-
+// const IncludeMember = async () =>{
+//   const user = authStore.user?.id;
+//   try{
+//     const libname = await libraryStore.fetchLibraries();
+//     const lib = libname.find((library) => library.owner === user);
+//     return lib;
+//   }catch(error){
+//     console.error(error);
+//     throw new Error;
+//   }
+// };
 const toggleOptions = (todoId) => {
   if (openOptions.value === todoId) {
     openOptions.value = null;

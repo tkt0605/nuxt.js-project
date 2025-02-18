@@ -1,7 +1,7 @@
 .lib-main-bord{
     background: rgb(226, 226, 226);
     top: 75px;
-    left: 35%;
+    left: 33%;
     max-width: 1280px;
     width: calc(100% - 37.5%);
     display: flex;
