@@ -173,6 +173,7 @@ li {
 }
 .lists {
   width: 240px;
+  height: 70vh;
   max-height: 817px; /* スクロール可能な最大高さ */
   overflow-y: auto; /* 縦方向のスクロールを有効化 */
   padding: 10px;
@@ -230,14 +231,8 @@ li .todo-title-new:hover {
   background-color: #ccc; /* ホバー時の色 */
 }
 li .todo-title {
-  font-size: 13px;
-  padding: 10px 10px;
-  border-radius: 5px;
   color: black;
   text-decoration: none;
-  display: flex;
-  position: relative;
-  justify-content: space-between;
 }
 .icon_bord {
   position: relative;
@@ -313,6 +308,115 @@ li .todo-title {
   height: 312px;
   text-align: center;
   position: relative; /* オーバーレイ内で中央配置 */
+}
+
+.modal-overlay-option{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 25vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal-content-option{
+  background: #ffffff;
+  border-radius: 10px;
+  width: 250px;
+  height: 300px;
+}
+.modal-overlay-delete {
+  position: fixed; /* ページ全体に表示 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* ビューポート幅 */
+  height: 100vh; /* ビューポート高さ */
+  background: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* 他の要素の上に表示 */
+}
+
+/* モーダルコンテンツ */
+.modal-content-delete {
+  background: white;
+  /* padding: 20px; */
+  border-radius: 10px;
+  width: 470px; /* 適度な横幅 */
+  height: 215px;
+  text-align: center;
+  position: relative; /* オーバーレイ内で中央配置 */
+}
+.flex-delte{
+  padding: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.main-header{
+  position: relative;
+  display: flex;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 25px;
+  padding-bottom: 20px;
+  border-bottom:  1px solid #ccc;
+}
+.some-info-bord{
+  position: relative;
+  padding: 15px;
+}
+.action-bord{
+  position: relative;
+  display: flex;
+  gap: .75rem;
+  justify-content: flex-end;
+}
+.delete-exp{
+  position: relative;
+  padding-bottom: 25px;
+}
+.lib-name-del{
+  font-weight: bold;
+  font-size: 17.5px;
+}
+.lib-exp-font{
+  font-weight: 600;
+  font-size: 14px;
+}
+.delete{
+  border-radius: 25px;
+  padding: 15px;
+  width: 100px;
+  max-height: 35px;
+  height: 100%;
+  background: red;
+}
+.cancel{
+  border-radius: 25px;
+  padding: 15px;
+  width: 130px;
+  max-height: 35px;
+  height: 100%;
+  background: black;
+}
+.litery{
+  font-weight: bold;
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+}
+.delete:hover{
+  color: #ffffff;
+  background: rgb(226, 27, 27);
+}
+.cancel:hover{
+  color: #ffffff;
+  background: #3b3b3b;
 }
 .flex-closed-btn{
   display: flex;
@@ -417,6 +521,20 @@ li .todo-title {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
 }
+.all-todo-bord{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 10px 10px;
+  border-radius: 5px;
+  color: black;
+  text-decoration: none;
+}
+.all-todo-bord:hover{
+  background-color: #ccc;
+}
 .option-wrapper {
   position: relative;
   display: inline-block;
@@ -426,36 +544,71 @@ li .todo-title {
   cursor: pointer;
   padding: 5px;
 }
-.option-menu {
-  position: absolute;
-  left: 100px;
-  top: -25px;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-  padding: 5px 10px;
+.option-title-bord{
+  position: relative;
   display: flex;
-  flex-direction: column;
-  z-index: 50;
+  justify-content: space-between;
 }
+.option-menu {
+  padding: 15px;
+}
+.option-title {
+  padding: 5px;
+}
+.option-feature-edit{
+  position: relative;
+  padding-left: 5px;
+  padding-right: 5px;
+  /* justify-content: center; */
+  align-items: center;
+  /* border-bottom: 1px solid #ccc; */
+  background: #ffffff;
+  width: 219px;
+  height: 40px;
+  border-radius: 10px;
+}
+.option-feature-delete{
+  padding-left: 5px;
+  padding-right: 5px;
+  /* justify-content: center; */
+  align-items: center;
+  /* border-bottom: 1px solid #ccc; */
+  background: #ffffff;
+  width: 219px;
+  height: 40px;
+  border-radius: 10px;
+}
+.button-design{
+  position: relative;
+  display: flex;
+  align-items: center;
+  text-align: left;
 
-.option-menu button {
+}
+.button-design svg{
+  font-weight: bold;
+}
+.button-in{
+  padding: 15px;
+  font-size: 15px;
+  font-weight: bold;
   background: none;
   border: none;
   padding: 5px;
   cursor: pointer;
   text-align: left;
 }
-
-.option-menu button:hover {
-  background: #f0f0f0;
-}
-.option-title {
+.button-in-dele{
+  padding: 15px;
+  font-size: 15px;
+  font-weight: bold;
+  background: none;
+  border: none;
   padding: 5px;
+  cursor: pointer;
+  color: red;
 }
-
-li .todo-title:hover {
+.option-feature-delete:hover .option-feature-edit:hover{
   background-color: #ccc;
 }
 .todo_tab {
