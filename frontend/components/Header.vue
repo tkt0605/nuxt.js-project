@@ -295,11 +295,19 @@
                       <span v-if="todo.title === ''">{{
                         formatDate(todo.created_at)
                       }}</span>
-                      <span v-else>{{ todo.title }}</span>
+                      <span v-else>
+                        <div v-if="todo.title.length > 13">
+                          {{ todo.title.slice(0, 13) + "..." }}
+                        </div>
+                        <div v-else>{{ todo.title }}</div>
+                      </span>
                     </div>
                   </NuxtLink>
                   <div class="opeion-wrapper">
-                    <button class="oprion-icon" @click.stop="openOption(todo.id)">
+                    <button
+                      class="oprion-icon"
+                      @click.stop="openOption(todo.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -336,11 +344,19 @@
                       <span v-if="todo.title === ''">{{
                         formatDate(todo.created_at)
                       }}</span>
-                      <span v-else>{{ todo.title }}</span>
+                      <span v-else>
+                        <div v-if="todo.title.length > 13">
+                          {{ todo.title.slice(0, 13) + "..." }}
+                        </div>
+                        <div v-else>{{ todo.title }}</div>
+                      </span>
                     </div>
                   </NuxtLink>
                   <div class="opeion-wrapper">
-                    <button class="oprion-icon" @click.stop="openOption(todo.id)">
+                    <button
+                      class="oprion-icon"
+                      @click.stop="openOption(todo.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -377,11 +393,17 @@
                       <span v-if="todo.title === ''">{{
                         formatDate(todo.created_at)
                       }}</span>
-                      <span v-else>{{ todo.title }}</span>
+                      <span v-else>
+                        <div v-if="todo.title.length > 13">{{ todo.title.slice(0, 13)+"..." }}</div>
+                        <div v-else>{{ todo.title }}</div>
+                      </span>
                     </div>
                   </NuxtLink>
                   <div class="opeion-wrapper">
-                    <button class="oprion-icon" @click.stop="openOption(todo.id)">
+                    <button
+                      class="oprion-icon"
+                      @click.stop="openOption(todo.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -418,11 +440,17 @@
                       <span v-if="todo.title === ''">{{
                         formatDate(todo.created_at)
                       }}</span>
-                      <span v-else>{{ todo.title }}</span>
+                      <span v-else>
+                        <div v-if="todo.title.length > 13">{{ todo.title.slice(0, 13)+"..." }}</div>
+                        <div v-else>{{ todo.title }}</div>
+                      </span>
                     </div>
                   </NuxtLink>
                   <div class="opeion-wrapper">
-                    <button class="oprion-icon" @click.stop="openOption(todo.id)">
+                    <button
+                      class="oprion-icon"
+                      @click.stop="openOption(todo.id)"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -469,7 +497,7 @@
                     </div>
                     <button
                       class="option-feature-edit"
-                      @click="openDeleteDialog()"
+                      @click="openEditDialog(selectTodoId)"
                     >
                       <div class="button-in">タイトルを変更</div>
                     </button>
@@ -502,9 +530,7 @@
               </div>
               <div class="modal-overlay-delete" v-if="Deleteconfirmation">
                 <div class="modal-content-delete">
-                  <div
-                    class="flex-delete"
-                  >
+                  <div class="flex-delete">
                     <div v-for="item in getTodoActions" :key="item.id">
                       <div class="main-header">このToDOを削除しますか？</div>
                       <div class="some-info-bord">
@@ -525,6 +551,46 @@
                           </button>
                           <button class="delete" @click="deleteToDO(item.id)">
                             <div class="litery">削除する</div>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-overlay-edit" v-if="EditDialogOpen">
+                <div class="modal-content-edit">
+                  <div class="flex-delete">
+                    <div v-for="item in getTodoActions" :key="item.id">
+                      <div class="main-header">タイトルの編集をします。</div>
+                      <div class="some-info-bord">
+                        <div class="exp-header">
+                          <div class="lib-name-del" v-if="item.title === ''">
+                            {{ formatDate(item.created_at) }}/タイトルの編集。
+                          </div>
+                          <div class="lib-name-del" v-else>
+                            <div v-if="item.title.length > 17">{{ item.title.slice(0, 17)+"..." }}/タイトルの編集。</div>
+                            <div v-else>{{ item.title }}/タイトルの編集</div>
+                          </div>
+                        </div>
+                        <div class="exp">
+                          ⚠️ 見返してもわかりやすいタイトルにしてください。
+                        </div>
+                        <div class="edit-area">
+                          <input
+                            id="edit-title"
+                            v-model="EditTitle"
+                            class="input-field"
+                            type="text"
+                            placeholder="タイトルの編集"
+                          />
+                        </div>
+                        <div class="action-bord">
+                          <button class="cancel-edit" @click="closedEditDialog">
+                            <div class="litery-edit">キャンセルする</div>
+                          </button>
+                          <button class="save" @click="editTitle(item.id)">
+                            <div class="litery">保存する</div>
                           </button>
                         </div>
                       </div>
@@ -563,6 +629,7 @@ const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
 const todolist = ref([]);
 const libraryName = ref([]);
+const EditTitle = ref([]);
 const libraries = ref([]);
 const user = ref(null);
 const isAsideOpen = ref(true);
@@ -604,6 +671,7 @@ onBeforeUnmount(async () => {
 });
 const OptionDialogOpen = ref(false);
 const Deleteconfirmation = ref(false);
+const EditDialogOpen = ref(false);
 const isDialogOpen = ref(false);
 const selectTodoId = ref(null);
 const navigateToTodo = (todoId) => {
@@ -619,11 +687,18 @@ const closedOption = () => {
   OptionDialogOpen.value = false;
 };
 const openDeleteDialog = (todoId) => {
-  selectTodoId.value = todoId
+  selectTodoId.value = todoId;
   Deleteconfirmation.value = true;
 };
 const closedDeleteDialog = () => {
   Deleteconfirmation.value = false;
+};
+const openEditDialog = (todoId) => {
+  selectTodoId.value = todoId;
+  EditDialogOpen.value = true;
+};
+const closedEditDialog = () => {
+  EditDialogOpen.value = false;
 };
 const openDialog = () => {
   isDialogOpen.value = true;
@@ -658,13 +733,18 @@ const props = defineProps({
   },
 });
 const editTitle = async (todoId) => {
+  const newTitle = EditTitle.value.trim();
+  if (!newTitle) {
+    alert("タイトルを入力してください。");
+    return;
+  }
   const todo = props.todolist.find((todo) => todo.id === todoId);
   if (todo) return;
-  const newTitle = prompt("新しいタイトル");
   if (!newTitle || newTitle.trim() === "") return;
   try {
-    const EditToDO = await authStore.editTitleId(todoId, newTitle.trim());
+    const EditToDO = await authStore.editTitleId(todoId, newTitle);
     console.log("タイトルの変更", EditToDO);
+    closeDialog();
   } catch (error) {
     console.error(error);
     throw error;
@@ -680,29 +760,17 @@ const deleteToDO = async (todoId) => {
   try {
     await authStore.deleteTodoId(todoId);
     console.log("削除の命令・実行");
+    closeDialog();
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-const getTodoAction = async (todoId) => {
-  const getTodo = todolist.value.find((item) => item.id === todoId);
-  if (!getTodo) return;
-  try {
-    await authStore.getToDOByid(getTodo.id);
-    console.log("Success!!");
-  } catch (error) {
-    console.error("エラー：", error);
-    throw new Error();
-  }
-};
 const getTodoActions = computed(() => {
-  const fetchtodo = todolist.value.filter((todo) => todo.id === selectTodoId.value);
-  return fetchtodo
-});
-const deletableTodos = computed(() => {
-  const getTodo = todolist.value.filter((todo) => todo.auther === currentUser.value.id);
-  return getTodo;
+  const fetchtodo = todolist.value.filter(
+    (todo) => todo.id === selectTodoId.value
+  );
+  return fetchtodo;
 });
 
 const checkWindow = () => {

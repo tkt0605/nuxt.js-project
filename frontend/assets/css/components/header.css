@@ -143,7 +143,7 @@ li {
   border-radius: 10%;
 }
 .create_icon :hover {
-  background: rgb(226, 226, 226);
+  background: transparent;
 }
 .create_icon_color {
   color: black;
@@ -172,7 +172,7 @@ li {
   align-items: center;
 }
 .lists {
-  width: 240px;
+  width: 252px;
   height: 70vh;
   max-height: 817px; /* スクロール可能な最大高さ */
   overflow-y: auto; /* 縦方向のスクロールを有効化 */
@@ -310,7 +310,7 @@ li .todo-title {
   position: relative; /* オーバーレイ内で中央配置 */
 }
 
-.modal-overlay-option{
+.modal-overlay-option {
   position: fixed;
   top: 0;
   left: 0;
@@ -321,7 +321,7 @@ li .todo-title {
   justify-content: center;
   z-index: 100;
 }
-.modal-content-option{
+.modal-content-option {
   background: #ffffff;
   border-radius: 10px;
   width: 250px;
@@ -347,47 +347,72 @@ li .todo-title {
   border-radius: 10px;
   width: 470px; /* 適度な横幅 */
   height: 215px;
-  text-align: center;
+  /* text-align: center; */
   position: relative; /* オーバーレイ内で中央配置 */
 }
-.flex-delte{
+.modal-overlay-edit {
+  position: fixed; /* ページ全体に表示 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* ビューポート幅 */
+  height: 100vh; /* ビューポート高さ */
+  background: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* 他の要素の上に表示 */
+}
+.modal-content-edit {
+  background: white;
+  /* padding: 20px; */
+  border-radius: 10px;
+  width: 470px; /* 適度な横幅 */
+  height: 275px;
+  /* text-align: center; */
+  position: relative; /* オーバーレイ内で中央配置 */
+}
+.edit-exp {
+  position: relative;
+  padding-bottom: 25px;
+}
+.flex-delte {
   padding: 20px;
   position: relative;
   display: flex;
   align-items: center;
 }
-.main-header{
+.main-header {
   position: relative;
   display: flex;
   padding-left: 30px;
   padding-right: 30px;
   padding-top: 25px;
   padding-bottom: 20px;
-  border-bottom:  1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }
-.some-info-bord{
+.some-info-bord {
   position: relative;
   padding: 15px;
 }
-.action-bord{
+.action-bord {
   position: relative;
   display: flex;
-  gap: .75rem;
+  gap: 0.75rem;
   justify-content: flex-end;
 }
-.delete-exp{
+.delete-exp {
   position: relative;
   padding-bottom: 25px;
 }
-.lib-name-del{
+.lib-name-del {
   font-weight: bold;
   font-size: 17.5px;
 }
-.lib-exp-font{
+.lib-exp-font {
   font-weight: 600;
   font-size: 14px;
 }
-.delete{
+.delete {
   border-radius: 25px;
   padding: 15px;
   width: 100px;
@@ -395,7 +420,7 @@ li .todo-title {
   height: 100%;
   background: red;
 }
-.cancel{
+.cancel {
   border-radius: 25px;
   padding: 15px;
   width: 130px;
@@ -403,39 +428,78 @@ li .todo-title {
   height: 100%;
   background: black;
 }
-.litery{
+.save {
+  border-radius: 25px;
+  padding: 15px;
+  width: 100px;
+  max-height: 35px;
+  height: 100%;
+  background: black;
+}
+.save:hover {
+  color: #ffffff;
+  background: #3b3b3b;
+}
+.cancel-edit {
+  border-radius: 25px;
+  padding: 15px;
+  width: 130px;
+  max-height: 35px;
+  height: 100%;
+}
+.litery-edit {
+  font-weight: bold;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.litery {
   font-weight: bold;
   position: relative;
   display: flex;
   align-items: center;
   color: #ffffff;
 }
-.delete:hover{
+.delete:hover {
   color: #ffffff;
   background: rgb(226, 27, 27);
 }
-.cancel:hover{
+.cancel:hover {
   color: #ffffff;
   background: #3b3b3b;
 }
-.flex-closed-btn{
+.oprion-icon {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: .25rem;
+}
+.oprion-icon:hover{
+
+  border-radius: 25px;
+  background: #e2e1e1;
+}
+.flex-closed-btn {
   display: flex;
   position: relative;
   padding: 1.5rem;
   justify-content: space-between;
 }
-.flex-closed-btn h3{
+.flex-closed-btn h3 {
   display: flex;
   position: relative;
   align-items: center;
 }
-.closed-button{
+.closed-button {
   display: flex;
   align-items: center;
   border-radius: 9999px;
-  padding: .5rem;
+  padding: 0.5rem;
 }
-.create-form{
+.create-form {
   margin-top: 2px;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -449,11 +513,11 @@ li .todo-title {
   border-radius: 5px;
 }
 
-.button-group{
+.button-group {
   display: flex;
   /* justify-content: space-between; */
-  gap: .75rem;
-  justify-content:  flex-start;
+  gap: 0.75rem;
+  justify-content: flex-start;
   flex-direction: row-reverse;
 }
 
@@ -474,7 +538,7 @@ li .todo-title {
   border-radius: 50px;
   cursor: pointer;
 }
-.exlplain-bord{
+.exlplain-bord {
   margin-top: 5px;
   margin-bottom: 20px;
   display: flex;
@@ -484,9 +548,9 @@ li .todo-title {
   border-radius: 10px;
 }
 .explain-svg {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
-.sub-svg{
+.sub-svg {
   height: 100%;
   display: flex;
   position: relative;
@@ -503,25 +567,25 @@ li .todo-title {
   text-align: left;
 
 } */
-.strong{
+.strong {
   text-align: left;
   display: block;
   font-size: 1rem;
   font-weight: 500;
   line-height: 1rem;
 }
-.explain{
+.explain {
   font-size: 0.75rem;
   line-height: 1rem;
   text-align: left;
   font-weight: 400;
 }
-.button-group{
+.button-group {
   padding-bottom: 1.5rem;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
 }
-.all-todo-bord{
+.all-todo-bord {
   position: relative;
   display: flex;
   align-items: center;
@@ -532,7 +596,7 @@ li .todo-title {
   color: black;
   text-decoration: none;
 }
-.all-todo-bord:hover{
+.all-todo-bord:hover {
   background-color: #ccc;
 }
 .option-wrapper {
@@ -544,7 +608,7 @@ li .todo-title {
   cursor: pointer;
   padding: 5px;
 }
-.option-title-bord{
+.option-title-bord {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -555,7 +619,7 @@ li .todo-title {
 .option-title {
   padding: 5px;
 }
-.option-feature-edit{
+.option-feature-edit {
   position: relative;
   padding-left: 5px;
   padding-right: 5px;
@@ -567,7 +631,7 @@ li .todo-title {
   height: 40px;
   border-radius: 10px;
 }
-.option-feature-delete{
+.option-feature-delete {
   padding-left: 5px;
   padding-right: 5px;
   /* justify-content: center; */
@@ -578,17 +642,16 @@ li .todo-title {
   height: 40px;
   border-radius: 10px;
 }
-.button-design{
+.button-design {
   position: relative;
   display: flex;
   align-items: center;
   text-align: left;
-
 }
-.button-design svg{
+.button-design svg {
   font-weight: bold;
 }
-.button-in{
+.button-in {
   padding: 15px;
   font-size: 15px;
   font-weight: bold;
@@ -598,7 +661,7 @@ li .todo-title {
   cursor: pointer;
   text-align: left;
 }
-.button-in-dele{
+.button-in-dele {
   padding: 15px;
   font-size: 15px;
   font-weight: bold;
@@ -608,7 +671,7 @@ li .todo-title {
   cursor: pointer;
   color: red;
 }
-.option-feature-delete:hover .option-feature-edit:hover{
+.option-feature-delete:hover .option-feature-edit:hover {
   background-color: #ccc;
 }
 .todo_tab {
