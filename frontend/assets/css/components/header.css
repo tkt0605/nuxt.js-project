@@ -100,14 +100,18 @@ aside.closed .logo {
   width: calc(100% - 255px);
   z-index: 10;
 }
-ul {
+/* ul {
   padding: 15px 20px;
-  /* padding-left: 15px; */
   font-weight: bold;
-}
+} */
 .mains {
+  font-weight: bold;
   position: relative;
+  padding: 15px 20px;
   top: 0px;
+}
+.lib-menu{
+  padding: 15px 20px;
 }
 ul .aside-todo-padding {
   padding: 10px 15px;

@@ -85,8 +85,11 @@ class Library(models.Model):
         return str(self.id)
 
 class LibraryToDO(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=100, blank=True)
     linrary = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
     todo = models.TextField(verbose_name="task")
+    auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="作者")
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):

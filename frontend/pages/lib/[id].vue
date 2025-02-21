@@ -38,7 +38,7 @@
             <button
               type="button"
               class="submit_button-lib"
-              @click="submitAddToDO"
+              @click="submitLibTodo"
             >
               <svg
                 width="32"
@@ -120,9 +120,16 @@
           </div>
           <div class="join-form">
             <div class="exp-join">
-              <p>🔐 ライブラリ・トークンを入力して、ライブラリに参加してください。</p>
+              <p>
+                🔐
+                ライブラリ・トークンを入力して、ライブラリに参加してください。
+              </p>
             </div>
-            <input v-model="tokenInput" placeholder="トークンを入力" class="input-field" />
+            <input
+              v-model="tokenInput"
+              placeholder="トークンを入力"
+              class="input-field"
+            />
             <div class="join-btn">
               <button class="join-button" @click="joinLibrary">
                 <div class="asdas">参加する</div>
@@ -212,12 +219,61 @@
         </div>
       </div>
     </div>
-    <div v-if="library?.members?.includes(currentUser.id)">
-      <ul>
-        <li>
-          <h2>komada</h2>
-        </li>
-      </ul>
+    <div
+      class="lib-main-todo"
+      v-if="library?.members?.includes(currentUser.id)"
+    >
+      <div class="lib-todo-exp">このライブラリのToDO</div>
+      <div class="lib-todo-list" v-for="data in getLibTodos" :key="data.id">
+        <div>
+          <div class="list-todo">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              class="bi bi-list-task"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"
+              />
+              <path
+                d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"
+              />
+            </svg>
+          </div>
+          <div class="todo-info-show">
+            <div class="some-info">
+              <div class="name" v-if="data.title === ''">
+                {{ formatDate(data.created_at) }}
+              </div>
+              <div class="name" v-else>{{ data.title }}</div>
+              <div class="option">
+                <button class="oprion-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-three-dots-vertical"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -233,13 +289,14 @@ const libtoken = ref([]);
 const route = useRoute();
 const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
-const placeholderText = ref("このライブラリの新しいプロジェクト");
+const placeholderText = ref("このライブラリの新しいToDO");
 const isPlaceholderVisible = ref(true);
 const openOptions = ref(null);
 const Goal = ref("");
 const tokenInput = ref("");
 const ismouse = ref(false);
 const currentUser = computed(() => authStore.currentUser);
+const libtodos = ref([]);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -251,13 +308,13 @@ const handleBlur = (event) => {
   }
 };
 const komada = () => {
-  if (ismouse.value){
-    ismouse.value = false
+  if (ismouse.value) {
+    ismouse.value = false;
   }
 };
 const unkomada = () => {
-  if (!ismouse.value){
-    ismouse.value = true
+  if (!ismouse.value) {
+    ismouse.value = true;
   }
 };
 const isDialogOpen = ref(false);
@@ -282,6 +339,7 @@ onMounted(async () => {
     //引数goalのみをＡＰＩで取得しているfetchLibraryId()という関数を持ってくる。
     const LibraryGoal = await libraryStore.fetchLibraryId(routeId);
     library.value = await libraryStore.getLibraryId(routeId);
+    libtodos.value = await libraryStore.getLibraryTodo();
     // libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
     Goal.value = LibraryGoal.goal || "";
@@ -289,6 +347,11 @@ onMounted(async () => {
     console.error("Libraryの取得に失敗しました。", error);
     throw new error();
   }
+});
+const getLibTodos = computed(()=> {
+  const routeId = route.params.id;
+  const fetchtodo = libtodos.value.find((data) => data.library === routeId);
+  return fetchtodo;
 });
 const createGoals = async () => {
   const routeId = route.params.id;
@@ -306,23 +369,23 @@ const createGoals = async () => {
     throw error;
   }
 };
-const createToken = async() => {
+const createToken = async () => {
   const routeId = route.params.id;
-  try{
+  try {
     const libtokens = await libraryStore.libraryToken();
     // URLのidに該当するIDをもつLibraryを取得する。
     const libtoken = await libtokens.find((item) => item.library === routeId);
     if (currentUser.id === library.owner && (!libtoken.token || !libtoken)) {
       const createtoken = await libraryStore.CreateLibraryToken(routeId);
-      alert('トークン作成完了');
+      alert("トークン作成完了");
       console.log("token作成完了");
       return createtoken;
-    }else{
+    } else {
       alert("あなたは作成権限がありません");
-      throw new Error;
+      throw new Error();
     }
-  }catch(error){
-    console.error("トークン作成エラー:",error);
+  } catch (error) {
+    console.error("トークン作成エラー:", error);
     throw new Error(error);
   }
 };
@@ -330,25 +393,66 @@ const joinLibrary = async () => {
   const routeId = route.params.id;
   const inputtoken = tokenInput.value.trim();
   const add_member = authStore.user?.id;
-  try{
+  try {
     const libtokens = await libraryStore.libraryToken();
     const libtoken = libtokens.find((item) => item.library === routeId);
-    if (library?.members?.includes(add_member)){
-      alert('⚠️ あなたは既にメンバーです。');
+    if (library?.members?.includes(add_member)) {
+      alert("⚠️ あなたは既にメンバーです。");
       return;
     }
-    if (libtoken.token === inputtoken && !library?.members?.includes(add_member)){
+    if (
+      libtoken.token === inputtoken &&
+      !library?.members?.includes(add_member)
+    ) {
       const joinlibrary = await libraryStore.joinToLibrary(routeId, add_member);
       alert("🎉 正常に追加出来ました！！");
-      console.log('追加成功！', joinlibrary);
+      console.log("追加成功！", joinlibrary);
       closeDialog();
-    }else{
-      alert('🚫 参加に失敗しました。');
-      throw new Error;
+    } else {
+      alert("🚫 参加に失敗しました。");
+      throw new Error();
     }
-  }catch(error){
+  } catch (error) {
     console.error("Error!!:", error);
     throw new Error("エラーの詳細内容", error);
+  }
+};
+function formatDate(date) {
+  if (!date) return "日付不明";
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    hour12: true,
+    minute: "2-digit",
+  };
+  return new Date(date).toLocaleDateString("ja-jp", options);
+}
+const submitLibTodo = async () => {
+  const todoElement = document.getElementById("text_keybord");
+  const todoContent = todoElement.innerText.trim();
+  const now = new Date();
+  const auther = authStore.user?.id;
+  const libraryId = route.params.id;
+  if (!todoContent || todoContent === "このライブラリの新しいToDO") {
+    console.log("ToDoの内容が空です。");
+    return;
+  }
+  try {
+    const createTodo = await libraryStore.CreateLibraryTodo(
+      libraryId,
+      auther,
+      todoContent
+    );
+    libtodos.value = await libraryStore.getLibraryTodo();
+    todoElement.innerText = "";
+    console.log("正常に作成");
+    const rink = route.push(`/t/${createTodo.id}`);
+    return rink;
+  } catch (error) {
+    console.error(error);
+    throw new Error;
   }
 };
 </script>

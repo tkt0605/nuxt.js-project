@@ -287,5 +287,95 @@ export const useLibraryStore = defineStore("library", {
         throw new Error;
       }
     },
+    async CreateLibraryTodo(library, auther, todo){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/libtodo/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+          body: JSON.stringify({
+            library: library,
+            auther: auther,
+            todo: todo.trim(),
+          })
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "ライブラリ内のToDo作成失敗。");
+        }
+        const data = await response.json();
+        console.log("Success!!", data);
+        return {
+          id: data.id,
+          library: data.library,
+          auther: data.auther,
+          todo: data.todo,
+          created_at: data.created_at
+        }
+      }catch(error){
+        console.error(error);
+        throw new Error
+      }
+    },
+    async getLibraryTodo(){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/libtodo/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "ライブラリToDoの取得に失敗");
+        }
+        const data = await response.json();
+        return {
+          id: data.id,
+          library: data.library,
+          auther: data.auther,
+          todo: data.todo,
+          created_at: data.created_at
+        };
+      }catch(error){
+        console.error(error);
+        throw new Error;
+      }
+    },
+    async fetchLibraryTodoId(){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/libtodo/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`,
+          }
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "ライブラリToDOのID取得失敗。");
+        }
+        const data = await response.json();
+        return {
+          id: data.id,
+          library: data.library,
+          auther: data.auther,
+          todo: data.todo,
+          created_at: data.created_at
+        };
+      }catch(error){
+        console.error(error);
+        throw new Error;
+      }
+    },
   },
 });

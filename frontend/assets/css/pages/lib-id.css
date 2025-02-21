@@ -4,6 +4,7 @@
     left: 33%;
     max-width: 1280px;
     width: calc(100% - 37.5%);
+    width: 766px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -130,7 +131,7 @@
     max-width: 766px;
     width: 100%;
     top: 30px;
-    margin-bottom: 25px;
+    padding-bottom: 35px;
 }
 .members_bord{
     position: relative;
@@ -344,4 +345,39 @@
     border: 1px solid #999;
     padding: 5px 10px;
     font-weight: bold;
+}
+.lib-main-todo{
+    position: relative;
+    max-width: 766px;
+    width: 100%;
+    padding-top: 20px;
+}
+.lib-todo-exp{
+    padding: 15px;
+    font-size: 10px;
+    font-weight: bold;
+}
+.lib-todo-list{
+    padding: 10px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.list-todo{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.todo-info-show{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.some-info{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }

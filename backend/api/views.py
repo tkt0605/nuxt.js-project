@@ -77,6 +77,10 @@ class LibraryTokenViewset(viewsets.ModelViewSet):
         Library_id = self.kwargs.get("library_id")
         library = get_object_or_404(Library, id=Library_id)
         return get_object_or_404(LibraryToken, library=library)
+class LibraryTodoViewset(viewsets.ModelViewSet):
+    queryset = LibraryToDO.objects.all()
+    serializer_class = LibraryToDOSerializer
+    permission_classes = [IsAuthenticated]
 
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
@@ -95,6 +99,9 @@ class AddToDOListView(generics.ListCreateAPIView):
 class LibraryTokenListView(generics.ListCreateAPIView):
     queryset = LibraryToken.objects.all()
     serializer_class = LibraryTokenSerializer
+class LibraryTodoListView(generics.ListCreateAPIView):
+    queryset = LibraryToDO.objects.all()
+    serializer_class = LibraryToDOSerializer
 
 class AddToDODetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = addToDO.objects.all()
@@ -108,7 +115,9 @@ class LibraryDetail(generics.RetrieveUpdateDestroyAPIView):
 class LibraryTokenDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = LibraryToken.objects.all()
     serializer_class = LibraryTokenSerializer
-
+class LibraryTodoDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LibraryToDO.objects.all()
+    serializer_class = LibraryToDOSerializer
 class IndexAPI(APIView):
     def get(self, request):
         return Response({'message': 'Hello world!!!!'})
