@@ -38,7 +38,7 @@
             <button
               type="button"
               class="submit_button-lib"
-              @click="submitLibTodo"
+              @click="submitLibTodo(library.id)"
             >
               <svg
                 width="32"
@@ -221,11 +221,11 @@
     </div>
     <div
       class="lib-main-todo"
-      v-if="library?.members?.includes(currentUser.id)"
+      v-if="library.members?.includes(currentUser.id)"
     >
       <div class="lib-todo-exp">このライブラリのToDO</div>
-      <div class="lib-todo-list" v-for="data in getLibTodos" :key="data.id">
-        <div>
+      <div class="lib-todo-list">
+        <div v-for="data in LibraryinToDOs" :key="data.id">
           <div class="list-todo">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +279,7 @@
 </template>
 <script setup>
 import Header from "../components/Header.vue";
-import { useRoute } from "nuxt/app";
+import { useRoute, useRouter } from "nuxt/app";
 import { useAuthStore } from "../../store/auth";
 import { useLibraryStore } from "../../store/libraryStore";
 import "../assets/css/pages/lib-id.css";
@@ -287,6 +287,7 @@ import { ref, onMounted, computed } from "vue";
 const library = ref([]);
 const libtoken = ref([]);
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
 const placeholderText = ref("このライブラリの新しいToDO");
@@ -296,7 +297,7 @@ const Goal = ref("");
 const tokenInput = ref("");
 const ismouse = ref(false);
 const currentUser = computed(() => authStore.currentUser);
-const libtodos = ref([]);
+const libtodos = computed(()=> props.libtodos) || ref([]);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -348,10 +349,21 @@ onMounted(async () => {
     throw new error();
   }
 });
-const getLibTodos = computed(()=> {
-  const routeId = route.params.id;
-  const fetchtodo = libtodos.value.find((data) => data.library === routeId);
-  return fetchtodo;
+const props = defineProps({
+  libtodos: {
+    type: Array,
+    default: () => [],
+  },
+  library: {
+    type: Array,
+    default: () => null,
+  }
+});
+const currentUserMembers = computed(()=>{
+  return library.members?.includes(currentUser.id);
+});
+const LibraryinToDOs = computed(()=>{
+  return props.libtodos.filter((todo) => todo.library === props.library?.id);
 });
 const createGoals = async () => {
   const routeId = route.params.id;
@@ -429,27 +441,25 @@ function formatDate(date) {
   };
   return new Date(date).toLocaleDateString("ja-jp", options);
 }
-const submitLibTodo = async () => {
+const submitLibTodo = async (libId) => {
   const todoElement = document.getElementById("text_keybord");
   const todoContent = todoElement.innerText.trim();
   const now = new Date();
   const auther = authStore.user?.id;
-  const libraryId = route.params.id;
   if (!todoContent || todoContent === "このライブラリの新しいToDO") {
     console.log("ToDoの内容が空です。");
     return;
   }
   try {
     const createTodo = await libraryStore.CreateLibraryTodo(
-      libraryId,
+      libId,
       auther,
       todoContent
     );
     libtodos.value = await libraryStore.getLibraryTodo();
     todoElement.innerText = "";
     console.log("正常に作成");
-    const rink = route.push(`/t/${createTodo.id}`);
-    return rink;
+    router.push(`/lib/${createTodo.library}/t/${createTodo.id}`);
   } catch (error) {
     console.error(error);
     throw new Error;

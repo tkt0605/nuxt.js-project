@@ -339,6 +339,7 @@ export const useLibraryStore = defineStore("library", {
         const data = await response.json();
         return {
           id: data.id,
+          title: data.title,
           library: data.library,
           auther: data.auther,
           todo: data.todo,
