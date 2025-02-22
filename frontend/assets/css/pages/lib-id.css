@@ -358,26 +358,114 @@
     font-weight: bold;
 }
 .lib-todo-list{
-    padding: 10px;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
 }
-.list-todo{
+/* 全体のTodo項目のコンテナ */
+.todo-info-show {
     position: relative;
     display: flex;
     align-items: center;
-}
-.todo-info-show{
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 15px 10px;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.3s;
+  }
+
+  .todo-info-show:hover {
+    background-color: #f1f1f1;
+  }
+
+  /* アイコン部分（Todoリストアイコン） */
+  .list-todo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #e9ecef;
+    border-radius: 50%;
+  }
+
+  /* サブグループ：情報部分とオプションボタンを内包 */
+  .sub-group {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-.some-info{
+    flex: 1;
+  }
+
+  /* Todo情報部分 */
+  .some-info {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* タイトル（もしくは日付） */
+  .name {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.2;
+  }
+
+  /* Todo本文 */
+  .first-todo {
+    color: #454545;
+    font-size: 12px;
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  /* オプション部分（省略メニュー） */
+  .option {
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+  }
+
+  /* オプションボタン */
+  .oprion-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+
+  .oprion-icon:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+  }
+
+  /* SVGアイコンの調整 */
+  .list-todo svg {
+    display: block;
+    border-radius: 50%;
+  }
+.modal-overlay-option-lib{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 150vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+.modal-content-lib{
+    background: #ffffff;
+    border-radius: 10px;
+    width: 250px;
+    height: 300px;
+}
+.option-title{
+    font-weight: bold;
 }

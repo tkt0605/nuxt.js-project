@@ -221,41 +221,44 @@
     </div>
     <div
       class="lib-main-todo"
-      v-if="library.members?.includes(currentUser.id)"
+      v-if="library.members?.includes(currentUser.id) || isLibraryMember"
     >
       <div class="lib-todo-exp">このライブラリのToDO</div>
       <div class="lib-todo-list">
-        <div v-for="data in LibraryinToDOs" :key="data.id">
-          <div class="list-todo">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="currentColor"
-              class="bi bi-list-task"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"
-              />
-              <path
-                d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"
-              />
-            </svg>
-          </div>
+        <div v-for="data in libtodos" :key="data.id">
           <div class="todo-info-show">
-            <div class="some-info">
-              <div class="name" v-if="data.title === ''">
-                {{ formatDate(data.created_at) }}
+            <div class="list-todo">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                class="bi bi-list-task"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"
+                />
+                <path
+                  d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"
+                />
+              </svg>
+            </div>
+            <div class="sub-group">
+              <div class="some-info">
+                <div class="name" v-if="data.title === ''">
+                  {{ formatDate(data.created_at) }}
+                </div>
+                <div class="name" v-else>{{ data.title }}</div>
+                <div class="first-todo">{{ data.todo }}</div>
               </div>
-              <div class="name" v-else>{{ data.title }}</div>
               <div class="option">
-                <button class="oprion-icon">
+                <button class="oprion-icon" @click="openOption(data.id)">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -269,6 +272,141 @@
                     />
                   </svg>
                 </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-overlay-option-lib" v-if="isDialogOption">
+            <div class="modal-content-lib">
+              <div class="flex-option-lib">
+                <div class="option-menu">
+                  <div class="option-title-bord">
+                    <p class="option-title">オプション</p>
+                    <button
+                      @click="closedOption"
+                      data-textid="close-button"
+                      class="closed-button"
+                      aria-label="閉じる"
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="icon-md"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
+                          fill="currentColor"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <button
+                    class="option-feature-edit"
+                    @click="openEditDialog(selectTodoId)"
+                  >
+                    <div class="button-in">タイトルを変更</div>
+                  </button>
+                  <button
+                    class="option-feature-delete"
+                    @click="openDeleteDialog(selectTodoId)"
+                  >
+                    <div class="button-design">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-trash"
+                        viewBox="0 0 16 16"
+                        style="font-weight: bold; color: red"
+                      >
+                        <path
+                          d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"
+                        />
+                        <path
+                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"
+                        />
+                      </svg>
+                      <div class="button-in-dele">削除する</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-overlay-delete" v-if="isDialogDelete">
+            <div class="modal-content-delete">
+              <div class="flex-delete">
+                <div v-for="item in getTodoActions" :key="item.id">
+                  <div class="main-header">このToDOを削除しますか？</div>
+                  <div class="some-info-bord">
+                    <div class="delete-exp">
+                      <div class="lib-name-del" v-if="item.title === ''">
+                        {{ formatDate(item.created_at) }}を削除します。
+                      </div>
+                      <div class="lib-name-del" v-else>
+                        {{ item.title }}を削除します。
+                      </div>
+                      <div class="lib-exp-font">
+                        ⚠️ 一度ToDOを削除すると復元することは出来ません。
+                      </div>
+                    </div>
+                    <div class="action-bord">
+                      <button class="cancel" @click="closedDeleteDialog">
+                        <div class="litery">キャンセルする</div>
+                      </button>
+                      <button class="delete" @click="deleteToDO(item.id)">
+                        <div class="litery">削除する</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-overlay-edit" v-if="isDialogEdit">
+            <div class="modal-content-edit">
+              <div class="flex-delete">
+                <div v-for="item in getTodoActions" :key="item.id">
+                  <div class="main-header">タイトルの編集をします。</div>
+                  <div class="some-info-bord">
+                    <div class="exp-header">
+                      <div class="lib-name-del" v-if="item.title === ''">
+                        {{ formatDate(item.created_at) }}/タイトルの編集。
+                      </div>
+                      <div class="lib-name-del" v-else>
+                        <div v-if="item.title.length > 17">
+                          {{ item.title.slice(0, 17) + "..." }}/タイトルの編集。
+                        </div>
+                        <div v-else>{{ item.title }}/タイトルの編集</div>
+                      </div>
+                    </div>
+                    <div class="exp">
+                      ⚠️ 見返してもわかりやすいタイトルにしてください。
+                    </div>
+                    <div class="edit-area">
+                      <input
+                        id="edit-title"
+                        v-model="EditTitle"
+                        class="input-field"
+                        type="text"
+                        placeholder="タイトルの編集"
+                      />
+                    </div>
+                    <div class="action-bord">
+                      <button class="cancel-edit" @click="closedEditDialog">
+                        <div class="litery-edit">キャンセルする</div>
+                      </button>
+                      <button class="save" @click="editTitle(item.id)">
+                        <div class="litery">保存する</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -297,7 +435,7 @@ const Goal = ref("");
 const tokenInput = ref("");
 const ismouse = ref(false);
 const currentUser = computed(() => authStore.currentUser);
-const libtodos = computed(()=> props.libtodos) || ref([]);
+const libtodos = ref([]);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -308,18 +446,35 @@ const handleBlur = (event) => {
     isPlaceholderVisible.value = true;
   }
 };
-const komada = () => {
-  if (ismouse.value) {
-    ismouse.value = false;
-  }
-};
-const unkomada = () => {
-  if (!ismouse.value) {
-    ismouse.value = true;
-  }
-};
+const isDialogOption = ref(false);
+const isDialogEdit = ref(false);
+const isDialogDelete = ref(false);
+const selectTodoId = ref(null);
 const isDialogOpen = ref(false);
 const JoinDialogOpen = ref(false);
+const openOption = (todoId) => {
+  selectTodoId.value = todoId;
+  isDialogOption.value = true;
+};
+const closedOption = () => {
+  isDialogOption.value = false;
+};
+const openEditDialog = (todoId) => {
+  selectTodoId.value = todoId;
+  isDialogEdit.value = true;
+};
+const closedEditDialog = () => {
+  isDialogEdit.value = false;
+  closedOption();
+};
+const openDeleteDialog = (todoId) => {
+  selectTodoId.value = todoId;
+  isDialogDelete.value = true;
+};
+const closedDeleteDialog = () => {
+  isDialogDelete.value = false;
+  closedOption();
+};
 const openDialog = () => {
   isDialogOpen.value = true;
 };
@@ -340,7 +495,15 @@ onMounted(async () => {
     //引数goalのみをＡＰＩで取得しているfetchLibraryId()という関数を持ってくる。
     const LibraryGoal = await libraryStore.fetchLibraryId(routeId);
     library.value = await libraryStore.getLibraryId(routeId);
-    libtodos.value = await libraryStore.getLibraryTodo();
+    const todos = await libraryStore.getLibraryTodo();
+    if (Array.isArray(todos)) {
+      // addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId);
+      libtodos.value = todos
+        .filter((libtodos) => libtodos.library === routeId)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else {
+      console.error("追加todoの取得に失敗しました。", error);
+    }
     // libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
     Goal.value = LibraryGoal.goal || "";
@@ -357,13 +520,16 @@ const props = defineProps({
   library: {
     type: Array,
     default: () => null,
-  }
+  },
 });
-const currentUserMembers = computed(()=>{
-  return library.members?.includes(currentUser.id);
+const isLibraryMember = computed(() => {
+  const isMember = library?.members?.includes(currentUser?.id);
+  return isMember;
 });
-const LibraryinToDOs = computed(()=>{
-  return props.libtodos.filter((todo) => todo.library === props.library?.id);
+const getTodoActions = computed(()=> {
+  const routeId = route.params.id;
+  const getLibTodo = libtodos.value.filter((item) => item.id === selectTodoId.value && item.library === routeId);
+  return getLibTodo;
 });
 const createGoals = async () => {
   const routeId = route.params.id;
@@ -462,7 +628,8 @@ const submitLibTodo = async (libId) => {
     router.push(`/lib/${createTodo.library}/t/${createTodo.id}`);
   } catch (error) {
     console.error(error);
-    throw new Error;
+    throw new Error();
   }
 };
+
 </script>

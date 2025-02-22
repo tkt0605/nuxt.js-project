@@ -337,14 +337,18 @@ export const useLibraryStore = defineStore("library", {
           throw new Error(errorData.detail || "ライブラリToDoの取得に失敗");
         }
         const data = await response.json();
-        return {
-          id: data.id,
-          title: data.title,
-          library: data.library,
-          auther: data.auther,
-          todo: data.todo,
-          created_at: data.created_at
-        };
+        if (!Array.isArray(data)){
+          throw new Error('APIレスポンスが取得できない。', error);
+        }
+        console.log(`取得したLibraryのID:`, data);
+        return data.map(data => ({
+          id: data?.id,
+          title: data?.title,
+          library: data?.library,
+          auther: data?.auther,
+          todo: data?.todo,
+          created_at: data?.created_at
+        })) || data;
       }catch(error){
         console.error(error);
         throw new Error;

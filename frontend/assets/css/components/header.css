@@ -337,7 +337,8 @@ li .todo-title {
   left: 0;
   width: 100vw; /* ビューポート幅 */
   height: 100vh; /* ビューポート高さ */
-  background: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
+  /* background: rgba(0, 0, 0, 0.5);  */
+  background: rgb(85 85 85 / 50%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,7 +361,8 @@ li .todo-title {
   left: 0;
   width: 100vw; /* ビューポート幅 */
   height: 100vh; /* ビューポート高さ */
-  background: rgba(0, 0, 0, 0.5); /* 背景を半透明に */
+  /* background: rgba(0, 0, 0, 0.5); */
+  background: rgb(85 85 85 / 50%);
   display: flex;
   align-items: center;
   justify-content: center;
