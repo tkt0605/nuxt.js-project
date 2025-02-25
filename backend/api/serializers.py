@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import ToDOList, addToDO, Library, LibraryToDO, LibraryToken
+from .models import ToDOList, addToDO, Library, LibraryToDO, LibraryToken, LibraryAddToDO
 User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,4 +54,7 @@ class LibraryTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = LibraryToken
         fields = '__all__'
-
+class libraryAddToDOSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LibraryAddToDO
+        fields = "__all__"

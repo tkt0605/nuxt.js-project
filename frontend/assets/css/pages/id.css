@@ -88,15 +88,12 @@
   .form_id{
     max-width: 768px;
     width: 100%;
-    /* left: 0%; */
     height: auto;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 4px 10px;
     position: relative;
-    /* display: flex;
-    align-items: center; */
   }
   .flex-button{
     display: flex;

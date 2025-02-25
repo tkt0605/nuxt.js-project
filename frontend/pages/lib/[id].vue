@@ -224,8 +224,8 @@
       v-if="library.members?.includes(currentUser.id) || isLibraryMember"
     >
       <div class="lib-todo-exp">このライブラリのToDO</div>
-      <div class="lib-todo-list">
-        <div v-for="data in libtodos" :key="data.id">
+      <div v-for="data in libtodos" :key="data.id">
+        <div class="lib-todo-list" @click="PushTodoPage(data.id)">
           <div class="todo-info-show">
             <div class="list-todo">
               <svg
@@ -258,7 +258,7 @@
                 <div class="first-todo">{{ data.todo }}</div>
               </div>
               <div class="option">
-                <button class="oprion-icon" @click="openOption(data.id)">
+                <button class="oprion-icon" @click.stop="openOption(data.id)">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -282,7 +282,7 @@
                   <div class="option-title-bord">
                     <p class="option-title">オプション</p>
                     <button
-                      @click="closedOption"
+                      @click.stop="closedOption"
                       data-textid="close-button"
                       class="closed-button"
                       aria-label="閉じる"
@@ -306,13 +306,13 @@
                   </div>
                   <button
                     class="option-feature-edit"
-                    @click="openEditDialog(selectTodoId)"
+                    @click.stop="openEditDialog(selectTodoId)"
                   >
                     <div class="button-in">タイトルを変更</div>
                   </button>
                   <button
                     class="option-feature-delete"
-                    @click="openDeleteDialog(selectTodoId)"
+                    @click.stop="openDeleteDialog(selectTodoId)"
                   >
                     <div class="button-design">
                       <svg
@@ -356,10 +356,10 @@
                       </div>
                     </div>
                     <div class="action-bord">
-                      <button class="cancel" @click="closedDeleteDialog">
+                      <button class="cancel" @click.stop="closedDeleteDialog">
                         <div class="litery">キャンセルする</div>
                       </button>
-                      <button class="delete" @click="deleteToDO(item.id)">
+                      <button class="delete" @click.stop="deleteToDO(item.id)">
                         <div class="litery">削除する</div>
                       </button>
                     </div>
@@ -368,7 +368,7 @@
               </div>
             </div>
           </div>
-          <div class="modal-overlay-edit" v-if="isDialogEdit">
+          <div class="modal-overlay-edit" v-if="isDialogEdit">  
             <div class="modal-content-edit">
               <div class="flex-delete">
                 <div v-for="item in getTodoActions" :key="item.id">
@@ -398,10 +398,10 @@
                       />
                     </div>
                     <div class="action-bord">
-                      <button class="cancel-edit" @click="closedEditDialog">
+                      <button class="cancel-edit" @click.stop="closedEditDialog">
                         <div class="litery-edit">キャンセルする</div>
                       </button>
-                      <button class="save" @click="editTitle(item.id)">
+                      <button class="save" @click.stop="editTitle(item.id)">
                         <div class="litery">保存する</div>
                       </button>
                     </div>
@@ -631,5 +631,13 @@ const submitLibTodo = async (libId) => {
     throw new Error();
   }
 };
-
+const PushTodoPage = async (todoId) => {
+  try{
+    const routeId = route.params.id;
+    router.push(`/lib/${routeId}/t/${todoId}`);
+  }catch(error){
+    console.error("アクセス失敗:", error);
+    throw new Error;
+  }
+};
 </script>

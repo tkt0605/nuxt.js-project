@@ -89,11 +89,21 @@ class LibraryToDO(models.Model):
     title = models.CharField(max_length=100, blank=True)
     library = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
     todo = models.TextField(verbose_name="task")
-    auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="作者")
+    auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="HeaderToDO作者")
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
-        return f"{self.linrary.name}=>{self.todo}"
+        return str(self.id)
+
+class LibraryAddToDO(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    tag = models.ForeignKey(LibraryToDO, on_delete=models.CASCADE, null=True, related_name="LibraryToDOのタグ")
+    todo = models.TextField(verbose_name="ADD-Lib-todo")
+    auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="AddToDO作者")
+    checklist = models.BooleanField(default=False)
+    created_at = models.DateTimeField(default=timezone.now())
+    def __str__(self):
+        return str(self.id)
 class LibraryToken(models.Model):
     library = models.OneToOneField(Library, on_delete=models.CASCADE, related_name="token")
     token = models.CharField(max_length=256, unique=True, default=uuid.uuid4)

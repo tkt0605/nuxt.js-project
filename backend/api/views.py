@@ -9,8 +9,8 @@ import json
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IslibraryMember
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer, LibraryTokenSerializer
-from .models import CustomUser, ToDOList, addToDO, LibraryToDO, Library, LibraryToken
+from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer, LibraryTokenSerializer, libraryAddToDOSerializer
+from .models import CustomUser, ToDOList, addToDO, LibraryToDO, Library, LibraryToken, LibraryAddToDO
 from rest_framework import generics, viewsets
 from django.shortcuts import get_object_or_404
 User = get_user_model()
@@ -82,6 +82,11 @@ class LibraryTodoViewset(viewsets.ModelViewSet):
     serializer_class = LibraryToDOSerializer
     permission_classes = [IsAuthenticated]
 
+class LibraryAddToDOViewset(viewsets.ModelViewSet):
+    queryset = LibraryAddToDO.objects.all()
+    serializer_class = libraryAddToDOSerializer
+    permission_classes = [IsAuthenticated]
+
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
@@ -102,6 +107,9 @@ class LibraryTokenListView(generics.ListCreateAPIView):
 class LibraryTodoListView(generics.ListCreateAPIView):
     queryset = LibraryToDO.objects.all()
     serializer_class = LibraryToDOSerializer
+class LibraryAddToDOListView(generics.ListCreateAPIView):
+    queryset = LibraryAddToDO.objects.all()
+    serializer_class = libraryAddToDOSerializer
 
 class AddToDODetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = addToDO.objects.all()
@@ -118,6 +126,9 @@ class LibraryTokenDetail(generics.RetrieveUpdateDestroyAPIView):
 class LibraryTodoDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = LibraryToDO.objects.all()
     serializer_class = LibraryToDOSerializer
+class LibraryAddToDODetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LibraryAddToDO.objects.all()
+    serializer_class = libraryAddToDOSerializer
 class IndexAPI(APIView):
     def get(self, request):
         return Response({'message': 'Hello world!!!!'})

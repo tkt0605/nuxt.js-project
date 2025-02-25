@@ -1,0 +1,133 @@
+.lib-todo-bord {
+  background: rgb(226, 226, 226);
+  top: 100px;
+  left: 33%;
+  max-width: 1280px;
+  width: calc(100% - 37.5%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 86vh;
+  position: relative;
+}
+.lib-todoitems-list {
+  left: 0%;
+  box-shadow: inset;
+  width: 1280px;
+  overflow: auto;
+  align-items: center;
+  height: 100%;
+}
+.todo-items {
+  max-width: 768px;
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px 10px 0px 0px;
+  border-bottom: 1px solid #eceff1;
+  transition: background-color 0.3s ease;
+  align-items: center;
+  /* justify-content: space-between; */
+  height: auto;
+}
+.todo-items:hover {
+  background-color: #f1f5f9;
+}
+.todo-items-detail {
+  position: relative;
+  top: -25px;
+  left: 25px;
+}
+.todo-additem{
+    max-width: 768px;
+    width: 100%;
+    padding: 20px;
+    border-bottom: 1px solid #eceff1;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    /* justify-content: space-between; */
+    height: auto;
+}
+.todo-additem:hover{
+    background-color: #f1f5f9;
+}
+.text-base-line {
+    position: relative;
+    margin: 0;
+}
+.form_id-id {
+    max-width: 768px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 4px 10px;
+    position: relative;
+}
+.flex-button-lib-todo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: 8px;
+    margin-right: 8px;
+    position: relative;
+}
+.flex-button-lib-todo-span{
+    min-width: 2rem;
+    position: relative;
+}
+.text-keybord {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  min-height: 40px;
+  max-height: 150px;
+  padding: 10px;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: #ffffff;
+  /* border: 1px solid #ccc; */
+  border-radius: 10px;
+  box-sizing: border-box;
+  overflow-y: hidden;
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  resize: none;
+  transform-origin: bottom; /* 底辺を基準に拡張 */
+}
+.text-keybord::before {
+  content: attr(placeholder);
+  color: #999;
+  pointer-events: none;
+  display: block;
+}
+.text-keybord:focus {
+  border-color: #ffffff; /* フォーカス時も通常時と同じ色 */
+  overflow: auto;
+}
+.text-keybord:focus::before {
+  content: "";
+}
+.texter-id{
+    position: relative;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse; /* 上から追加するために逆方向 */
+}
+.submit-button-id {
+    position: relative;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+    height: 2rem;
+    width: 2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+    font-weight: 800;
+    display: flex;
+    justify-content: flex-end;
+}
+

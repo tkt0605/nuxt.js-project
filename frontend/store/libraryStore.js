@@ -329,7 +329,7 @@ export const useLibraryStore = defineStore("library", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
+            "Authorization": `Bearer ${authStore.accessToken}`,
           },
         });
         if (!response.ok){
@@ -347,6 +347,7 @@ export const useLibraryStore = defineStore("library", {
           library: data?.library,
           auther: data?.auther,
           todo: data?.todo,
+          checklist: data?.checklist,
           created_at: data?.created_at
         })) || data;
       }catch(error){
@@ -354,11 +355,11 @@ export const useLibraryStore = defineStore("library", {
         throw new Error;
       }
     },
-    async fetchLibraryTodoId(){
+    async fetchLibraryTodoId(id){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       try{
-        const response = await fetch(`${config.public.apiBase}/libtodo/`, {
+        const response = await fetch(`${config.public.apiBase}/libtodo/${id}/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -375,11 +376,111 @@ export const useLibraryStore = defineStore("library", {
           library: data.library,
           auther: data.auther,
           todo: data.todo,
+          checklist: data.checklist,
           created_at: data.created_at
         };
       }catch(error){
         console.error(error);
         throw new Error;
+      }
+    },
+    async LibraryAddtodo(tag, todo, auther){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/libadd/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`,
+          },
+          body: JSON.stringify({
+            tag: tag,
+            todo: todo.trim(),
+            auther: auther,
+          })
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "ToDOの追加は失敗しました。");
+        }
+        const data = await response.json();
+        return {
+          id: data.id,
+          tag: data.tag,
+          todo: data.todo,
+          auther: data.auther,
+          checklist: data.checklist,
+          created_at: data.created_at,
+        }
+      }catch(error){
+        console.error(error);
+        throw new Error;
+      }
+    },
+    async getLibraryAddTodo(){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/libadd/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`,
+          }
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "ToDOの取得を失敗");
+        }
+        const data = await response.json();
+        if (!Array.isArray(data)){
+          throw new Error('APIレスポンスが配列ではありません。')
+        };
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error;
+      }
+    },
+    async libraryCheck(id, isCheck){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/libadd/${id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+          body: JSON.stringify({
+            checklist: isCheck,
+          }),
+        });
+        const response_header = await fetch(`${config.public.apiBase}/libtodo/${id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+          body: JSON.stringify({
+            checklist: isCheck,
+          }),
+        });
+        if (!response.ok || !response_header.ok){
+          const errorData = await response.json() || await response_header.json();
+          throw new Error(errorData.detail || "todoのチェックに失敗しました。");
+        }
+        const data = await response.json();
+        const data_header = await response_header.json();
+        return {
+          id: data.id || data_header.id,
+          checklist: data.checklist || data_header.checklist,
+          created_at: data.created_at || data_header.created_at,
+        };
+      }catch(error){
+        console.error("ToDOのチェック機能エラー", error);
+        throw error;
       }
     },
   },
