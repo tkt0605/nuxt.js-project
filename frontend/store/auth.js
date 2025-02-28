@@ -521,6 +521,7 @@ export const useAuthStore = defineStore('auth', {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || "addtodoのチェックに失敗しました。");
                 };
+                
                 const data = await response.json();
                 console.log("addtodoのチェック成功");
                 return {

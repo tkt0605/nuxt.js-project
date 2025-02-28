@@ -49,7 +49,7 @@ export const useLibraryStore = defineStore("library", {
       const config = useRuntimeConfig();
       try {
         const response = await fetch(`${config.public.apiBase}/library/`, {
-          // method: "GET",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${authStore.accessToken}`,
@@ -70,38 +70,6 @@ export const useLibraryStore = defineStore("library", {
       }catch(error){
         console.error("ライブラリ取得失敗:", error);
         throw error;
-      }
-    },
-    async getLibraryId(id){
-      const config = useRuntimeConfig();
-      const authStore = useAuthStore();
-      try{
-        const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
-          }
-        });
-        if (!response.ok){
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "Libraryの取得に失敗しました。");
-        }
-        const data = await response.json();
-        console.log(`取得したLibrary:${data.name}`);
-        return {
-          id: data.id,
-          // 元のdataというobjectから、秘密鍵を解析して名前を取得している
-          name: this.decryptLibraryName(data),
-          owner: data.owner,
-          goal: data.goal,
-          members: data.members,
-          created_at: data.created_at,
-        };
-        // return data;
-      }catch(error){
-        console.error('Libraryの取得に失敗しました。');
-        throw new error;
       }
     },
     decryptLibraryName(library) {
@@ -150,56 +118,7 @@ export const useLibraryStore = defineStore("library", {
         throw new error;
       }
     },
-    async fetchLibraryId(id) {
-      const config = useRuntimeConfig();
-      const authStore = useAuthStore();
-      try{
-        const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
-          },
-        });
-        if (!response.ok){
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "取得失敗");
-        }
-        const data = await response.json();
-        return {
-          goal: data.goal,
-        }
-      }catch(error){
-        console.error(error);
-        throw new error;
-      }
-    },
-    // async getLibraryToken(library){
-    //   const config = useRuntimeConfig();
-    //   const authStore = useAuthStore();
-    //   try{
-    //     const response = await fetch(`${config.public.apiBase}/librarytoken/${library}/`, {
-    //       method: "GET",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "Authorization": `Bearer ${authStore.accessToken}`
-    //       }
-    //     });
-    //     if(!response){
-    //       const errorData = await response.json();
-    //       throw new Error(errorData.detail || "トークンの取得失敗");
-    //     }
-    //     const data = await response.json();
-    //     return {
-    //       library: data.library,
-    //       token: data.token
-    //     }
-    //   }catch(error){
-    //     console.error(error);
-    //     throw new Error(error);
-    //   }
-    // },
-    async CreateLibraryToken(library) {
+    async CreateLibraryToken(tag) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       try{
@@ -210,7 +129,7 @@ export const useLibraryStore = defineStore("library", {
             "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
-            library: library,
+            tag: tag,
           })
         });
         if (!response.ok){
@@ -287,7 +206,7 @@ export const useLibraryStore = defineStore("library", {
         throw new Error;
       }
     },
-    async CreateLibraryTodo(library, auther, todo){
+    async CreateLibraryTodo(tag, auther, todo){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       try{
@@ -298,7 +217,7 @@ export const useLibraryStore = defineStore("library", {
             "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
-            library: library,
+            tag: tag,
             auther: auther,
             todo: todo.trim(),
           })
@@ -311,7 +230,7 @@ export const useLibraryStore = defineStore("library", {
         console.log("Success!!", data);
         return {
           id: data.id,
-          library: data.library,
+          tag: data.tag,
           auther: data.auther,
           todo: data.todo,
           created_at: data.created_at
@@ -321,64 +240,55 @@ export const useLibraryStore = defineStore("library", {
         throw new Error
       }
     },
-    async getLibraryTodo(){
+
+
+    async fetchId(id) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       try{
-        const response = await fetch(`${config.public.apiBase}/libtodo/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`,
-          },
-        });
-        if (!response.ok){
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "ライブラリToDoの取得に失敗");
+        const [response, response_head] = await Promise.allSettled([
+          fetch(`${config.public.apiBase}/library/${id}/`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authStore.accessToken}`
+            }
+          }),
+          fetch(`${config.public.apiBase}/libtodo/${id}/`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authStore.accessToken}`
+            }
+          })
+        ]);
+        let libraryData = null;
+        let libtodoData = null;
+        if (response.status === "fulfilled" && response.value.ok && response.value) {
+          libraryData = await response.value.json();
         }
-        const data = await response.json();
-        if (!Array.isArray(data)){
-          throw new Error('APIレスポンスが取得できない。', error);
+        if (response_head.status === "fulfilled" && response_head.value.ok && response_head.value) {
+          libtodoData = await response_head.value.json();
         }
-        console.log(`取得したLibraryのID:`, data);
-        return data.map(data => ({
-          id: data?.id,
-          title: data?.title,
-          library: data?.library,
-          auther: data?.auther,
-          todo: data?.todo,
-          checklist: data?.checklist,
-          created_at: data?.created_at
-        })) || data;
-      }catch(error){
-        console.error(error);
-        throw new Error;
-      }
-    },
-    async fetchLibraryTodoId(id){
-      const config = useRuntimeConfig();
-      const authStore = useAuthStore();
-      try{
-        const response = await fetch(`${config.public.apiBase}/libtodo/${id}/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`,
-          }
-        });
-        if (!response.ok){
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "ライブラリToDOのID取得失敗。");
+        if(libraryData){
+          return {
+          id: libraryData?.id ?? null,
+          name: this.decryptLibraryName(libraryData) ?? null,
+          owner: libraryData?.owner ?? null,
+          goal: libraryData?.goal ?? null,
+          members: libraryData?.members ?? [],
+          created_at: libraryData?.created_at ?? null,
+          };
+        }else{
+          return{
+            id: libtodoData.id ?? null,
+            tag: libtodoData.tag ?? null,
+            todo: libtodoData.todo ?? null,
+            auther: libtodoData.auther ?? null,
+            checklist: libtodoData.checklist ?? null,
+            created_at: libtodoData.created_at ?? null,
+          };
         }
-        const data = await response.json();
-        return {
-          id: data.id,
-          library: data.library,
-          auther: data.auther,
-          todo: data.todo,
-          checklist: data.checklist,
-          created_at: data.created_at
-        };
       }catch(error){
         console.error(error);
         throw new Error;
@@ -418,26 +328,39 @@ export const useLibraryStore = defineStore("library", {
         throw new Error;
       }
     },
-    async getLibraryAddTodo(){
+    async getLibraryTodo(){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       try{
-        const response = await fetch(`${config.public.apiBase}/libadd/`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`,
-          }
-        });
-        if (!response.ok){
-          const errorData = await response.json();
+        const [response, response_header] = await Promise.all([
+          fetch(`${config.public.apiBase}/libtodo/`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authStore.accessToken}`
+            }
+          }),
+          fetch(`${config.public.apiBase}/libadd/`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authStore.accessToken}`
+            }
+          })
+        ]);
+        if (!response.ok || !response_header.ok){
+          const errorData = await response.json() || await response_header.json();
           throw new Error(errorData.detail || "ToDOの取得を失敗");
         }
         const data = await response.json();
+        const data_header = await response_header.json();
         if (!Array.isArray(data)){
           throw new Error('APIレスポンスが配列ではありません。')
         };
-        return data;
+        if (!Array.isArray(data_header)){
+          throw new Error('APIレスポンスが配列ではありません。')
+        };
+        return [...(data || []), ...(data_header || [])];
       }catch(error){
         console.error(error);
         throw new Error;

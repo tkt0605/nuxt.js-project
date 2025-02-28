@@ -368,7 +368,7 @@
               </div>
             </div>
           </div>
-          <div class="modal-overlay-edit" v-if="isDialogEdit">  
+          <div class="modal-overlay-edit" v-if="isDialogEdit">
             <div class="modal-content-edit">
               <div class="flex-delete">
                 <div v-for="item in getTodoActions" :key="item.id">
@@ -493,13 +493,13 @@ onMounted(async () => {
     console.log("セッション復元成功");
     const routeId = route.params.id;
     //引数goalのみをＡＰＩで取得しているfetchLibraryId()という関数を持ってくる。
-    const LibraryGoal = await libraryStore.fetchLibraryId(routeId);
-    library.value = await libraryStore.getLibraryId(routeId);
+    const LibraryGoal = await libraryStore.fetchId(routeId);
+    library.value = await libraryStore.fetchId(routeId);
     const todos = await libraryStore.getLibraryTodo();
     if (Array.isArray(todos)) {
       // addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId);
       libtodos.value = todos
-        .filter((libtodos) => libtodos.library === routeId)
+        .filter((libtodos) => libtodos.tag === routeId)
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     } else {
       console.error("追加todoの取得に失敗しました。", error);
@@ -528,7 +528,7 @@ const isLibraryMember = computed(() => {
 });
 const getTodoActions = computed(()=> {
   const routeId = route.params.id;
-  const getLibTodo = libtodos.value.filter((item) => item.id === selectTodoId.value && item.library === routeId);
+  const getLibTodo = libtodos.value.filter((item) => item.id === selectTodoId.value && item.tag === routeId);
   return getLibTodo;
 });
 const createGoals = async () => {
@@ -552,7 +552,7 @@ const createToken = async () => {
   try {
     const libtokens = await libraryStore.libraryToken();
     // URLのidに該当するIDをもつLibraryを取得する。
-    const libtoken = await libtokens.find((item) => item.library === routeId);
+    const libtoken = await libtokens.find((item) => item.tag === routeId);
     if (currentUser.id === library.owner && (!libtoken.token || !libtoken)) {
       const createtoken = await libraryStore.CreateLibraryToken(routeId);
       alert("トークン作成完了");
@@ -573,7 +573,7 @@ const joinLibrary = async () => {
   const add_member = authStore.user?.id;
   try {
     const libtokens = await libraryStore.libraryToken();
-    const libtoken = libtokens.find((item) => item.library === routeId);
+    const libtoken = libtokens.find((item) => item.tag === routeId);
     if (library?.members?.includes(add_member)) {
       alert("⚠️ あなたは既にメンバーです。");
       return;

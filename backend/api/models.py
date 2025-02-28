@@ -87,7 +87,7 @@ class Library(models.Model):
 class LibraryToDO(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100, blank=True)
-    library = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
+    tag = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
     todo = models.TextField(verbose_name="task")
     auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="HeaderToDO作者")
     checklist = models.BooleanField(default=False)

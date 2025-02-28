@@ -94,8 +94,8 @@ onMounted(async () => {
     await authStore.restoreSession();
     console.log("セッション復元成功");
     const routeId = route.params.id;
-    libtodo.value = await libraryStore.fetchLibraryTodoId(routeId);
-    const todos = await libraryStore.getLibraryAddTodo();
+    libtodo.value = await libraryStore.fetchId(routeId);
+    const todos = await libraryStore.getLibraryTodo();
     if (Array.isArray(todos)) {
       libaddtodo.value = todos
         .filter((libaddtodo) => libaddtodo.tag === routeId)
