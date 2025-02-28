@@ -81,6 +81,7 @@ import "../../../../assets/css/pages/lid-todo.css";
 import { ref, onMounted, computed } from "vue";
 import { lib } from "crypto-js";
 import { errorMessages } from "vue/compiler-sfc";
+import { nextTick } from "vue";
 const libtodo = ref(null);
 const libaddtodo = ref([]);
 const textKeyWard = ref(null);
@@ -120,25 +121,26 @@ function formatDate(date) {
   return new Date(date).toLocaleDateString("ja-jp", details);
 }
 const LibrarycheckToDO = async (id, isCheck) => {
-    try{
-        const routeId = route.params.id;
-        await libraryStore.libraryCheck(id, isCheck);
-        console.log('チェック状態の更新。');
-        if (libaddtodo.value.id === id || libtodo.value.id === routeId){
-            libaddtodo.value.checklist === isCheck;
-            libtodo.value.checklist === isCheck;
-        }else{
-            const add_index = libaddtodo.value.findIndex((todo) => todo.id === id);
-            const todo_index = libtodo.value.findIndex((todo) => todo.id === routeId);
-            if (add_index !== -1 || todo_index !== -1){
-                libaddtodo.value[add_index].checklist = isCheck;
-                libtodo.value[todo_index].checklist = isCheck;
-            }
-        }
-    }catch(error){
-        console.error(error);
-        throw new Error;
+  try {
+    const routeId = route.params.id;
+    await libraryStore.libraryCheck(id, isCheck);
+    await nextTick();
+    console.log("チェック状態の更新。");
+    if (libaddtodo.value.id === id || libtodo.value.id === routeId) {
+      libaddtodo.value.checklist === isCheck;
+      libtodo.value.checklist === isCheck;
+    } else {
+      const add_index = libaddtodo.value.findIndex((todo) => todo.id === id);
+      const todo_index = libtodo.value.findIndex((todo) => todo.id === routeId);
+      if (add_index !== -1 || todo_index !== -1) {
+        libaddtodo.value[add_index].checklist = isCheck;
+        libtodo.value[todo_index].checklist = isCheck;
+      }
     }
+  } catch (error) {
+    console.error(error);
+    throw new Error();
+  }
 };
 const handleFocus = () => {
   if (isPlaceholderVisable.value) {
@@ -163,7 +165,7 @@ const submitLibAddToDO = async () => {
     return;
   }
   try {
-    const LibAddtodo = await libraryStore.LibraryAddtodo(
+    const LibAddtodo = await libraryStore.CreateTodo(
       todoTagId,
       todoElement,
       currentUser

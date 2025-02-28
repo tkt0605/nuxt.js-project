@@ -259,6 +259,23 @@ li .todo-title {
   border-radius: var(--borderRadius-full, 50%) !important;
   border: #ffffff solid 1px;
 }
+.lib-tmp{
+  position: relative;
+  display: flex;
+  padding: 10px 15px;
+  border-radius: 5px;
+  justify-content: space-between;
+}
+.lib-tmp:hover{
+  background-color: #ccc;
+}
+.lib-turn-page{
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: black;
+  text-decoration: none;
+}
 .create-project {
   display: flex;
   align-items: center;

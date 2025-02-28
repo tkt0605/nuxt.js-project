@@ -422,6 +422,7 @@ import { useAuthStore } from "../../store/auth";
 import { useLibraryStore } from "../../store/libraryStore";
 import "../assets/css/pages/lib-id.css";
 import { ref, onMounted, computed } from "vue";
+import { nextTick } from "vue";
 const library = ref([]);
 const libtoken = ref([]);
 const route = useRoute();
@@ -617,14 +618,15 @@ const submitLibTodo = async (libId) => {
     return;
   }
   try {
-    const createTodo = await libraryStore.CreateLibraryTodo(
+    const createTodo = await libraryStore.CreateTodo(
       libId,
-      auther,
-      todoContent
+      todoContent,
+      auther
     );
     libtodos.value = await libraryStore.getLibraryTodo();
     todoElement.innerText = "";
     console.log("正常に作成");
+    await nextTick();
     router.push(`/lib/${createTodo.library}/t/${createTodo.id}`);
   } catch (error) {
     console.error(error);
