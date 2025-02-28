@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { useRuntimeConfig } from "nuxt/app";
 import { useRouter } from "nuxt/app";
 import { jwtDecode } from 'jwt-decode';
+import { toDisplayString } from "vue";
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         todolist: [],
@@ -228,6 +229,7 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+
         async createToDO(auther, todo) {
             const config = useRuntimeConfig();
             try{
@@ -290,61 +292,7 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        async getAddedToDO() {
-            const config = useRuntimeConfig();
-            try{
-                const response = await fetch(`${config.public.apiBase}/addtodo/`, {
-                    method: "GET",
-                    headers:{
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${this.accessToken}`,
-                     },
-                });
-                if (!response.ok){
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || "追加ToDOの取得に失敗しました。");
-                };
-                const data = await response.json();
-                if (!Array.isArray(data)){
-                    throw new Error('APIレスポンスが配列ではありません。')
-                };
-                return data;
-            }catch(error){
-                console.error("エラー:", error);
-                throw error;
-            }
-        },
-        async getToDO(){
-            const config = useRuntimeConfig();
-            try{
-                const response = await fetch(`${config.public.apiBase}/todolist/`, {
-                    method: 'GET',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${this.accessToken}`,
-                    },
-                });
-                if(!response.ok){
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || "ToDOの取得に失敗しました。");
-                };
-                const data = await response.json();
-                console.log("取得したToDOリスト:", data);
-                if (!Array.isArray(data)) {
-                    throw new Error('APIレスポンスが配列ではありません。');
-                }
-                return {
-                    id: data.id,
-                    title: data.title, // titleがない場合はデフォルト値
-                    checklist: data.checklist,
-                    todo: data.todo,           // todoがない場合は空文字
-                    created_at: data.created_at, // created_atがない場合はデフォルト値
-                };
-            }catch(error){
-                console.error('ToDOリスト取得エラー:', error);
-                throw error;
-            }
-        },
+
         async getToDOByid(id) {
             const config = useRuntimeConfig();
             try{
@@ -403,7 +351,6 @@ export const useAuthStore = defineStore('auth', {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${this.accessToken}`
-                        // "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
                     },
                     body: JSON.stringify({
                         title: newTitle
@@ -420,119 +367,212 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        async getAddedTodoId(){
-            const config = useRuntimeConfig();
-            try{
-                const response = await fetch(`${config.public.apiBase}/addtodo/${data.id}/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${this.accessToken}`
-                        // "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
-                    },
-                });
-                if (!response.ok){
-                    const errorData =  await response.json();
-                    throw new Error(errorData.detail || "Error");
-                };
-                const data = await response.json();
-                return data;
-            }catch(error){
-                console.error(error);
-                throw error;
-            }
-        },
-        async AsideTitle() {
-            const config = useRuntimeConfig();
-            try{
-                const response = await fetch(`${config.public.apiBase}/todolist/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Authorization': `Bearer ${this.accessToken}`,
-                    },
-                });
 
-                if (!response.ok){
-                    const errorgetTitle = await response.json();
-                    throw new Error(errorgetTitle.detail || "TodoのTitleの取得に失敗しました。");
-                };
-                const data = await response.json();
-                console.log('取得したToDOのTitle', data);
-                if (!Array.isArray(data)){
-                    throw new Error('APIレスポンスはありません。');
-                };
-                return data.map(todo => ({
-                    id: todo?.id,
-                    title: todo?.title,
-                    auther: todo?.auther,
-                    created_at: todo?.created_at,
-                }));
-            }catch(error){
-                console.error("Titleの取得に失敗しました。", error);
-                throw error;
-            }
-        },
-        async ToDOchecklist(id, isCheck) {
+        // async getAddedToDO() {
+        //     const config = useRuntimeConfig();
+        //     try{
+        //         const response = await fetch(`${config.public.apiBase}/addtodo/`, {
+        //             method: "GET",
+        //             headers:{
+        //                 "Content-Type": "application/json",
+        //                 "Authorization": `Bearer ${this.accessToken}`,
+        //              },
+        //         });
+        //         if (!response.ok){
+        //             const errorData = await response.json();
+        //             throw new Error(errorData.detail || "追加ToDOの取得に失敗しました。");
+        //         };
+        //         const data = await response.json();
+        //         if (!Array.isArray(data)){
+        //             throw new Error('APIレスポンスが配列ではありません。')
+        //         };
+        //         return data;
+        //     }catch(error){
+        //         console.error("エラー:", error);
+        //         throw error;
+        //     }
+        // },
+        // async getToDO(){
+        //     const config = useRuntimeConfig();
+        //     try{
+        //         const response = await fetch(`${config.public.apiBase}/todolist/`, {
+        //             method: 'GET',
+        //             headers: {
+        //                 "Content-Type": "application/json",
+        //                 "Authorization": `Bearer ${this.accessToken}`,
+        //             },
+        //         });
+        //         if(!response.ok){
+        //             const errorData = await response.json();
+        //             throw new Error(errorData.detail || "ToDOの取得に失敗しました。");
+        //         };
+        //         const data = await response.json();
+        //         console.log("取得したToDOリスト:", data);
+        //         if (!Array.isArray(data)) {
+        //             throw new Error('APIレスポンスが配列ではありません。');
+        //         }
+        //         return {
+        //             id: data.id,
+        //             title: data.title, // titleがない場合はデフォルト値
+        //             checklist: data.checklist,
+        //             todo: data.todo,           // todoがない場合は空文字
+        //             created_at: data.created_at, // created_atがない場合はデフォルト値
+        //         };
+        //     }catch(error){
+        //         console.error('ToDOリスト取得エラー:', error);
+        //         throw error;
+        //     }
+        // },
+        // async AsideTitle() {
+        //     const config = useRuntimeConfig();
+        //     try{
+        //         const response = await fetch(`${config.public.apiBase}/todolist/`, {
+        //             method: "GET",
+        //             headers: {
+        //                 "Content-Type": "application/json",
+        //                 'Authorization': `Bearer ${this.accessToken}`,
+        //             },
+        //         });
+
+        //         if (!response.ok){
+        //             const errorgetTitle = await response.json();
+        //             throw new Error(errorgetTitle.detail || "TodoのTitleの取得に失敗しました。");
+        //         };
+        //         const data = await response.json();
+        //         console.log('取得したToDOのTitle', data);
+        //         if (!Array.isArray(data)){
+        //             throw new Error('APIレスポンスはありません。');
+        //         };
+        //         return data.map(todo => ({
+        //             id: todo?.id,
+        //             title: todo?.title,
+        //             auther: todo?.auther,
+        //             created_at: todo?.created_at,
+        //         }));
+        //     }catch(error){
+        //         console.error("Titleの取得に失敗しました。", error);
+        //         throw error;
+        //     }
+        // },
+        async AllfetchToDO(){
             const config = useRuntimeConfig();
             try{
-                const response = await fetch(`${config.public.apiBase}/todolist/${id}/`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${this.accessToken}`,
-                    },
-                    body: JSON.stringify({
-                        checklist: isCheck,
-                    })
-                });
-                if (!response.ok){
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || "todoのチェックに失敗しました。" );
-                };
-                const data = await response.json();
-                console.log("todoのチェック成功");
-                return {
-                    id: data.id,
-                    title: data.title,
-                    checklist: data.checklist,
-                    created_at: data.created_at,
+                const [todolist, addtodo] = await Promise.allSettled([
+                    fetch(`${config.public.apiBase}/todolist/`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.accessToken}`
+                        }
+                    }),
+                    fetch(`${config.public.apiBase}/addtodo/`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.accessToken}`
+                        }
+                    }),
+                ]);
+                let TodoGet = null;
+                let AddGet = null;
+                if (todolist.status === "fulfilled" && todolist.value.ok){
+                    TodoGet = await todolist.value.json();
+                }
+                if (addtodo.status === "fulfilled" && addtodo.value.ok){
+                    AddGet = await addtodo.value.json();
+                }
+                if(TodoGet){
+                    return{
+                        id: TodoGet.id ?? null,
+                        title: TodoGet.title ?? null,
+                        todo: TodoGet.todo ?? null,
+                        checklist: TodoGet.checklist ?? null,
+                        auther: TodoGet.auther ?? null,
+                        created_at: TodoGet.created_at ?? null,
+                    };
+                }else{
+                    return{
+                        id: AddGet.id ?? null,
+                        todo: AddGet.todo ?? null,
+                        checklist: AddGet.checklist ?? null,
+                        todo_tag: AddGet.todo_tag ?? null,
+                        created_at: AddGet.created_at ?? null,
+                    };
                 }
             }catch(error){
-                console.error("ToDOのチェック機能エラー:", error);
-                throw error;
+                console.error(error);
+                throw new Error;
             }
         },
-        async AddToDOchecklist(id, todo_tag , isCheck){
+        // async getAddedTodoId(){
+        //     const config = useRuntimeConfig();
+        //     try{
+        //         const response = await fetch(`${config.public.apiBase}/addtodo/${data.id}/`, {
+        //             method: "GET",
+        //             headers: {
+        //                 "Content-Type": "application/json",
+        //                 "Authorization": `Bearer ${this.accessToken}`
+        //             },
+        //         });
+        //         if (!response.ok){
+        //             const errorData =  await response.json();
+        //             throw new Error(errorData.detail || "Error");
+        //         };
+        //         const data = await response.json();
+        //         return data;
+        //     }catch(error){
+        //         console.error(error);
+        //         throw error;
+        //     }
+        // },
+        async TodoCheck(id, isCheck){
             const config = useRuntimeConfig();
             try{
-                const response = await fetch(`${config.public.apiBase}/addtodo/${id}/`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${this.accessToken}`,
-                    },
-                    body: JSON.stringify({
-                        checklist: isCheck,
-                        todo_tag: todo_tag,
+                const [todocheck, addcheck] = await Promise.allSettled([
+                    fetch(`${config.public.apiBase}/todolist/${id}/`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.accessToken}`,
+                        },
+                        body: JSON.stringify({
+                            checklist: isCheck
+                        })
                     }),
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || "addtodoのチェックに失敗しました。");
-                };
-                
-                const data = await response.json();
-                console.log("addtodoのチェック成功");
-                return {
-                    id: data.id,
-                    todo_tag: data.todo_tag,
-                    checklist: data.checklist,
-                    created_at: data.created_at,
-                };
+                    fetch(`${config.public.apiBase}/addtodo/${id}/`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.accessToken}`
+                        },
+                        body: JSON.stringify({
+                            checklist: isCheck,
+                        })
+                    })
+                ]);
+                let ischeck = null;
+                let add_check = null;
+                if (todocheck.status === "fulfilled" && todocheck.value.ok){
+                    ischeck = await todocheck.value.json();
+                }
+                if (addcheck.status === "fulfilled" && addcheck.value.ok){
+                    add_check = await addcheck.value.json();
+                }
+                if (ischeck){
+                    return{
+                    id: ischeck.id,
+                    checklist: ischeck.checklist,
+                    created_at: ischeck.created_at,
+                    }
+                }else{
+                    return{
+                    id: add_check.id,
+                    checklist: add_check.checklist,
+                    created_at: add_check.created_at,
+                    }
+                }
             }catch(error){
-                console.error("AddToDOのチェック機能エラー", error);
-                throw error;
+
             }
         }
     },

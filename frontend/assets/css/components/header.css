@@ -111,7 +111,7 @@ aside.closed .logo {
   top: 0px;
 }
 .lib-menu{
-  padding: 15px 20px;
+  padding: 5px;
 }
 ul .aside-todo-padding {
   padding: 10px 15px;
@@ -259,6 +259,9 @@ li .todo-title {
   border-radius: var(--borderRadius-full, 50%) !important;
   border: #ffffff solid 1px;
 }
+.lib-line{
+  margin-left: 10px;
+}
 .lib-tmp{
   position: relative;
   display: flex;
@@ -275,6 +278,11 @@ li .todo-title {
   align-items: center;
   color: black;
   text-decoration: none;
+}
+.lib-turn-page svg{
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 10px;
 }
 .create-project {
   display: flex;

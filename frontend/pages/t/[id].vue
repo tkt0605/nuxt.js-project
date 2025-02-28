@@ -17,7 +17,7 @@
       </div>
       <div v-if="addtodo.length > 0">
         <div v-for="todo in addtodo" :key="todo.id" class="item">
-          <input type="checkbox" :checked="todo.checklist" @change="checkAddToDO(todo.id, todo.todo_tag, $event.target.checked)" class="checkboxs" />
+          <input type="checkbox" :checked="todo.checklist" @change="checkAddToDO(todo.id, $event.target.checked)" class="checkboxs" />
           <div class="details">
             <p class="time">{{ formatDate(todo?.created_at) }}</p>
             <!-- <p class="text">{{ todo?.todo }}</p> -->
@@ -30,7 +30,7 @@
     <div class="text-base_id">
       <div class="">
         <div class="form_id">
-          
+
           <div class="texter" id="texter">
             <div
               id="text_keybord"
@@ -117,7 +117,8 @@ onMounted(async () => {
     console.log("セッション復元成功。");
     const routeId = route.params.id;
     todolist.value = await authStore.getToDOByid(routeId);
-    const todos = await authStore.getAddedToDO();
+    // const todos = await authStore.getAddedToDO();
+    const todos = await authStore.AllfetchToDO();
     if (Array.isArray(todos)) {
       // addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId);
       addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
@@ -130,7 +131,7 @@ onMounted(async () => {
 });
 const checkToDO = async (id, isCheck) => {
   try {
-    await authStore.ToDOchecklist(id, isCheck);
+    await authStore.TodoCheck(id, isCheck);
     console.log("チェック状態の更新が起こりました。");
     if (todolist.value.id === id) {
       todolist.value.checklist = isCheck;
@@ -144,15 +145,15 @@ const checkToDO = async (id, isCheck) => {
     console.error("チェックの更新中にエラーが発生しました:", error);
   }
 };
-const checkAddToDO = async(id, todo_tag, isCheck) => {
+const checkAddToDO = async(id, isCheck) => {
   try{
-    const routeId = route.params.id;
-    await authStore.AddToDOchecklist(id, todo_tag, isCheck);
+    // const routeId = route.params.id;
+    await authStore.TodoCheck(id, isCheck);
     console.log("チェック状態の更新が起こりました。(追加)");
-    if (addtodo.value.id === id, addtodo.value.todo_tag === routeId){
+    if (addtodo.value.id === id){
       addtodo.value.checklist === isCheck;
     }else{
-      const add_index = addtodo.value.findIndex((todo) => todo.id === id && todo.todo_tag ===todo_tag);
+      const add_index = addtodo.value.findIndex((todo) => todo.id === id);
       if (add_index !== -1){
         addtodo.value[add_index].checklist = isCheck;
       }

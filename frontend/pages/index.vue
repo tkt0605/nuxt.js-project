@@ -72,7 +72,7 @@ onMounted(async () => {
   try {
     await authStore.restoreSession();
     console.log("セッション復元成功。");
-    const todos = await authStore.getToDO();
+    const todos = await authStore.AllfetchToDO();
     const usr = await authStore.getUserInfo();
     user.value = usr;
     console.log("ログインユーザー情報取得:", user.value);
@@ -117,7 +117,7 @@ const submitToDO = async () => {
   }
   try {
     const newtodo = await authStore.createToDO(auther, todoContent);
-    todolist.value = await authStore.getToDO();
+    todolist.value = await authStore.AllfetchToDO();
     todoElement.innerText = "";
     console.log("todoが作成されました。");
     return router.push(`/t/${newtodo.id}`);

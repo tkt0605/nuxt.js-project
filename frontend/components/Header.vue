@@ -655,10 +655,15 @@ onMounted(async () => {
       }
     }
     libraries.value = await libraryStore.fetchLibraries();
-    todolist.value = await authStore.AsideTitle();
-    todolist.value.sort(
+    const todos = await authStore.AllfetchToDO();
+    todolist.value = todos.filter((todolist) => todolist.auther === currentUser.id).sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
+    // if(Array.isArray(todos)){
+    //   todolist.value = todos.filter((todolist)=>todolist.auther === currentUser.id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    // }else{
+    //   console.error(error);
+    // }
     const categorized = categorizeTodos(todolist.value);
     categorizedTodos.value =
       { ...categorized } && categorizeTodos(todolist.value);
@@ -852,7 +857,6 @@ const categorizeTodos = (todolist) => {
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
   };
 };
-
 const categorizedTodos = ref({
   today: [],
   yesterday: [],
