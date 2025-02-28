@@ -147,11 +147,11 @@
         </li>
         <div class="create-project">
           <h2 id="snor-newproject" class="project-title">マイ・ライブラリ</h2>
-          <span class :data-allow-mismatch="closed">
+          <span >
             <button
               aria-label="新しいライブラリ作成"
               class="create-project-button"
-              @click="openDialog"
+              @click.prevent="openDialog"
             >
               <div class="icon-manager">
                 <svg
@@ -290,7 +290,7 @@
                   <NuxtLink
                     :to="`/t/${todo.id}`"
                     class="todo_id"
-                    @click="navigateToTodo(todo.id)"
+                    @click.prevent="navigateToTodo(todo.id)"
                   >
                     <div class="todo-title">
                       <span v-if="todo.title === ''">{{
@@ -339,7 +339,7 @@
                   <NuxtLink
                     :to="`/t/${todo.id}`"
                     class="todo_id"
-                    @click="navigateToTodo(todo.id)"
+                    @click.prevent="navigateToTodo(todo.id)"
                   >
                     <div class="todo-title">
                       <span v-if="todo.title === ''">{{
@@ -388,7 +388,7 @@
                   <NuxtLink
                     :to="`/t/${todo.id}`"
                     class="todo_id"
-                    @click="navigateToTodo(todo.id)"
+                    @click.prevent="navigateToTodo(todo.id)"
                   >
                     <div class="todo-title">
                       <span v-if="todo.title === ''">{{
@@ -435,7 +435,7 @@
                   <NuxtLink
                     :to="`/t/${todo.id}`"
                     class="todo_id"
-                    @click="navigateToTodo(todo.id)"
+                    @click.prevent="navigateToTodo(todo.id)"
                   >
                     <div class="todo-title">
                       <span v-if="todo.title === ''">{{
@@ -656,7 +656,7 @@ onMounted(async () => {
     }
     libraries.value = await libraryStore.fetchLibraries();
     const todos = await authStore.AllfetchToDO();
-    todolist.value = todos.filter((todolist) => todolist.auther === currentUser.id).sort(
+    todolist.value = todos.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
     // if(Array.isArray(todos)){
@@ -832,29 +832,10 @@ const categorizeTodos = (todolist) => {
     startOfToday.getTime() - 7 * 24 * 60 * 60 * 1000
   );
   return {
-    today: todolist
-      .filter((todo) => new Date(todo.created_at) >= startOfToday)
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
-
-    yesterday: todolist
-      .filter(
-        (todo) =>
-          new Date(todo.created_at) >= startOfYesterday &&
-          new Date(todo.created_at) < startOfToday
-      )
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
-
-    lastsevendays: todolist
-      .filter(
-        (todo) =>
-          new Date(todo.created_at) >= startOfLastSevenDays &&
-          new Date(todo.created_at) < startOfYesterday
-      )
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
-
-    older: todolist
-      .filter((todo) => new Date(todo.created_at) < startOfLastSevenDays)
-      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    today: todolist.filter((todo) =>new Date(todo.created_at) >= startOfToday).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    yesterday: todolist.filter((todo) =>new Date(todo.created_at) >= startOfYesterday && new Date(todo.created_at) < startOfToday).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    lastsevendays: todolist.filter((todo) =>new Date(todo.created_at) >= startOfLastSevenDays && new Date(todo.created_at) < startOfYesterday).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    older: todolist.filter((todo) =>new Date(todo.created_at) < startOfLastSevenDays).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
   };
 };
 const categorizedTodos = ref({

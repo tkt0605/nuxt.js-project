@@ -482,14 +482,14 @@ export const useAuthStore = defineStore('auth', {
                     AddGet = await addtodo.value.json();
                 }
                 if(TodoGet){
-                    return{
-                        id: TodoGet.id ?? null,
-                        title: TodoGet.title ?? null,
-                        todo: TodoGet.todo ?? null,
-                        checklist: TodoGet.checklist ?? null,
-                        auther: TodoGet.auther ?? null,
-                        created_at: TodoGet.created_at ?? null,
-                    };
+                    return TodoGet.map(todo => ({
+                        id: todo.id ?? null,
+                        title: todo.title ?? null,
+                        todo: todo.todo ?? null,
+                        checklist: todo.checklist ?? null,
+                        auther: todo.auther ?? null,
+                        created_at: todo.created_at ?? null,
+                    }));
                 }else{
                     return{
                         id: AddGet.id ?? null,
@@ -504,27 +504,6 @@ export const useAuthStore = defineStore('auth', {
                 throw new Error;
             }
         },
-        // async getAddedTodoId(){
-        //     const config = useRuntimeConfig();
-        //     try{
-        //         const response = await fetch(`${config.public.apiBase}/addtodo/${data.id}/`, {
-        //             method: "GET",
-        //             headers: {
-        //                 "Content-Type": "application/json",
-        //                 "Authorization": `Bearer ${this.accessToken}`
-        //             },
-        //         });
-        //         if (!response.ok){
-        //             const errorData =  await response.json();
-        //             throw new Error(errorData.detail || "Error");
-        //         };
-        //         const data = await response.json();
-        //         return data;
-        //     }catch(error){
-        //         console.error(error);
-        //         throw error;
-        //     }
-        // },
         async TodoCheck(id, isCheck){
             const config = useRuntimeConfig();
             try{
