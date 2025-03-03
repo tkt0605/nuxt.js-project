@@ -229,7 +229,7 @@
   background: white;
   border-radius: 10px;
   width: 650px;
-  height: 425px;
+  height: 310px;
   text-align: left;
   position: relative;
 }
@@ -586,4 +586,51 @@
 }
 .litery-token{
 
+}
+.modal-overlay-name {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-content-name {
+    background: #ffffff;
+    border-radius: 10px;
+    width: 470px;
+    height: 215px;
+  }
+.edit-save{
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 0px;
+}
+.edit-name{
+    border-radius: 25px;
+    padding: 15px;
+    width: 100px;
+    color: #fff;
+    max-height: 35px;
+    height: 100%;
+    background: black;
+}
+.edit-name:hover{
+    border-radius: 25px;
+    padding: 15px;
+    width: 100px;
+    max-height: 35px;
+    height: 100%;
+    background: black;
+    color: #fff;
+}
+.litery-e{
+    color: #000000;
+    font-weight: bold;
 }

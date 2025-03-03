@@ -3,17 +3,17 @@
   <div class="lib-main-bord">
     <div class="sub-bord">
       <div class="function-border">
-        <button class="svg-pro" @click="">
+        <button class="svg-pro" @click="openEditLibtitle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
             height="16"
             fill="currentColor"
-            class="bi bi-folder"
+            class="bi bi-eraser-fill"
             viewBox="0 0 16 16"
           >
             <path
-              d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 1H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
+              d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm.66 11.34L3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"
             />
           </svg>
         </button>
@@ -34,6 +34,36 @@
         </button>
       </div>
       <div class="lib-name">{{ library?.name }}</div>
+    </div>
+    <div v-if="currentUser.id === library.owner">
+      <div class="modal-overlay-name" v-if="isLibTitle">
+        <div class="modal-content-name">
+          <div class="flex-key">
+            <div class="main-header-lib">ライブラリ名の編集</div>
+            <div class="main-info">
+              <div class="lib-token-name">
+                <div class="lib-name-key">{{ library?.name }}/名前の編集</div>
+                <div class="name-input">
+                  <input
+                    v-model="Name"
+                    placeholder="新しいライブラリ名を入力"
+                    type="text"
+                    class="input-field"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="edit-save">
+              <button class="cancel-edit" @click.stop="closedLibtitleEdit">
+                <div class="litery-e">キャンセルする</div>
+              </button>
+              <button class="edit-name" @click.stop="EditName()">
+                <div class="litery">保存する</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div v-if="currentUser.id === library.owner">
       <div class="modal-overlay-key" v-if="iskeyDialog">
@@ -481,6 +511,7 @@ const placeholderText = ref("このライブラリの新しいToDO");
 const isPlaceholderVisible = ref(true);
 const openOptions = ref(null);
 const Goal = ref("");
+const Name = ref([]);
 const Title = ref("");
 const tokenInput = ref("");
 const ismouse = ref(false);
@@ -505,6 +536,13 @@ const selectTodoId = ref(null);
 const isDialogOpen = ref(false);
 const JoinDialogOpen = ref(false);
 const iskeyDialog = ref(false);
+const isLibTitle = ref(false);
+const openEditLibtitle = () => {
+  isLibTitle.value = true;
+};
+const closedLibtitleEdit = () => {
+  isLibTitle.value = false;
+};
 const openOption = (todoId) => {
   selectTodoId.value = todoId;
   isDialogOption.value = true;
@@ -573,6 +611,7 @@ onMounted(async () => {
     // libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
     Goal.value = LibraryGoal.goal || "";
+    Name.value = LibraryGoal.name;
   } catch (error) {
     console.error("Libraryの取得に失敗しました。", error);
     throw new error();
@@ -613,6 +652,22 @@ const createGoals = async () => {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+const EditName = async () => {
+  const routeId = route.params.id;
+  const Newname = Name.value.trim();
+  try {
+    if (currentUser.id === library.owner) {
+      const editName = await libraryStore.LibraryNameEdit(routeId, Newname);
+      console.log("ライブラリ名の新規更新の確認", editName);
+      window.location.reload();
+      return closedLibtitleEdit();
+    }
+    return closedLibtitleEdit();
+  } catch (error) {
+    console.error(error);
+    throw new Error();
   }
 };
 const createToken = async () => {

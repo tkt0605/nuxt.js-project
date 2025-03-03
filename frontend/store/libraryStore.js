@@ -119,6 +119,39 @@ export const useLibraryStore = defineStore("library", {
         throw new error;
       }
     },
+    async LibraryNameEdit(id, name){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      const secretKey = generateSecretKey(); // 🔑 秘密鍵生成
+      const encryptedName = encryptData(name, secretKey); // 🔒 ライブラリ名を暗号化
+      try{
+        const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+          body: JSON.stringify({
+            name: encryptedName,
+          })
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Error");
+        }
+        const data = await response.json();
+        localStorage.setItem(`library_key_${data.id}`, secretKey); // 🔑 秘密鍵を保存
+        this.libraries.push(data);
+        // return data.map((item)=>({
+        //   id: item.id,
+        //   name: this.decryptLibraryName(item),
+        // }));
+        return data;
+      }catch(error){
+        console.error(error);
+        throw new Error;
+      }
+    },
     async CreateLibraryToken(library) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
