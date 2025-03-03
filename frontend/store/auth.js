@@ -367,6 +367,61 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
+
+        async editTitleId(id, newTitle){
+            const config = useRuntimeConfig();
+            try{
+                const [todo, library] = await Promise.allSettled([
+                    fetch(`${config.public.apiBase}/todolist/${id}/`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.accessToken}`
+                        },
+                        body: JSON.stringify({
+                            title: newTitle
+                        }),
+                    }),
+                    fetch(`${config.public.apiBase}/libtodo/${id}/`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.accessToken}`
+                        },
+                        body: JSON.stringify({
+                            title: newTitle
+                        }),
+                    })
+                ]);
+                let TodoList = null;
+                let LibTodo = null;
+
+                if (todo.status === "fulfilled" && todo.value.ok){
+                    TodoList = await todo.value.json();
+                }
+                if (library.status === "fulfilled" && library.value.ok){
+                    LibTodo = await library.value.json();
+                }
+
+                if(TodoList){
+                    return{
+                        id: TodoList.id ?? null,
+                        title: TodoList.title ?? null,
+                        created_at: TodoList.created_at ?? null,
+                    };
+                }else{
+                    return{
+                        id: LibTodo.id ?? null,
+                        title: LibTodo.title ?? null,
+                        created_at: LibTodo.created_at ?? null,
+                    };
+                }
+            }catch(error){
+                console.error(error);
+                throw error;
+            }
+        },
+
         async AllfetchToDO(){
             const config = useRuntimeConfig();
             try{

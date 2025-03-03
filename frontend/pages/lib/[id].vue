@@ -2,21 +2,65 @@
   <Header />
   <div class="lib-main-bord">
     <div class="sub-bord">
-      <button class="svg-pro" @click="createToken">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          class="bi bi-folder"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 1H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
-          />
-        </svg>
-      </button>
+      <div class="function-border">
+        <button class="svg-pro" @click="">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-folder"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 1H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
+            />
+          </svg>
+        </button>
+        <button class="svg-key" @click="createToken">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-key"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5"
+            />
+            <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+          </svg>
+        </button>
+      </div>
       <div class="lib-name">{{ library?.name }}</div>
+    </div>
+    <div v-if="currentUser.id === library.owner">
+      <div class="modal-overlay-key" v-if="iskeyDialog">
+        <div class="modal-content-key">
+          <div class="flex-key">
+            <div class="main-header-lib">シークレットID</div>
+            <div class="main-info">
+              <div class="lib-token-name">
+                <div class="lib-name-key">
+                  {{ library?.name }}のシークレットID
+                </div>
+                <div class="exp-token">
+                  ⚠️ シークレットIDは絶対に漏らさないでください。
+                </div>
+              </div>
+              <div class="token-field" v-for="token in tokens" :key="token.id">
+                <pre class="my-token">{{ token.token }}</pre>
+              </div>
+            </div>
+            <div class="cancel-key">
+              <button class="cancel-token" @click.stop="closedKeyDialog">
+                <div class="litery-token">キャンセルする</div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="text-bord-lib">
       <div class="form_id-lib">
@@ -338,7 +382,7 @@
               </div>
             </div>
           </div>
-          <div class="modal-overlay-delete" v-if="isDialogDelete">
+          <div class="modal-overlay-delete" v-if="isDialogDelete" @click.stop>
             <div class="modal-content-delete">
               <div class="flex-delete">
                 <div v-for="item in getTodoActions" :key="item.id">
@@ -368,11 +412,11 @@
               </div>
             </div>
           </div>
-          <div class="modal-overlay-edit" v-if="isDialogEdit">
+          <div class="modal-overlay-edit" v-if="isDialogEdit" @click.stop>
             <div class="modal-content-edit">
               <div class="flex-delete">
                 <div v-for="item in getTodoActions" :key="item.id">
-                  <div class="main-header">タイトルの編集をします。</div>
+                  <div class="main-header-edit">タイトルの編集をします。</div>
                   <div class="some-info-bord">
                     <div class="exp-header">
                       <div class="lib-name-del" v-if="item.title === ''">
@@ -399,7 +443,10 @@
                       />
                     </div>
                     <div class="action-bord">
-                      <button class="cancel-edit" @click.stop="closedEditDialog">
+                      <button
+                        class="cancel-edit"
+                        @click.stop="closedEditDialog"
+                      >
                         <div class="litery-edit">キャンセルする</div>
                       </button>
                       <button class="save" @click.stop="editTitle(item.id)">
@@ -434,11 +481,13 @@ const placeholderText = ref("このライブラリの新しいToDO");
 const isPlaceholderVisible = ref(true);
 const openOptions = ref(null);
 const Goal = ref("");
+const Title = ref("");
 const tokenInput = ref("");
 const ismouse = ref(false);
 const currentUser = computed(() => authStore.currentUser);
 const libtodos = ref([]);
-const EditTitle = ref([]);
+const EditTitle = ref("");
+const tokens = ref([]);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -455,12 +504,20 @@ const isDialogDelete = ref(false);
 const selectTodoId = ref(null);
 const isDialogOpen = ref(false);
 const JoinDialogOpen = ref(false);
+const iskeyDialog = ref(false);
 const openOption = (todoId) => {
   selectTodoId.value = todoId;
   isDialogOption.value = true;
 };
 const closedOption = () => {
   isDialogOption.value = false;
+};
+const openKeyDialog = () => {
+  // selectTodoId.value = todoId;
+  iskeyDialog.value = true;
+};
+const closedKeyDialog = () => {
+  iskeyDialog.value = false;
 };
 const openEditDialog = (todoId) => {
   selectTodoId.value = todoId;
@@ -507,6 +564,12 @@ onMounted(async () => {
     } else {
       console.error("追加todoの取得に失敗しました。", error);
     }
+    const lib_tokens = await libraryStore.libraryToken();
+    if (Array.isArray(lib_tokens)) {
+      tokens.value = lib_tokens.filter((items) => items.library === routeId);
+    } else {
+      console.error("トークンの取得失敗");
+    }
     // libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
     Goal.value = LibraryGoal.goal || "";
@@ -529,9 +592,11 @@ const isLibraryMember = computed(() => {
   const isMember = library?.members?.includes(currentUser?.id);
   return isMember;
 });
-const getTodoActions = computed(()=> {
+const getTodoActions = computed(() => {
   const routeId = route.params.id;
-  const getLibTodo = libtodos.value.filter((item) => item.id === selectTodoId.value && item.tag === routeId);
+  const getLibTodo = libtodos.value.filter(
+    (item) => item.id === selectTodoId.value && item.tag === routeId
+  );
   return getLibTodo;
 });
 const createGoals = async () => {
@@ -553,16 +618,18 @@ const createGoals = async () => {
 const createToken = async () => {
   const routeId = route.params.id;
   try {
-    const libtokens = await libraryStore.libraryToken();
-    // URLのidに該当するIDをもつLibraryを取得する。
-    const libtoken = await libtokens.find((item) => item.tag === routeId);
-    if (currentUser.id === library.owner && (!libtoken.token || !libtoken)) {
-      const createtoken = await libraryStore.CreateLibraryToken(routeId);
-      alert("トークン作成完了");
-      console.log("token作成完了");
-      return createtoken;
+    if (currentUser.id === library.owner) {
+      const libtokens = await libraryStore.libraryToken();
+      const libtoken = libtokens.find((item) => item.library === routeId);
+      if (!libtoken.token || !libtoken) {
+        const createtoken = await libraryStore.CreateLibraryToken(routeId);
+        alert("トークン作成完了");
+        console.log("token作成完了");
+        return createtoken;
+      }
+      return openKeyDialog();
     } else {
-      alert("あなたは作成権限がありません");
+      openKeyDialog();
       throw new Error();
     }
   } catch (error) {
@@ -576,7 +643,7 @@ const joinLibrary = async () => {
   const add_member = authStore.user?.id;
   try {
     const libtokens = await libraryStore.libraryToken();
-    const libtoken = libtokens.find((item) => item.tag === routeId);
+    const libtoken = libtokens.find((item) => item.library === routeId);
     if (library?.members?.includes(add_member)) {
       alert("⚠️ あなたは既にメンバーです。");
       return;
@@ -636,24 +703,25 @@ const submitLibTodo = async (libId) => {
   }
 };
 const PushTodoPage = async (todoId) => {
-  try{
+  try {
     const routeId = route.params.id;
     router.push(`/lib/${routeId}/t/${todoId}`);
-  }catch(error){
+  } catch (error) {
     console.error("アクセス失敗:", error);
-    throw new Error;
+    throw new Error();
   }
 };
-const editTitle = async(todoId)=>{
+const editTitle = async (todoId) => {
   const newTitle = EditTitle.value.trim();
-  if(!newTitle)return;
-  try{
+  if (!newTitle) return;
+  try {
     const Edittitle = await authStore.editTitleId(todoId, newTitle);
     console.log("タイトル更新の完了", Edittitle);
-    closeDialog();
-  }catch(error){
+    window.location.reload();
+    return closedOption();
+  } catch (error) {
     console.error(error);
-    throw new Error;
+    throw new Error();
   }
-}
+};
 </script>

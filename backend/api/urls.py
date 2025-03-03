@@ -24,11 +24,6 @@ urlpatterns = [
     path('signup/', RegisterView.as_view(), name='signup'),
     path("api/todolist/<uuid:id>/", views.delete_todo, name="delete_todo"),
     path("library/<uuid:library>/", LibraryTokenViewset.as_view({'get': 'retrieve'})),
-    path('send-otp/', views.send_otp, name='send_otp'),
-    path('verify-otp/', views.verify_otp, name='verify_otp'),
-    # path('t/', ToDOsListView.as_view(), name='todo_list'),
-    # path('t/<uuid:pk>/', ToDODetailView.as_view(), name="todo_details")
 ]
-
 if settings.DEBUG:
     urlpatterns +=  static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

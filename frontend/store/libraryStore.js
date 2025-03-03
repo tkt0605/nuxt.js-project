@@ -119,7 +119,7 @@ export const useLibraryStore = defineStore("library", {
         throw new error;
       }
     },
-    async CreateLibraryToken(tag) {
+    async CreateLibraryToken(library) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       try{
@@ -130,7 +130,7 @@ export const useLibraryStore = defineStore("library", {
             "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
-            tag: tag,
+            library: library,
           })
         });
         if (!response.ok){
@@ -144,6 +144,13 @@ export const useLibraryStore = defineStore("library", {
         throw new error;
       }
     },
+    // async getTokenId(library){
+    //   const cinfig = useRuntimeConfig();
+    //   const authStore = useAuthStore();
+    //   try{
+    //     const response = await fetch(`${cinfig.public.apiBase}/library/`)
+    //   }
+    // },
     async libraryToken(){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
