@@ -395,6 +395,7 @@
                         class="input-field"
                         type="text"
                         placeholder="タイトルの編集"
+                        @click.stop
                       />
                     </div>
                     <div class="action-bord">
@@ -437,6 +438,7 @@ const tokenInput = ref("");
 const ismouse = ref(false);
 const currentUser = computed(() => authStore.currentUser);
 const libtodos = ref([]);
+const EditTitle = ref([]);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -642,4 +644,16 @@ const PushTodoPage = async (todoId) => {
     throw new Error;
   }
 };
+const editTitle = async(todoId)=>{
+  const newTitle = EditTitle.value.trim();
+  if(!newTitle)return;
+  try{
+    const Edittitle = await authStore.editTitleId(todoId, newTitle);
+    console.log("タイトル更新の完了", Edittitle);
+    closeDialog();
+  }catch(error){
+    console.error(error);
+    throw new Error;
+  }
+}
 </script>

@@ -14,3 +14,4 @@ dj-rest-auth==6.0.0
 djangorestframework-simplejwt==5.3.1
 # djoser==2.2.3
 django-environ==0.11.2
+python-decouple>=3.8

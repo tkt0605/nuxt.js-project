@@ -24,7 +24,8 @@ const signup = async() =>{
   try{
     await authStore.signup(email.value, password.value);
     console.log('アカウント登録:', authStore.user);
-    router.push('/');
+    localStorage.setItem("signup_email", email.value);
+    router.push('/otp-verification');
   }catch(error){
     console.error('アカウント登録エラー:', error);
     throw error;
