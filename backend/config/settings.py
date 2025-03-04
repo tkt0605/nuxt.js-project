@@ -17,7 +17,11 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 from datetime import timedelta
 import environ
+#nv = environ.Env()
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 env = environ.Env()
+#env.read_env(os.path.join(BASE_DIR, ".env"))  # 明示的に .env のパスを指定
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
