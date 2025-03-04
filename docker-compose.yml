@@ -1,37 +1,107 @@
+# services:
+#   backend:
+#     build:
+#       context: ./backend
+#       dockerfile: dockerfile
+#     container_name: backend
+#     env_file:
+#       - .env
+#     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 3
+#     volumes:
+#       - ./backend:/backend
+#     ports:
+#       - "8001:8000"
+#     environment:
+#       - DJANGO_SETTINGS_MODULE=config.settings
+#       - DJANGO_ALLOWED_HOSTS=localhost
+#       - DATABASE_URL=mysql://takato:0605@db:3306/todolist
+#       - DATABASE_NAME=todolist
+#       - DATABASE_USER=takato
+#       - DATABASE_PASSWORD=0605
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     networks:
+#       - todo-networks
+#   frontend:
+#     build:
+#       context: ./frontend
+#       dockerfile: dockerfile
+#     container_name: frontend
+#     # command: npm run dev
+#     # command: npm run build && npm run start
+#     volumes:
+#       - ./frontend:/frontend
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - HOST=0.0.0.0
+#       - PORT=3000
+#     networks:
+#       - todo-networks
+#   db:
+#     image: mysql:8.0
+#     container_name: db
+#     ports:
+#       - "3306:3306"
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=20050605
+#       - MYSQL_DATABASE=todolist
+#       - MYSQL_USER=takato
+#       - MYSQL_PASSWORD=0605
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+#     healthcheck:
+#       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+#       interval: 1m30s
+#       timeout: 30s
+#       retries: 5
+#       start_period: 30s
+#     networks:
+#       - todo-networks
+#   nginx:
+#     image: nginx:latest
+#     container_name: nginx_server
+#     ports:
+#       - 80:80
+#     volumes:
+#       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+#     depends_on:
+#       - frontend
+#       - backend
+#     networks:
+#       - todo-networks
+# volumes:
+#   mysql_data:
+# networks:
+#   todo-networks:
+#     driver: bridge
 services:
-  backend: 
-    build: 
+  backend:
+    build:
       context: ./backend
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     container_name: backend
     env_file:
       - .env
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 3
-    volumes:
-      - ./backend:/backend
     ports:
       - "8001:8000"
-    environment: 
+    environment:
       - DJANGO_SETTINGS_MODULE=config.settings
-      - DJANGO_ALLOWED_HOSTS=localhost
-      - DATABASE_URL=mysql://takato:0605@db:3306/todolist
-      - DATABASE_NAME=todolist
-      - DATABASE_USER=takato
-      - DATABASE_PASSWORD=0605
     depends_on:
       db:
         condition: service_healthy
     networks:
       - todo-networks
-  frontend: 
-    build: 
+
+  frontend:
+    build:
       context: ./frontend
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     container_name: frontend
-    # command: npm run dev
     # command: npm run build && npm run start
-    volumes:
-      - ./frontend:/frontend
     ports:
       - "3000:3000"
     environment:
@@ -39,16 +109,14 @@ services:
       - PORT=3000
     networks:
       - todo-networks
+
   db:
     image: mysql:8.0
     container_name: db
     ports:
       - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=20050605
-      - MYSQL_DATABASE=todolist
-      - MYSQL_USER=takato
-      - MYSQL_PASSWORD=0605
+    env_file:
+      - .env
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
@@ -60,20 +128,26 @@ services:
       start_period: 30s
     networks:
       - todo-networks
-  nginx: 
+
+  nginx:
     image: nginx:latest
     container_name: nginx_server
     ports:
-      - 80:80
+      - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     depends_on:
-      - frontend
-      - backend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
     networks:
       - todo-networks
+
 volumes:
   mysql_data:
+
 networks:
   todo-networks:
     driver: bridge
+

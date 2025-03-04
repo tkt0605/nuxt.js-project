@@ -1,16 +1,36 @@
-FROM node:18
-RUN apt-get update && apt-get install -y curl && \
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    rm -rf /var/lib/apt/lists/*
+# FROM node:18
+# RUN apt-get update && apt-get install -y curl && \
+#     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+#     apt-get install -y nodejs && \
+#     rm -rf /var/lib/apt/lists/*
+# WORKDIR /frontend
+# COPY ./package*.json ./
+# # # RUN npm uninstall vue-jest
+# # # RUN npm install vue-jest@next --save-dev
+# # RUN npm install @nuxtjs/axios
+# # RUN npm install @nuxtjs/auth-next
+# RUN npm install
+# COPY ./ .
+# EXPOSE 3000
+# # CMD [ "npm", "run", "dev" ]
+# CMD [ "npx",  "nuxi",  "dev"]
+# ✅ Node.js 18 の公式軽量イメージを使用
+FROM node:18-alpine
+
+# ✅ 作業ディレクトリを設定
 WORKDIR /frontend
-COPY ./package*.json ./
-# # RUN npm uninstall vue-jest
-# # RUN npm install vue-jest@next --save-dev
-# RUN npm install @nuxtjs/axios
-# RUN npm install @nuxtjs/auth-next
-RUN npm install
-COPY ./ .
-EXPOSE 3000 
-# CMD [ "npm", "run", "dev" ]
-CMD [ "npx",  "nuxi",  "dev"]
+
+# ✅ 依存関係のキャッシュを活用
+COPY package.json package-lock.json ./
+
+# ✅ 依存関係をインストール (軽量な `ci` を使用)
+RUN npm ci --production
+
+# ✅ 残りのプロジェクトファイルをコピー
+COPY . .
+
+# ✅ ポートを公開
+EXPOSE 3000
+
+# ✅ 本番環境用のCMD
+CMD
