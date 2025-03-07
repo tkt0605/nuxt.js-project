@@ -1,0 +1,100 @@
+import { defineStore } from "pinia";
+import { useRuntimeConfig, useCookie } from "#app";
+import { useRouter } from "nuxt/app";
+import { jwtDecode } from "jwt-decode";
+
+export const useAuthStore = defineStore("auth", {
+  state: () => ({
+    todolist: [],
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+    refreshTokenTimer: null,
+  }),
+  actions: {
+    clearAuth() {
+      this.user = null;
+      this.accessToken = null;
+      this.refreshToken = null;
+      if (this.refreshTokenTimer) {
+        clearTimeout(this.refreshTokenTimer);
+        this.refreshTokenTimer = null;
+      }
+      useCookie("access_token").value = null;
+      useCookie("refresh_token").value = null;
+      useCookie("user").value = null;
+    },
+
+    async restoreSession() {
+      if (process.server) return;
+
+      const accessToken = useCookie("access_token");
+      const refreshToken = useCookie("refresh_token");
+      const userCookie = useCookie("user");
+
+      const accessToken_const = accessToken.value;
+      const refreshToken_const = refreshToken.value;
+      const storeUser = userCookie.value ? JSON.parse(userCookie.value) : null;
+
+      if (accessToken_const && refreshToken_const && storeUser) {
+        this.accessToken = accessToken_const;
+        this.refreshToken = refreshToken_const;
+        this.user = storeUser;
+        this.scheduleTokenRefresh();
+      } else {
+        this.clearAuth();
+      }
+    },
+
+    async refreshToken() {
+      const config = useRuntimeConfig();
+      const router = useRouter();
+      const refreshTokens = useCookie("refresh_token").value;
+
+      if (!refreshTokens) {
+        console.error("リフレッシュトークンがありません。ログインが必要です。");
+        return null;
+      }
+
+      try {
+        const response = await fetch(`${config.public.apiBase}/token/refresh/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refresh: refreshTokens }),
+        });
+
+        if (!response.ok) {
+          console.error("トークンのリフレッシュに失敗しました");
+          return null;
+        }
+
+        const data = await response.json();
+        this.accessToken = data.access;
+        this.refreshToken = data.refresh;
+
+        useCookie("access_token").value = data.access;
+        useCookie("refresh_token").value = data.refresh;
+        this.scheduleTokenRefresh();
+
+        return data.access;
+      } catch (error) {
+        console.error("リフレッシュトークン処理中のエラー:", error.message);
+        return null;
+      }
+    },
+  },
+  getters: {
+    isAuthenticated(state) {
+      return !!state.accessToken;
+    },
+    currentUser(state) {
+      return state.user
+        ? {
+            id: state.user.id,
+            email: state.user.email,
+            avatar: state.user.avatar,
+          }
+        : null;
+    },
+  },
+});

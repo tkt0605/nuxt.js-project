@@ -13,6 +13,7 @@
 </template>
 
 <script setup>
+import '../../assets/css/login.css';
 import { ref } from 'vue';
 import { useAuthStore } from '../../store/auth';
 import { useRouter } from 'nuxt/app';

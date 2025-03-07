@@ -81,11 +81,24 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
+      args:
+        ENGINE: ${ENGINE}
+        DATABASE_NAME: ${DATABASE_NAME}
+        DATABASE_USER: ${DATABASE_USER}
+        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+        DATABASE_HOST: ${DATABASE_HOST}
+        DATABASE_PORT: ${DATABASE_PORT}
     container_name: backend
+    restart: always
     env_file:
       - .env
     command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --timeout 120 --workers 3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     ports:
       - "8001:8000"
     environment:
@@ -99,9 +112,10 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: frontend
-    # command: npm run build && npm run start
+    command: npm run build && npm run start
+    restart: always
     ports:
       - "3000:3000"
     environment:
@@ -111,8 +125,9 @@ services:
       - todo-networks
 
   db:
-    image: mysql:8.0
+    build: ./mysql
     container_name: db
+    restart: always
     ports:
       - "3306:3306"
     env_file:
@@ -123,7 +138,7 @@ services:
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 1m30s
-      timeout: 30s
+      timeout: 10s
       retries: 5
       start_period: 30s
     networks:

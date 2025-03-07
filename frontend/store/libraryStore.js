@@ -8,6 +8,7 @@ import {
 import { definePayloadPlugin, useAppConfig, useRuntimeConfig } from "nuxt/app";
 import { useRouter } from "nuxt/app";
 import { useAuthStore } from "~/store/auth";
+import { useCookie } from "nuxt/app";
 import { renderSlot } from "vue";
 import { walk } from "vue/compiler-sfc";
 export const useLibraryStore = defineStore("library", {
@@ -20,12 +21,13 @@ export const useLibraryStore = defineStore("library", {
       const authStore = useAuthStore();
       const secretKey = generateSecretKey(); // 🔑 秘密鍵生成
       const encryptedName = encryptData(name, secretKey); // 🔒 ライブラリ名を暗号化
+      const token = useCookie("access_token");
       try {
         const response = await fetch(`${config.public.apiBase}/library/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`,
+            "Authorization": `Bearer ${token.value}`
           },
           body: JSON.stringify({
             name: encryptedName,
@@ -48,12 +50,13 @@ export const useLibraryStore = defineStore("library", {
     async fetchLibraries() {
       const authStore = useAuthStore();
       const config = useRuntimeConfig();
+      const token = useCookie("access_token");
       try {
         const response = await fetch(`${config.public.apiBase}/library/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`,
+            "Authorization": `Bearer ${token.value}`,
           },
         });
 
@@ -75,6 +78,7 @@ export const useLibraryStore = defineStore("library", {
     },
     decryptLibraryName(library) {
         const secretKey = localStorage.getItem(`library_key_${library.id}`);
+        // const token = useCookie("access_token").value;
         if (!secretKey){
             console.warn(`🔒 ライブラリ「${library.id}」の秘密鍵が見つかりません`);
             return "暗号化されたライブラリ";
@@ -96,12 +100,13 @@ export const useLibraryStore = defineStore("library", {
     async LibraryCreategoal(id, goal){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
+            "Authorization": `Bearer ${token.value}`
           },
           body: JSON.stringify({
             goal: goal.trim(),
@@ -122,6 +127,7 @@ export const useLibraryStore = defineStore("library", {
     async LibraryNameEdit(id, name){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       const secretKey = generateSecretKey(); // 🔑 秘密鍵生成
       const encryptedName = encryptData(name, secretKey); // 🔒 ライブラリ名を暗号化
       try{
@@ -129,7 +135,7 @@ export const useLibraryStore = defineStore("library", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
+            "Authorization": `Bearer ${token.value}`
           },
           body: JSON.stringify({
             name: encryptedName,
@@ -155,12 +161,13 @@ export const useLibraryStore = defineStore("library", {
     async CreateLibraryToken(library) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const response = await fetch(`${config.public.apiBase}/librarytoken/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
+            "Authorization": `Bearer ${token.value}`
           },
           body: JSON.stringify({
             library: library,
@@ -187,12 +194,13 @@ export const useLibraryStore = defineStore("library", {
     async libraryToken(){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const response = await fetch(`${config.public.apiBase}/librarytoken/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
+            "Authorization": `Bearer ${token.value}`
           },
         });
         if (!response.ok){
@@ -212,11 +220,12 @@ export const useLibraryStore = defineStore("library", {
     async joinToLibrary(id, add_memberId){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const currentlibraryResponse = await fetch(`${config.public.apiBase}/library/${id}/`, {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
+            "Authorization": `Bearer ${token.value}`
           }
         });
         if (!currentlibraryResponse.ok){
@@ -229,7 +238,7 @@ export const useLibraryStore = defineStore("library", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authStore.accessToken}`
+            "Authorization": `Bearer ${token.value}`
           },
           body: JSON.stringify({
             members: UpdateMember,
@@ -251,20 +260,21 @@ export const useLibraryStore = defineStore("library", {
     async fetchId(id) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const [response, response_head] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/library/${id}/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`
+              "Authorization": `Bearer ${token.value}`
             }
           }),
           fetch(`${config.public.apiBase}/libtodo/${id}/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`
+              "Authorization": `Bearer ${token.value}`
             }
           })
         ]);
@@ -303,13 +313,14 @@ export const useLibraryStore = defineStore("library", {
     async CreateTodo(tag, todo, auther){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const [libtodo, addtodo] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/libtodo/`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`
+              "Authorization": `Bearer ${token.value}`
             },
             body: JSON.stringify({
               tag: tag,
@@ -321,7 +332,7 @@ export const useLibraryStore = defineStore("library", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`,
+              "Authorization": `Bearer ${token.value}`,
             },
             body: JSON.stringify({
               tag: tag,
@@ -364,20 +375,21 @@ export const useLibraryStore = defineStore("library", {
     async getLibraryTodo(){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const [response, response_header] = await Promise.all([
           fetch(`${config.public.apiBase}/libtodo/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`
+              "Authorization": `Bearer ${token.value}`
             }
           }),
           fetch(`${config.public.apiBase}/libadd/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`
+              "Authorization": `Bearer ${token.value}`
             }
           })
         ]);
@@ -402,13 +414,14 @@ export const useLibraryStore = defineStore("library", {
     async libraryCheck(id, isCheck){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const token = useCookie("access_token");
       try{
         const [head, add] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/libtodo/${id}/`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`
+              "Authorization": `Bearer ${token.value}`
             },
             body: JSON.stringify({
               checklist: isCheck
@@ -418,7 +431,7 @@ export const useLibraryStore = defineStore("library", {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${authStore.accessToken}`
+              "Authorization": `Bearer ${token.value}`
             },
             body: JSON.stringify({
               checklist: isCheck

@@ -1,43 +1,69 @@
-# FROM python:3.12
+FROM python:3.12-slim
+
+ARG ENGINE
+ARG DATABASE_NAME
+ARG DATABASE_USER
+ARG DATABASE_PASSWORD
+ARG DATABASE_HOST
+ARG DATABASE_PORT
+
+ENV ENGINE=$ENGINE
+ENV DATABASE_NAME=$DATABASE_NAME
+ENV DATABASE_USER=$DATABASE_USER
+ENV DATABASE_PASSWORD=$DATABASE_PASSWORD
+ENV DATABASE_HOST=$DATABASE_HOST
+ENV DATABASE_PORT=$DATABASE_PORT
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    default-libmysqlclient-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /backend
+COPY . /backend/
+COPY requirements.txt /backend/
+RUN pip3 install --upgrade pip
+RUN pip3 install --no-cache -r requirements.txt
+# RUN python manage.py collectstatic
+CMD [ "gunicorn", "config.wsgi.application", "--bind", "0.0.0.0:8000" ]
+
+# ✅ 本番環境用
+# FROM python:3.12-slim
+
+# # ✅ 必要なパッケージのみインストール
 # RUN apt-get update && apt-get install -y \
 #     build-essential \
-#     default-libmysqlclient-dev \
+#     libmariadb-dev \
 #     pkg-config \
 #     && rm -rf /var/lib/apt/lists/*
 
+# # ✅ 作業ディレクトリを設定
 # WORKDIR /backend
-# COPY . /backend/
+# ARG ENGINE
+# ARG DATABASE_NAME
+# ARG DATABASE_USER
+# ARG DATABASE_PASSWORD
+# ARG DATABASE_HOST
+# ARG DATABASE_PORT
+
+# ENV ENGINE=$ENGINE
+# ENV DATABASE_NAME=$DATABASE_NAME
+# ENV DATABASE_USER=$DATABASE_USER
+# ENV DATABASE_PASSWORD=$DATABASE_PASSWORD
+# ENV DATABASE_HOST=$DATABASE_HOST
+# ENV DATABASE_PORT=$DATABASE_PORT
+# # ✅ 依存関係のキャッシュを活用
 # COPY requirements.txt /backend/
 # RUN pip3 install --upgrade pip
-# RUN pip3 install --no-cache -r requirements.txt
-# # RUN python manage.py collectstatic
-# CMD [ "gunicorn", "config.wsgi.application", "--bind", "0.0.0.0:8000" ]
-# ✅ 軽量な Python 3.12-slim を使用
-FROM python:3.12-slim
+# RUN pip3 install --no-cache-dir -r requirements.txt
 
-# ✅ 必要なパッケージのみインストール
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libmariadb-dev \
-    pkg-config \
-    && rm -rf /var/lib/apt/lists/*
+# # ✅ 残りのアプリケーションコードをコピー
+# COPY . .
 
-# ✅ 作業ディレクトリを設定
-WORKDIR /backend
+# # ✅ 静的ファイルを収集（Djangoなら必要）
+# RUN python manage.py collectstatic --noinput
 
-# ✅ 依存関係のキャッシュを活用
-COPY requirements.txt ./
-RUN pip3 install --upgrade pip
-RUN pip3 install --no-cache-dir -r requirements.txt
+# # ✅ ポートを公開
+# EXPOSE 8000
 
-# ✅ 残りのアプリケーションコードをコピー
-COPY . .
-
-# ✅ 静的ファイルを収集（Djangoなら必要）
-RUN python manage.py collectstatic --noinput
-
-# ✅ ポートを公開
-EXPOSE 8000
-
-# ✅ 本番環境で Gunicorn を最適化
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+# # ✅ 本番環境で Gunicorn を最適化
+# CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]

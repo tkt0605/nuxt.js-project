@@ -101,7 +101,7 @@ class LibraryAddToDO(models.Model):
     todo = models.TextField(verbose_name="ADD-Lib-todo")
     auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="AddToDO作者")
     checklist = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return str(self.id)
 class LibraryToken(models.Model):

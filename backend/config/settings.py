@@ -14,13 +14,15 @@ from pathlib import Path
 import os
 from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+#BASE_DIR = Path(__file__).resolve().parent.parent
 from datetime import timedelta
 import environ
-#nv = environ.Env()
-#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.dirname(BASE_DIR))
 env = environ.Env()
+env.read_env(os.path.join(ROOT_DIR, ".env"))  # nuxt.js-project/.env を参照
+
+#env = environ.Env()
 #env.read_env(os.path.join(BASE_DIR, ".env"))  # 明示的に .env のパスを指定
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -29,18 +31,21 @@ env = environ.Env()
 SECRET_KEY = 'django-insecure-wl&$y#b1aj4f1m*0gikm1)&*_3uudu)47zlo2swzf%tj86_%z&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost']
 
-
+# SECURE_SSL_REDIRECT = True  # HTTP → HTTPSリダイレクト
+# SESSION_COOKIE_SECURE = True  # HTTPSのみでセッションCookieを送信
+# CSRF_COOKIE_SECURE = True  # CSRF CookieをHTTPSで送信
+# SECURE_HSTS_SECONDS = 31536000  # HSTS（1年間）
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
 # Application definition
 
 INSTALLED_APPS = [
     'corsheaders',
     "api",
-    # "accounts",
-    #'authentication',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -98,9 +103,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),    # リフレッシュトークンの有効期間
     'ROTATE_REFRESH_TOKENS': True,                 # リフレッシュ時に新しいリフレッシュトークンを発
     "BLACKLIST_ALTER_ROTATION": False,
+    # "SESSION_COOKIE_HTTPONLY": True,
+    # "CSRF_COOKIE_HTTPONLY": True,
+    # "AUTH_COOKIE_HTTP_ONLY": True
 }
-
-# CORS_ORIGINS_ALLOW_ALL = True
 ROOT_URLCONF = 'config.urls'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -149,11 +155,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': env('ENGINE'),
-        'NAME': env('NAME'),
-        'USER': env('USER'),
-        'PASSWORD': env('PASSWORD'),
-        'HOST': env('HOST'),
-        'PORT': env('PORT'),
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),
+        'PORT': env('DATABASE_PORT'),
     }
 }
 
@@ -206,9 +212,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
