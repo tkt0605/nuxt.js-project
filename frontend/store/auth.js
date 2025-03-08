@@ -21,13 +21,13 @@ export const useAuthStore = defineStore("auth", {
         clearTimeout(this.refreshTokenTimer);
         this.refreshTokenTimer = null;
       }
-      // localStorage.removeItem('access_token');
-      // localStorage.removeItem('refresh_token');
-      // localStorage.removeItem('user');
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
 
-      useCookie("access_token").value = null;
-      useCookie("refresh_token").value = null;
-      useCookie("user").value = null;
+      // useCookie("access_token").value = null;
+      // useCookie("refresh_token").value = null;
+      // useCookie("user").value = null;
     },
     // async restoreSession() {
     //   // if (process.server) return;
@@ -435,7 +435,7 @@ export const useAuthStore = defineStore("auth", {
           const errorData = await response.json();
           throw new Error(errorData.detail || "アカウント登録に失敗しました");
         }
-        await this.login(email, password, avatar);
+        await this.login(email, password, avatarUrl);
       } catch (error) {
         console.error("アカウント登録エラー:", error);
         throw error;

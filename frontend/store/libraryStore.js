@@ -21,7 +21,6 @@ export const useLibraryStore = defineStore("library", {
       const authStore = useAuthStore();
       const secretKey = generateSecretKey(); // 🔑 秘密鍵生成
       const encryptedName = encryptData(name, secretKey); // 🔒 ライブラリ名を暗号化
-      const token = useCookie("access_token");
       try {
         const response = await fetch(`${config.public.apiBase}/library/`, {
           method: "POST",
@@ -50,7 +49,6 @@ export const useLibraryStore = defineStore("library", {
     async fetchLibraries() {
       const authStore = useAuthStore();
       const config = useRuntimeConfig();
-      const token = useCookie("access_token");
       try {
         const response = await fetch(`${config.public.apiBase}/library/`, {
           method: "GET",
@@ -100,7 +98,6 @@ export const useLibraryStore = defineStore("library", {
     async LibraryCreategoal(id, goal){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const response = await fetch(`${config.public.apiBase}/library/${id}/`, {
           method: "PATCH",
@@ -127,7 +124,6 @@ export const useLibraryStore = defineStore("library", {
     async LibraryNameEdit(id, name){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       const secretKey = generateSecretKey(); // 🔑 秘密鍵生成
       const encryptedName = encryptData(name, secretKey); // 🔒 ライブラリ名を暗号化
       try{
@@ -161,7 +157,6 @@ export const useLibraryStore = defineStore("library", {
     async CreateLibraryToken(library) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const response = await fetch(`${config.public.apiBase}/librarytoken/`, {
           method: "POST",
@@ -194,7 +189,6 @@ export const useLibraryStore = defineStore("library", {
     async libraryToken(){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const response = await fetch(`${config.public.apiBase}/librarytoken/`, {
           method: "GET",
@@ -220,7 +214,6 @@ export const useLibraryStore = defineStore("library", {
     async joinToLibrary(id, add_memberId){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const currentlibraryResponse = await fetch(`${config.public.apiBase}/library/${id}/`, {
           headers: {
@@ -260,7 +253,6 @@ export const useLibraryStore = defineStore("library", {
     async fetchId(id) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const [response, response_head] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/library/${id}/`, {
@@ -313,7 +305,6 @@ export const useLibraryStore = defineStore("library", {
     async CreateTodo(tag, todo, auther){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const [libtodo, addtodo] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/libtodo/`, {
@@ -375,7 +366,6 @@ export const useLibraryStore = defineStore("library", {
     async getLibraryTodo(){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const [response, response_header] = await Promise.all([
           fetch(`${config.public.apiBase}/libtodo/`, {
@@ -414,7 +404,6 @@ export const useLibraryStore = defineStore("library", {
     async libraryCheck(id, isCheck){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
-      const token = useCookie("access_token");
       try{
         const [head, add] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/libtodo/${id}/`, {

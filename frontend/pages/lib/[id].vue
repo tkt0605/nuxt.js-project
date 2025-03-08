@@ -242,8 +242,8 @@
           </div>
         </div>
       </button>
-      <div v-if="isDialogOpen" class="modal-overlay">
-        <div class="modal-content">
+      <div v-if="isDialogOpen" class="modal-overlay-goal">
+        <div class="modal-content-goal">
           <div class="flex-closed-btn">
             <h3>目標</h3>
             <button
@@ -676,10 +676,11 @@ const createToken = async () => {
     if (currentUser.id === library.owner) {
       const libtokens = await libraryStore.libraryToken();
       const libtoken = libtokens.find((item) => item.library === routeId);
-      if (!libtoken.token || !libtoken) {
+      if (!libtoken) {
         const createtoken = await libraryStore.CreateLibraryToken(routeId);
         alert("トークン作成完了");
         console.log("token作成完了");
+        window.location.reload();
         return createtoken;
       }
       return openKeyDialog();

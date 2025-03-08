@@ -750,7 +750,8 @@ const editTitle = async (todoId) => {
   try {
     const EditToDO = await authStore.editTitleId(todoId, newTitle);
     console.log("タイトルの変更", EditToDO);
-    closeDialog();
+    window.location.reload();
+    closedEditDialog();
   } catch (error) {
     console.error(error);
     throw error;

@@ -50,7 +50,7 @@ export default {
   },
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:8001/api', // DjangoのAPIベースURL
+      apiBase: 'http://localhost:8000/api', // DjangoのAPIベースURL
     },
   },
   // axios: {
