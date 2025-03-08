@@ -711,7 +711,8 @@ const joinLibrary = async () => {
       const joinlibrary = await libraryStore.joinToLibrary(routeId, add_member);
       alert("🎉 正常に追加出来ました！！");
       console.log("追加成功！", joinlibrary);
-      closeDialog();
+      window.location.reload();
+      closedJoinDialog();
     } else {
       alert("🚫 参加に失敗しました。");
       throw new Error();
