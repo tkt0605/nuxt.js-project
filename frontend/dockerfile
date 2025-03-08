@@ -1,34 +1,16 @@
-FROM node:18-alpine
-# RUN apt-get update && apt-get install -y curl && \
-#     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-#     apt-get install -y nodejs && \
-#     rm -rf /var/lib/apt/lists/*
-RUN apk add --no-cache curl
+FROM node:18
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /frontend
 COPY ./package*.json ./
+# # RUN npm uninstall vue-jest
+# # RUN npm install vue-jest@next --save-dev
+# RUN npm install @nuxtjs/axios
+# RUN npm install @nuxtjs/auth-next
 RUN npm install
 COPY ./ .
 EXPOSE 3000
+# CMD [ "npm", "run", "dev" ]
 CMD [ "npx",  "nuxi",  "dev"]
-
-
-# # # ✅ 本番環境用
-# # ✅ ベースイメージ
-# FROM node:18-alpine
-
-# # ✅ 作業ディレクトリを設定
-# WORKDIR /frontend
-
-# # ✅ 依存関係をコピー
-# COPY package.json package-lock.json ./
-
-# # ✅ 依存関係をインストール
-# RUN npm ci --production
-
-# # ✅ アプリケーションのコードをコピー
-# COPY . .
-
-# # ✅ ビルド
-# RUN npm run build
-# # ✅ コンテナ起動時に Nuxt.js サーバーを実行
-# CMD ["npm", "run", "start"]

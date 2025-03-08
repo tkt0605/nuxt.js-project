@@ -29,61 +29,271 @@ export const useAuthStore = defineStore("auth", {
       useCookie("refresh_token").value = null;
       useCookie("user").value = null;
     },
-    async restoreSession() {
-      // if (process.server) return;
-      // const accessToken_const = localStorage.getItem('access_token');
-      // const refreshToken_const = localStorage.getItem('refresh_token');
-      // const storeUser = JSON.parse(localStorage.getItem('user'));
-      // if (accessToken_const && refreshToken_const && storeUser) {
-      //     this.accessToken = accessToken_const;
-      //     this.refreshTokens = refreshToken_const;
-      //     this.user = storeUser;
-      //     this.scheduleTokenRefresh();
-      //     try {
-      //         await this.refreshToken();
-      //     } catch (error) {
-      //         console.error('トークン検証またはリフレッシュに失敗しました:', error);
-      //     }
-      // } else {
-      //     this.clearAuth();
-      // }
-      if (process.server) return;
-      const accessToken_const = useCookie("access_token");
-      const refreshToken_const = useCookie("refresh_token");
-      const userCookie = useCookie("user");
-      // const storeUser = [JSON.parse(user)] ? [] : null;
-      let storeUser;
-      if (typeof userCookie.value === "string") {
-        try {
-          storeUser = JSON.parse(userCookie.value);
-        } catch (error) {
-          console.error("❌ ユーザーデータの JSON 解析エラー:", error);
-          storeUser = null;
-        }
-      } else {
-        storeUser = userCookie.value;
-      }
-      if (accessToken_const && refreshToken_const && storeUser) {
-        this.accessToken = accessToken_const.value;
-        this.refreshTokens = refreshToken_const.value;
-        this.user = storeUser;
-        this.scheduleTokenRefresh();
-        try {
-          await this.refreshToken();
-        } catch (error) {
-          console.error("トークン検証またはリフレッシュに失敗しました:", error);
-        }
-      } else {
-        this.clearAuth();
-      }
-    },
-    // ここで問題
+    // async restoreSession() {
+    //   // if (process.server) return;
+    //   // const accessToken_const = localStorage.getItem('access_token');
+    //   // const refreshToken_const = localStorage.getItem('refresh_token');
+    //   // const storeUser = JSON.parse(localStorage.getItem('user'));
+    //   // if (accessToken_const && refreshToken_const && storeUser) {
+    //   //     this.accessToken = accessToken_const;
+    //   //     this.refreshTokens = refreshToken_const;
+    //   //     this.user = storeUser;
+    //   //     this.scheduleTokenRefresh();
+    //   //     try {
+    //   //         await this.refreshToken();
+    //   //     } catch (error) {
+    //   //         console.error('トークン検証またはリフレッシュに失敗しました:', error);
+    //   //     }
+    //   // } else {
+    //   //     this.clearAuth();
+    //   // }
+    //   if (process.server) return;
+    //   const accessToken_const = useCookie("access_token");
+    //   const refreshToken_const = useCookie("refresh_token");
+    //   const userCookie = useCookie("user");
+    //   // const storeUser = [JSON.parse(user)] ? [] : null;
+    //   let storeUser;
+    //   if (typeof userCookie.value === "string") {
+    //     try {
+    //       storeUser = JSON.parse(userCookie.value);
+    //     } catch (error) {
+    //       console.error("❌ ユーザーデータの JSON 解析エラー:", error);
+    //       storeUser = null;
+    //     }
+    //   } else {
+    //     storeUser = userCookie.value;
+    //   }
+    //   if (accessToken_const && refreshToken_const && storeUser) {
+    //     this.accessToken = accessToken_const.value;
+    //     this.refreshTokens = refreshToken_const.value;
+    //     this.user = storeUser;
+    //     this.scheduleTokenRefresh();
+    //     try {
+    //       await this.refreshToken();
+    //     } catch (error) {
+    //       console.error("トークン検証またはリフレッシュに失敗しました:", error);
+    //     }
+    //   } else {
+    //     this.clearAuth();
+    //   }
+    // },
+    // // ここで問題
+    // async refreshToken() {
+    //   const config = useRuntimeConfig();
+    //   // const refreshTokens = localStorage.getItem("refresh_token");
+    //   const refreshTokens = useCookie("refresh_token", {path: "/",maxAge: 2592000});
+    //   if (!refreshTokens.value) {
+    //     console.error("リフレッシュトークンがありません。ログインが必要です。");
+    //     throw new Error("リフレッシュトークンが存在しません。");
+    //   }
+
+    //   try {
+    //     const response = await fetch(
+    //       `${config.public.apiBase}/token/refresh/`,
+    //       {
+    //         method: "POST",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           // "credentials": "include",
+    //         },
+    //         body: JSON.stringify({ refresh: refreshTokens.value }),
+    //       }
+    //     );
+
+    //     if (!response.ok) {
+    //       const errorData = await response.json();
+    //       console.error("トークンのリフレッシュに失敗しました:", errorData);
+    //       throw new Error(`リフレッシュトークンエラー: ${errorData.detail}`);
+    //     }
+    //     const data = await response.json();
+    //     // 新しいアクセストークンを保存
+    //     // this.accessToken = data.access;
+    //     // this.refreshTokens.value = data.refresh;
+    //     //   localStorage.setItem("access_token", data.access);
+    //     //   localStorage.setItem('refresh_token', data.refresh);
+    //     // useCookie("access_token", { path: "/"}).value = data.access;
+    //     // useCookie("refresh_token", { path: "/"}).value = data.refresh;
+    //     const AccessToken = useCookie("access_token", {path: "/", maxAge: 3600});
+    //     refreshTokens.value = data.refresh || refreshTokens.value;
+    //     AccessToken.value = data.access;
+    //     // data.refresh = refreshTokens.value;
+    //     this.scheduleTokenRefresh();
+
+    //     console.log("アクセストークンがリフレッシュされました");
+    //     return data.access;
+    //   } catch (error) {
+    //     console.error("リフレッシュトークン処理中のエラー:", error.message);
+    //     throw error;
+    //   }
+    // },
+    // async scheduleTokenRefresh() {
+    //   if (this.refreshTokenTimer) {
+    //     clearTimeout(this.refreshTokenTimer);
+    //   }
+    //   if (!this.accessToken) return;
+    //   try {
+    //     const decode = jwtDecode(this.accessToken);
+    //     const exprisesAt = decode.exp * 1000;
+    //     const now = Date.now();
+    //     const refreshTime = exprisesAt - now - 60000;
+    //     if (refreshTime > 0) {
+    //       this.refreshTokenTimer = setTimeout(() => {
+    //         this.refreshToken();
+    //       }, refreshTime);
+    //       console.log(
+    //         `アクセストークンのリフレッシュをスケジュールしました: ${
+    //           refreshTime / 1000
+    //         }秒後`
+    //       );
+    //     }
+    //   } catch (error) {
+    //     console.error("トークンのデコード中にエラーが発生しました:", error);
+    //   }
+    // },
+    // async login(email, password) {
+    //   const config = useRuntimeConfig();
+    //   try {
+    //     const response = await fetch(`${config.public.apiBase}/token/`, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         email: email.trim(),
+    //         password: password.trim(),
+    //       }),
+    //     });
+    //     if (!response.ok) {
+    //       const errorData = await response.json();
+    //       throw new Error(errorData.detail || "ログインに失敗しました");
+    //     }
+    //     const data = await response.json();
+    //     // ローカルストレージに保存
+    //     // localStorage.setItem('access_token', this.accessToken);
+    //     // localStorage.setItem('refresh_token', this.refreshTokens);
+    //     // localStorage.setItem('user', JSON.stringify(this.user));
+
+    //     // const accessTokenCookie = useCookie("access_token", {path: "/",maxAge: 3600,secure: process.client,sameSite: "lax",});
+    //     // const refreshTokenCookie = useCookie("refresh_token", {path: "/",maxAge: 2592000, secure: process.client,sameSite: "lax",});
+    //     const accessTokenCookie = useCookie('access_token');
+    //     const refreshTokenCookie= useCookie('refresh_token');
+    //     console.log("🟢 クッキーに保存する前 - アクセストークン:", data.access);
+    //     console.log("🟢 クッキーに保存する前 - リフレッシュトークン:",data.refresh);
+    //     accessTokenCookie.value = data.access;
+    //     refreshTokenCookie.value = data.refresh;
+    //     await nextTick();
+    //     console.log("🟢 クッキーに保存後 - アクセストークン:",accessTokenCookie.value);
+    //     console.log("🟢 クッキーに保存後 - リフレッシュトークン:",refreshTokenCookie.value);
+    //     const user = useCookie("user", { path: "/" });
+    //     const userResponse = await this.getUserInfo();
+    //     user.value = JSON.stringify(userResponse);
+    //     this.user = userResponse.find((u) => u.email === email.trim());
+    //     return this.user;
+    //   } catch (error) {
+    //     console.error("ログインエラー:", error);
+    //     throw error;
+    //   }
+    // },
+    // async signup(email, password) {
+    //   const config = useRuntimeConfig();
+    //   const generateAvatar = (email) => {
+    //     return `https://api.dicebear.com/7.x/identicon/svg?seed=${email}`;
+    //   };
+    //   try {
+    //     const avatarUrl = generateAvatar(email);
+    //     const response = await fetch(`${config.public.apiBase}/signup/`, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         email: email.trim(),
+    //         password: password.trim(),
+    //         avatar: avatarUrl,
+    //       }),
+    //     });
+    //     if (!response.ok) {
+    //       const errorData = await response.json();
+    //       throw new Error(errorData.detail || "アカウント登録に失敗しました");
+    //     }
+    //     await this.login(email, password, avatar);
+    //   } catch (error) {
+    //     console.error("アカウント登録エラー:", error);
+    //     throw error;
+    //   }
+    // },
+    // async logout() {
+    //   const config = useRuntimeConfig();
+    //   try {
+    //     const refreshTokens = this.refreshTokens;
+    //     const response = await fetch(`${config.public.apiBase}/token/logout/`, {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({ refresh: refreshTokens }),
+    //     });
+    //     if (!response.ok) {
+    //       const errorData = await response.json();
+    //       throw new Error(errorData.detail || "ログアウトに失敗しました");
+    //     }
+    //     this.clearAuth();
+    //     console.log("ログアウト成功");
+    //   } catch (error) {
+    //     console.error("ログアウトエラー:", error);
+    //     throw error;
+    //   }
+    // },
+    // async getUserInfo() {
+    //   const config = useRuntimeConfig();
+    //   const token = useCookie("access_token",{path: "/",maxAge: 3600});
+    //   if (!token.value) {
+    //     console.error(
+    //       "取得可能なトークンはありません。リフレッシュを試みます。"
+    //     );
+    //     this.refreshToken();
+    //     if (!token.value) {
+    //       console.error("リフレッシュ失敗・ログインしてください。");
+    //       return;
+    //     }
+    //   }
+    //   try {
+    //     const response = await fetch(`${config.public.apiBase}/user/`, {
+    //       method: "GET",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${token.value}`,
+    //       },
+    //     });
+    //     if (!response.ok) {
+    //       const errorData = await response.json();
+    //       throw new Error(
+    //         errorData.detail || "ユーザー情報の取得に失敗しました。"
+    //       );
+    //     }
+    //     const data = await response.json();
+    //     if (!Array.isArray(data)) {
+    //       return { id: data.id, email: data.email, avatar: data.avatar };
+    //     }
+    //     return data.map((user) => ({
+    //       id: user?.id,
+    //       email: user?.email,
+    //       avatar: user?.avatar,
+    //     }));
+    //   } catch (error) {
+    //     console.error("ユーザー情報取得エラー:", error);
+    //     console.log("取得したトークン:", token.value);
+    //     throw error;
+    //   }
+    // },
     async refreshToken() {
       const config = useRuntimeConfig();
-      // const refreshTokens = localStorage.getItem("refresh_token");
-      const refreshTokens = useCookie("refresh_token", {path: "/",maxAge: 2592000});
-      if (!refreshTokens.value) {
+      const router = useRouter();
+      const refreshTokens = localStorage.getItem("refresh_token");
+
+      if (!refreshTokens) {
         console.error("リフレッシュトークンがありません。ログインが必要です。");
+        router.push("/auth/login");
         throw new Error("リフレッシュトークンが存在しません。");
       }
 
@@ -92,37 +302,32 @@ export const useAuthStore = defineStore("auth", {
           `${config.public.apiBase}/token/refresh/`,
           {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              // "credentials": "include",
-            },
-            body: JSON.stringify({ refresh: refreshTokens.value }),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refresh: refreshTokens }),
           }
         );
 
         if (!response.ok) {
           const errorData = await response.json();
           console.error("トークンのリフレッシュに失敗しました:", errorData);
+
+          router.push("/auth/login");
           throw new Error(`リフレッシュトークンエラー: ${errorData.detail}`);
         }
-        const data = await response.json();
-        // 新しいアクセストークンを保存
-        // this.accessToken = data.access;
-        // this.refreshTokens.value = data.refresh;
-        //   localStorage.setItem("access_token", data.access);
-        //   localStorage.setItem('refresh_token', data.refresh);
-        // useCookie("access_token", { path: "/"}).value = data.access;
-        // useCookie("refresh_token", { path: "/"}).value = data.refresh;
-        const AccessToken = useCookie("access_token", {path: "/", maxAge: 3600});
-        refreshTokens.value = data.refresh || refreshTokens.value;
-        AccessToken.value = data.access;
-        // data.refresh = refreshTokens.value;
-        this.scheduleTokenRefresh();
 
+        const data = await response.json();
+
+        // 新しいアクセストークンを保存
+        this.accessToken = data.access;
+        this.refreshTokens = data.refresh;
+        localStorage.setItem("access_token", data.access);
+        localStorage.setItem("refresh_token", data.refresh);
+        this.scheduleTokenRefresh();
         console.log("アクセストークンがリフレッシュされました");
         return data.access;
       } catch (error) {
         console.error("リフレッシュトークン処理中のエラー:", error.message);
+        router.push("/auth/login");
         throw error;
       }
     },
@@ -150,6 +355,28 @@ export const useAuthStore = defineStore("auth", {
         console.error("トークンのデコード中にエラーが発生しました:", error);
       }
     },
+    async restoreSession() {
+      if (process.server) return; // サーバーサイドでは何もしない
+      const accessToken_const = localStorage.getItem("access_token"); // キー名を統一
+      const refreshToken_const = localStorage.getItem("refresh_token");
+      const storeUser = JSON.parse(localStorage.getItem("user")); // ユーザー情報も復元
+      if (accessToken_const && refreshToken_const && storeUser) {
+        this.accessToken = accessToken_const;
+        this.refreshTokens = refreshToken_const;
+        this.user = storeUser;
+        this.scheduleTokenRefresh();
+        // オプション: トークンを検証するためにサーバーに確認を送信
+        try {
+          await this.refreshToken(); // 必要に応じてトークンをリフレッシュ
+        } catch (error) {
+          console.error("トークン検証またはリフレッシュに失敗しました:", error);
+          this.clearAuth(); // トークンが無効ならログアウト処理
+        }
+      } else {
+        this.clearAuth(); // トークンやユーザー情報がない場合はログアウト状態にする
+      }
+    },
+
     async login(email, password) {
       const config = useRuntimeConfig();
       try {
@@ -168,26 +395,18 @@ export const useAuthStore = defineStore("auth", {
           throw new Error(errorData.detail || "ログインに失敗しました");
         }
         const data = await response.json();
-        // ローカルストレージに保存
-        // localStorage.setItem('access_token', this.accessToken);
-        // localStorage.setItem('refresh_token', this.refreshTokens);
-        // localStorage.setItem('user', JSON.stringify(this.user));
+        this.accessToken = data.access;
+        this.refreshTokens = data.refresh;
 
-        // const accessTokenCookie = useCookie("access_token", {path: "/",maxAge: 3600,secure: process.client,sameSite: "lax",});
-        // const refreshTokenCookie = useCookie("refresh_token", {path: "/",maxAge: 2592000, secure: process.client,sameSite: "lax",});
-        const accessTokenCookie = useCookie('access_token');
-        const refreshTokenCookie= useCookie('refresh_token');
-        console.log("🟢 クッキーに保存する前 - アクセストークン:", data.access);
-        console.log("🟢 クッキーに保存する前 - リフレッシュトークン:",data.refresh);
-        accessTokenCookie.value = data.access;
-        refreshTokenCookie.value = data.refresh;
-        await nextTick();
-        console.log("🟢 クッキーに保存後 - アクセストークン:",accessTokenCookie.value);
-        console.log("🟢 クッキーに保存後 - リフレッシュトークン:",refreshTokenCookie.value);
-        const user = useCookie("user", { path: "/" });
+        // ログイン後、ユーザー情報を取得
         const userResponse = await this.getUserInfo();
-        user.value = JSON.stringify(userResponse);
         this.user = userResponse.find((u) => u.email === email.trim());
+
+        // ローカルストレージに保存
+        localStorage.setItem("access_token", this.accessToken);
+        localStorage.setItem("refresh_token", this.refreshTokens);
+        localStorage.setItem("user", JSON.stringify(this.user));
+
         return this.user;
       } catch (error) {
         console.error("ログインエラー:", error);
@@ -246,23 +465,12 @@ export const useAuthStore = defineStore("auth", {
     },
     async getUserInfo() {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token",{path: "/",maxAge: 3600});
-      if (!token.value) {
-        console.error(
-          "取得可能なトークンはありません。リフレッシュを試みます。"
-        );
-        this.refreshToken();
-        if (!token.value) {
-          console.error("リフレッシュ失敗・ログインしてください。");
-          return;
-        }
-      }
       try {
         const response = await fetch(`${config.public.apiBase}/user/`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`,
+            Authorization: `Bearer ${this.accessToken}`,
           },
         });
         if (!response.ok) {
@@ -271,10 +479,15 @@ export const useAuthStore = defineStore("auth", {
             errorData.detail || "ユーザー情報の取得に失敗しました。"
           );
         }
+
         const data = await response.json();
+
+        // サーバーが単一のユーザーを返す場合
         if (!Array.isArray(data)) {
           return { id: data.id, email: data.email, avatar: data.avatar };
         }
+
+        // サーバーが複数のユーザーを返す場合
         return data.map((user) => ({
           id: user?.id,
           email: user?.email,
@@ -282,19 +495,17 @@ export const useAuthStore = defineStore("auth", {
         }));
       } catch (error) {
         console.error("ユーザー情報取得エラー:", error);
-        console.log("取得したトークン:", token.value);
         throw error;
       }
     },
     async createToDO(auther, todo) {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const response = await fetch(`${config.public.apiBase}/todolist/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${this.accessToken}`,
           },
           body: JSON.stringify({
             auther: auther,
@@ -319,13 +530,12 @@ export const useAuthStore = defineStore("auth", {
     },
     async addToDO(todo_tag, todo) {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const response = await fetch(`${config.public.apiBase}/addtodo/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${this.accessToken}`,
           },
           body: JSON.stringify({
             todo_tag: todo_tag.trim(),
@@ -352,7 +562,6 @@ export const useAuthStore = defineStore("auth", {
 
     async getToDOByid(id) {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const response = await fetch(
           `${config.public.apiBase}/todolist/${id}/`,
@@ -360,7 +569,7 @@ export const useAuthStore = defineStore("auth", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
           }
         );
@@ -384,7 +593,6 @@ export const useAuthStore = defineStore("auth", {
     },
     async deleteTodoId(id) {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const response = await fetch(
           `${config.public.apiBase}/todolist/${id}/`,
@@ -392,7 +600,7 @@ export const useAuthStore = defineStore("auth", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
               // "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
             },
           }
@@ -410,7 +618,6 @@ export const useAuthStore = defineStore("auth", {
     },
     async editTitleId(id, newTitle) {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const response = await fetch(
           `${config.public.apiBase}/todolist/${id}/`,
@@ -418,7 +625,7 @@ export const useAuthStore = defineStore("auth", {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
             body: JSON.stringify({
               title: newTitle,
@@ -439,14 +646,13 @@ export const useAuthStore = defineStore("auth", {
 
     async editTitleId(id, newTitle) {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const [todo, library] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/todolist/${id}/`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
             body: JSON.stringify({
               title: newTitle,
@@ -456,7 +662,7 @@ export const useAuthStore = defineStore("auth", {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
             body: JSON.stringify({
               title: newTitle,
@@ -494,21 +700,20 @@ export const useAuthStore = defineStore("auth", {
 
     async AllfetchToDO() {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const [todolist, addtodo] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/todolist/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
           }),
           fetch(`${config.public.apiBase}/addtodo/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
           }),
         ]);
@@ -545,14 +750,13 @@ export const useAuthStore = defineStore("auth", {
     },
     async TodoCheck(id, isCheck) {
       const config = useRuntimeConfig();
-      const token = useCookie("access_token").value;
       try {
         const [todocheck, addcheck] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/todolist/${id}/`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
             body: JSON.stringify({
               checklist: isCheck,
@@ -562,7 +766,7 @@ export const useAuthStore = defineStore("auth", {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${this.accessToken}`,
             },
             body: JSON.stringify({
               checklist: isCheck,

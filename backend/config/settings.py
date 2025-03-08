@@ -31,17 +31,13 @@ env.read_env(os.path.join(ROOT_DIR, ".env"))  # nuxt.js-project/.env を参照
 SECRET_KEY = 'django-insecure-wl&$y#b1aj4f1m*0gikm1)&*_3uudu)47zlo2swzf%tj86_%z&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost']
 
-# SECURE_SSL_REDIRECT = True  # HTTP → HTTPSリダイレクト
-# SESSION_COOKIE_SECURE = True  # HTTPSのみでセッションCookieを送信
-# CSRF_COOKIE_SECURE = True  # CSRF CookieをHTTPSで送信
-# SECURE_HSTS_SECONDS = 31536000  # HSTS（1年間）
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
-# Application definition
+# SECURE_SSL_REDIRECT = False
+# CSRF_COOKIE_SECURE = False
+# SESSION_COOKIE_SECURE = False
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -103,9 +99,6 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),    # リフレッシュトークンの有効期間
     'ROTATE_REFRESH_TOKENS': True,                 # リフレッシュ時に新しいリフレッシュトークンを発
     "BLACKLIST_ALTER_ROTATION": False,
-    # "SESSION_COOKIE_HTTPONLY": True,
-    # "CSRF_COOKIE_HTTPONLY": True,
-    # "AUTH_COOKIE_HTTP_ONLY": True
 }
 ROOT_URLCONF = 'config.urls'
 CORS_ALLOWED_ORIGINS = [
@@ -127,9 +120,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
-# SESSION_COOKIE_SECURE = False  # ローカル開発環境の場合
-# CSRF_COOKIE_SECURE = False  # ローカル開発環境の場合
-CORS_ALLOW_CREDENTIALS = True  # Cookieを許可する
+# CORS_ALLOW_CREDENTIALS = True  # Cookieを許可する
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

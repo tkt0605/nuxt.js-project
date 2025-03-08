@@ -27,7 +27,7 @@ export const useLibraryStore = defineStore("library", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`
+            "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
             name: encryptedName,
@@ -56,7 +56,7 @@ export const useLibraryStore = defineStore("library", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`,
+            "Authorization": `Bearer ${authStore.accessToken}`,
           },
         });
 
@@ -106,7 +106,7 @@ export const useLibraryStore = defineStore("library", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`
+            "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
             goal: goal.trim(),
@@ -135,7 +135,7 @@ export const useLibraryStore = defineStore("library", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`
+            "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
             name: encryptedName,
@@ -167,7 +167,7 @@ export const useLibraryStore = defineStore("library", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`
+            "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
             library: library,
@@ -200,7 +200,7 @@ export const useLibraryStore = defineStore("library", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`
+            "Authorization": `Bearer ${authStore.accessToken}`
           },
         });
         if (!response.ok){
@@ -225,7 +225,7 @@ export const useLibraryStore = defineStore("library", {
         const currentlibraryResponse = await fetch(`${config.public.apiBase}/library/${id}/`, {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`
+            "Authorization": `Bearer ${authStore.accessToken}`
           }
         });
         if (!currentlibraryResponse.ok){
@@ -238,7 +238,7 @@ export const useLibraryStore = defineStore("library", {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token.value}`
+            "Authorization": `Bearer ${authStore.accessToken}`
           },
           body: JSON.stringify({
             members: UpdateMember,
@@ -267,14 +267,14 @@ export const useLibraryStore = defineStore("library", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`
+              "Authorization": `Bearer ${authStore.accessToken}`
             }
           }),
           fetch(`${config.public.apiBase}/libtodo/${id}/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`
+              "Authorization": `Bearer ${authStore.accessToken}`
             }
           })
         ]);
@@ -320,7 +320,7 @@ export const useLibraryStore = defineStore("library", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`
+              "Authorization": `Bearer ${authStore.accessToken}`
             },
             body: JSON.stringify({
               tag: tag,
@@ -332,7 +332,7 @@ export const useLibraryStore = defineStore("library", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`,
+              "Authorization": `Bearer ${authStore.accessToken}`,
             },
             body: JSON.stringify({
               tag: tag,
@@ -382,14 +382,14 @@ export const useLibraryStore = defineStore("library", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`
+              "Authorization": `Bearer ${authStore.accessToken}`
             }
           }),
           fetch(`${config.public.apiBase}/libadd/`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`
+              "Authorization": `Bearer ${authStore.accessToken}`
             }
           })
         ]);
@@ -421,7 +421,7 @@ export const useLibraryStore = defineStore("library", {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`
+              "Authorization": `Bearer ${authStore.accessToken}`
             },
             body: JSON.stringify({
               checklist: isCheck
@@ -431,7 +431,7 @@ export const useLibraryStore = defineStore("library", {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token.value}`
+              "Authorization": `Bearer ${authStore.accessToken}`
             },
             body: JSON.stringify({
               checklist: isCheck

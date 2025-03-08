@@ -168,3 +168,5 @@ def delete_todo(request, id):
         return ({"error": "ToDOが見つかりません。"})
     except Exception as e:
         return ({"error": str(e)})
+def serivce_heathy():
+    return JsonResponse({"status": "ok"})
