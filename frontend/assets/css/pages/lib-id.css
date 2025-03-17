@@ -461,7 +461,7 @@
 }
 
 /* オプションボタン */
-.oprion-icon {
+.oprion-icon-lib {
   background: none;
   border: none;
   cursor: pointer;
@@ -470,7 +470,7 @@
   transition: background-color 0.3s;
 }
 
-.oprion-icon:hover {
+.oprion-icon-lib:hover {
   background-color: rgba(0, 0, 0, 0.05);
   border-radius: 50%;
 }
@@ -482,10 +482,6 @@
 }
 .modal-overlay-option-lib {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 150vw;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -494,8 +490,8 @@
 .modal-content-lib {
   background: #ffffff;
   border-radius: 10px;
-  width: 250px;
-  height: 300px;
+  width: 200px;
+  height: 150px;
 }
 .option-title {
   font-weight: bold;

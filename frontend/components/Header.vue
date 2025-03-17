@@ -147,7 +147,7 @@
         </li>
         <div class="create-project">
           <h2 id="snor-newproject" class="project-title">マイ・ライブラリ</h2>
-          <span >
+          <span>
             <button
               aria-label="新しいライブラリ作成"
               class="create-project-button"
@@ -189,7 +189,7 @@
                     fill="currentColor"
                     class="bi bi-folder"
                     viewBox="0 0 16 16"
-                    style="font-weight: bold; font-size: large;"
+                    style="font-weight: bold; font-size: large"
                   >
                     <path
                       d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
@@ -297,8 +297,8 @@
                         formatDate(todo.created_at)
                       }}</span>
                       <span v-else>
-                        <div v-if="todo.title.length > 13">
-                          {{ todo.title.slice(0, 13) + "..." }}
+                        <div v-if="todo.title.length > 10">
+                          {{ todo.title.slice(0, 10) + "..." }}
                         </div>
                         <div v-else>{{ todo.title }}</div>
                       </span>
@@ -346,8 +346,8 @@
                         formatDate(todo.created_at)
                       }}</span>
                       <span v-else>
-                        <div v-if="todo.title.length > 13">
-                          {{ todo.title.slice(0, 13) + "..." }}
+                        <div v-if="todo.title.length > 10">
+                          {{ todo.title.slice(0, 10) + "..." }}
                         </div>
                         <div v-else>{{ todo.title }}</div>
                       </span>
@@ -395,7 +395,9 @@
                         formatDate(todo.created_at)
                       }}</span>
                       <span v-else>
-                        <div v-if="todo.title.length > 13">{{ todo.title.slice(0, 13)+"..." }}</div>
+                        <div v-if="todo.title.length > 10">
+                          {{ todo.title.slice(0, 10) + "..." }}
+                        </div>
                         <div v-else>{{ todo.title }}</div>
                       </span>
                     </div>
@@ -442,7 +444,9 @@
                         formatDate(todo.created_at)
                       }}</span>
                       <span v-else>
-                        <div v-if="todo.title.length > 13">{{ todo.title.slice(0, 13)+"..." }}</div>
+                        <div v-if="todo.title.length > 10">
+                          {{ todo.title.slice(0, 10) + "..." }}
+                        </div>
                         <div v-else>{{ todo.title }}</div>
                       </span>
                     </div>
@@ -468,7 +472,11 @@
                   </div>
                 </div>
               </li>
-              <div class="modal-overlay-option" v-if="OptionDialogOpen">
+              <div
+                class="modal-overlay-option"
+                v-show="OptionDialogOpen"
+                id="menu-option"
+              >
                 <div class="modal-content-option">
                   <div class="option-menu">
                     <div class="option-title-bord">
@@ -570,7 +578,11 @@
                             {{ formatDate(item.created_at) }}/タイトルの編集。
                           </div>
                           <div class="lib-name-del" v-else>
-                            <div v-if="item.title.length > 17">{{ item.title.slice(0, 17)+"..." }}/タイトルの編集。</div>
+                            <div v-if="item.title.length > 17">
+                              {{
+                                item.title.slice(0, 17) + "..."
+                              }}/タイトルの編集。
+                            </div>
                             <div v-else>{{ item.title }}/タイトルの編集</div>
                           </div>
                         </div>
@@ -624,6 +636,7 @@ import {
   onMounted,
   onBeforeUnmount,
   callWithErrorHandling,
+  nextTick,
 } from "vue";
 const router = useRouter();
 const authStore = useAuthStore();
@@ -668,6 +681,41 @@ onMounted(async () => {
     categorizedTodos.value =
       { ...categorized } && categorizeTodos(todolist.value);
     console.log(categorizedTodos.value);
+    // document.querySelectorAll(".oprion-icon").forEach((item) => {
+    //   item.addEventListener("click", function (event) {
+    //     const optionMenu = document.getElementById("menu-option");
+    //     if (!optionMenu) return;
+    //     const rect = this.getBoundingClientRect();
+    //     const windowHeight = window.innerHeight;
+    //     const menuHeight = optionMenu.offsetHeight || 50; // メニューの高さ（デフォルト値）
+
+    //     // 画面の縦の中心を取得
+    //     const screenCenter = windowHeight / 2;
+
+    //     // メニューの位置を調整
+    //     let topPosition;
+    //     if (rect.top < screenCenter) {
+    //       // 要素が画面の上半分にある → 下に表示
+    //       topPosition = rect.bottom + window.scrollY;
+    //     } else {
+    //       // 要素が画面の下半分にある → 上に表示
+    //       topPosition = rect.top + window.scrollY - menuHeight;
+    //     }
+
+    //     // オプションメニューの位置を設定
+    //     optionMenu.style.left = `${rect.left + window.scrollX}px`;
+    //     optionMenu.style.top = `${topPosition}px`;
+    //     optionMenu.style.display = "block";
+    //   });
+    // });
+
+    // クリック以外の場所をクリックしたら閉じる
+    document.addEventListener("click", function (event) {
+      const optionMenu = document.getElementById("menu-option");
+      if (!event.target.classList.contains("option-menu")) {
+        optionMenu.style.display = closedOption();
+      }
+    });
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -685,9 +733,26 @@ const navigateToTodo = (todoId) => {
     this.$router.push(`/t/${todoId}`);
   }
 };
-const openOption = (todoId) => {
+const openOption = async(todoId) => {
   selectTodoId.value = todoId;
   OptionDialogOpen.value = true;
+  await nextTick();
+  const optionMenu = document.getElementById("menu-option");
+  const targetElement = document.querySelector('.oprion-icon');
+  if (!optionMenu || !targetElement) return;
+  const rect = targetElement.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
+  const menuHeight = optionMenu.offsetHeight || 50;
+  const screenCenter = windowHeight / 2;
+  let topPosition;
+  if (rect.top < screenCenter){
+    topPosition = rect.bottom + window.scrollY;
+  } else {
+    topPosition = rect.top + window.scrollY - menuHeight;
+  }
+  optionMenu.style.left = `${rect.left + window.scrollX}px`;
+  optionMenu.style.top = `${topPosition}px`;
+  optionMenu.style.display = "block";
 };
 const closedOption = () => {
   OptionDialogOpen.value = false;
@@ -833,10 +898,26 @@ const categorizeTodos = (todolist) => {
     startOfToday.getTime() - 7 * 24 * 60 * 60 * 1000
   );
   return {
-    today: todolist.filter((todo) =>new Date(todo.created_at) >= startOfToday).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
-    yesterday: todolist.filter((todo) =>new Date(todo.created_at) >= startOfYesterday && new Date(todo.created_at) < startOfToday).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
-    lastsevendays: todolist.filter((todo) =>new Date(todo.created_at) >= startOfLastSevenDays && new Date(todo.created_at) < startOfYesterday).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
-    older: todolist.filter((todo) =>new Date(todo.created_at) < startOfLastSevenDays).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    today: todolist
+      .filter((todo) => new Date(todo.created_at) >= startOfToday)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    yesterday: todolist
+      .filter(
+        (todo) =>
+          new Date(todo.created_at) >= startOfYesterday &&
+          new Date(todo.created_at) < startOfToday
+      )
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    lastsevendays: todolist
+      .filter(
+        (todo) =>
+          new Date(todo.created_at) >= startOfLastSevenDays &&
+          new Date(todo.created_at) < startOfYesterday
+      )
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
+    older: todolist
+      .filter((todo) => new Date(todo.created_at) < startOfLastSevenDays)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)),
   };
 };
 const categorizedTodos = ref({

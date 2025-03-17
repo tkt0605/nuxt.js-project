@@ -332,7 +332,7 @@
                 <div class="first-todo">{{ data.todo }}</div>
               </div>
               <div class="option">
-                <button class="oprion-icon" @click.stop="openOption(data.id)">
+                <button class="oprion-icon-lib" @click.stop="openOption(data.id)">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -349,7 +349,7 @@
               </div>
             </div>
           </div>
-          <div class="modal-overlay-option-lib" v-if="isDialogOption">
+          <div class="modal-overlay-option-lib" v-show="isDialogOption" id="menu-option-lib">
             <div class="modal-content-lib">
               <div class="flex-option-lib">
                 <div class="option-menu">
@@ -499,7 +499,7 @@ import { useRoute, useRouter } from "nuxt/app";
 import { useAuthStore } from "../../store/auth";
 import { useLibraryStore } from "../../store/libraryStore";
 import "../assets/css/pages/lib-id.css";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, registerRuntimeCompiler } from "vue";
 import { nextTick } from "vue";
 const library = ref([]);
 const libtoken = ref([]);
@@ -543,9 +543,26 @@ const openEditLibtitle = () => {
 const closedLibtitleEdit = () => {
   isLibTitle.value = false;
 };
-const openOption = (todoId) => {
+const openOption = async (todoId) => {
   selectTodoId.value = todoId;
   isDialogOption.value = true;
+  await nextTick();
+  const optionMenu = document.getElementById('menu-option-lib');
+  const targetElement = document.querySelector('.oprion-icon-lib');
+  if (!optionMenu || !targetElement) return;
+  const rect = targetElement.getBoundingClientRect();
+  const windowHeight = window.innerHeight;
+  const menuHeight = optionMenu.offsetHeight || 50;
+  const screenCenter = windowHeight / 2;
+  let topPosition;
+  if(rect.top < screenCenter) {
+    topPosition = rect.bottom + window.scrollY;
+  } else {
+    topPosition = rect.top + window.scrollY - menuHeight;
+  }
+  optionMenu.style.left = `${rect.left + window.scrollX}px`;
+  optionMenu.style.top = `${topPosition}px`;
+  optionMenu.style.display = "block";
 };
 const closedOption = () => {
   isDialogOption.value = false;
@@ -612,6 +629,12 @@ onMounted(async () => {
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
     Goal.value = LibraryGoal.goal || "";
     Name.value = LibraryGoal.name;
+    document.addEventListener("click", function (event) {
+      const optionMenu = document.getElementById("menu-option-lib");
+      if (!event.target.classList.contains("option-menu")) {
+        optionMenu.style.display = closedOption();
+      }
+    });
   } catch (error) {
     console.error("Libraryの取得に失敗しました。", error);
     throw new error();

@@ -341,10 +341,6 @@ li .todo-title {
 
 .modal-overlay-option {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 25vw;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -353,8 +349,8 @@ li .todo-title {
 .modal-content-option {
   background: #ffffff;
   border-radius: 10px;
-  width: 250px;
-  height: 300px;
+  width: 200px;
+  height: 150px;
 }
 .modal-overlay-delete {
   position: fixed; /* ページ全体に表示 */
@@ -658,7 +654,7 @@ li .todo-title {
   align-items: center;
   /* border-bottom: 1px solid #ccc; */
   background: #ffffff;
-  width: 219px;
+  width: 165px;
   height: 40px;
   border-radius: 10px;
 }
@@ -669,7 +665,7 @@ li .todo-title {
   align-items: center;
   /* border-bottom: 1px solid #ccc; */
   background: #ffffff;
-  width: 219px;
+  width: 165px;
   height: 40px;
   border-radius: 10px;
 }
@@ -834,6 +830,34 @@ aside.open ~ .container {
     font-size: 10px;
     font-weight: bold;
   }
+  .lib-tmp{
+    position: relative;
+    display: flex;
+    padding: 5px 10px;
+    border-radius: 5px;
+    justify-content: space-between;
+  }
+  .lib-turn-page{
+    position: relative;
+    font-size: 13px;
+  }
+  .all-todo-bord{
+    position: relative;
+    display: flex;
+    width: 144px;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    padding: 5px 5px;
+    border-radius: 5px;
+    color: black;
+    text-decoration: none;
+  }
+  ul .aside-todo-padding{
+    padding: 5px 10px;
+    padding-left: 5px;
+    font-weight: bold;
+  }
   .account_form {
     left: 150px;
     top: 0;
@@ -915,5 +939,19 @@ aside.open ~ .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  .modal-overlay-option{
+    position: fixed;
+    top: 0;
+    left: 100px;
+    /* transform: translate(100%, 0%); */
+    width: 25vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .modal-content-option{
   }
 }
