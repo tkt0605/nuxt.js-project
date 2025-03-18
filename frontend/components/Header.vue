@@ -681,34 +681,6 @@ onMounted(async () => {
     categorizedTodos.value =
       { ...categorized } && categorizeTodos(todolist.value);
     console.log(categorizedTodos.value);
-    // document.querySelectorAll(".oprion-icon").forEach((item) => {
-    //   item.addEventListener("click", function (event) {
-    //     const optionMenu = document.getElementById("menu-option");
-    //     if (!optionMenu) return;
-    //     const rect = this.getBoundingClientRect();
-    //     const windowHeight = window.innerHeight;
-    //     const menuHeight = optionMenu.offsetHeight || 50; // メニューの高さ（デフォルト値）
-
-    //     // 画面の縦の中心を取得
-    //     const screenCenter = windowHeight / 2;
-
-    //     // メニューの位置を調整
-    //     let topPosition;
-    //     if (rect.top < screenCenter) {
-    //       // 要素が画面の上半分にある → 下に表示
-    //       topPosition = rect.bottom + window.scrollY;
-    //     } else {
-    //       // 要素が画面の下半分にある → 上に表示
-    //       topPosition = rect.top + window.scrollY - menuHeight;
-    //     }
-
-    //     // オプションメニューの位置を設定
-    //     optionMenu.style.left = `${rect.left + window.scrollX}px`;
-    //     optionMenu.style.top = `${topPosition}px`;
-    //     optionMenu.style.display = "block";
-    //   });
-    // });
-
     // クリック以外の場所をクリックしたら閉じる
     document.addEventListener("click", function (event) {
       const optionMenu = document.getElementById("menu-option");

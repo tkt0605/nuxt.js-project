@@ -10,8 +10,8 @@
           class="checkboxs"
         />
         <div class="todo-items-detail">
-          <p class="time">{{ formatDate(libtodo?.created_at) }}</p>
-          <p class="text">{{ libtodo?.todo }}</p>
+          <p class="time-lib">{{ formatDate(libtodo?.created_at) }}</p>
+          <p class="text-lib">{{ libtodo?.todo }}</p>
         </div>
       </div>
       <div class="todo-additem" v-for="libadd in libaddtodo" :key="libadd.id">
@@ -22,8 +22,8 @@
           class="checkboxs"
         />
         <div class="todo-items-detail">
-          <p class="time">{{ formatDate(libadd?.created_at) }}</p>
-          <p class="text">{{ libadd?.todo }}</p>
+          <p class="time-lib">{{ formatDate(libadd?.created_at) }}</p>
+          <p class="text-lib">{{ libadd?.todo }}</p>
         </div>
       </div>
     </div>

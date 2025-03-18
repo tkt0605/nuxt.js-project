@@ -319,57 +319,25 @@ button[data-testid="composer-speech-button"]:hover {
 
 
 /* レスポンシブデザイン: タブレット向け (768px以下) */
-@media (max-width: 768px) {
-  .id_bord {
-    left: 10%;
-    width: calc(100% - 20%);
-    height: auto;
-    padding: 20px;
-  }
-
-  .id_todo_list {
-    padding: 10px;
-  }
-
-  .item {
-    max-width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .form_id {
-    padding: 12px;
-  }
-
-  .text_keybord {
-    font-size: 14px;
-    max-width: 100%;
-  }
-
-  .submit_button {
-    height: 2rem;
-    width: 2rem;
-    font-size: 18px;
-  }
-}
 
 /* レスポンシブデザイン: スマートフォン向け (480px以下) */
 @media (max-width: 480px) {
   .id_bord {
     height: 86vh;
-    left: 5%;
-    width: calc(100% - 10%);
-    padding: 10px;
+    left: 0;
+    width: calc(100% - 0%);
+    padding: 0.5rem;
   }
 
   .id_todo_list {
-    max-width: 100%;
+    max-width: 768px;
+    width: 100%;
+    padding: 15px;
   }
 
   .item {
-    padding: 15px;
-    font-size: 14px;
+    padding: 10px;
+    font-size: 10px;
     gap: 5px;
   }
 
@@ -401,6 +369,21 @@ button[data-testid="composer-speech-button"]:hover {
     height: 1.8rem;
     width: 1.8rem;
     font-size: 16px;
+  }
+  .time {
+    font-size: 12px;
+    color: #6c757d;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+  .text {
+    font-size: 12px;
+    font-weight: 500;
+    color: #333;
+    flex-grow: 1;
+    word-wrap: break-word;
+    left: 0px;
+    position: relative;
   }
 }
 

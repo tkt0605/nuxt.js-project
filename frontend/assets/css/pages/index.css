@@ -366,7 +366,7 @@ button[data-testid="composer-speech-button"]:hover {
   }
 
   .flex-button {
-    flex-direction: column;
+    /* flex-direction: column; */
     gap: 10px;
   }
 }

@@ -140,7 +140,12 @@
           <div>
             <div class="name-current">参加済み</div>
             <div class="current-mem">
-              <div class="expsss">現在のメンバー</div>
+              <div class="expsss">
+                <p>現在のメンバー</p>
+                <div class="current">
+                  {{ library?.members?.length || 0 }}人参加中
+                </div>
+              </div>
               <div class="svg-mem" @click="openJoinDialog">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -159,9 +164,9 @@
                 </svg>
               </div>
             </div>
-            <div class="current">
+            <!-- <div class="current">
               {{ library?.members?.length || 0 }}人参加中
-            </div>
+            </div> -->
           </div>
         </div>
       </button>
@@ -220,7 +225,13 @@
           <div>
             <div class="name-current">目標</div>
             <div class="inst">
-              <div class="expsss">このプロジェクトの目標を載せる。</div>
+              <div class="expsss">
+                <p>このプロジェクトの目標を載せる。</p>
+                <div class="goal-font" v-if="library?.goal?.length">
+                  <span v-if="library?.goal?.length > 20">{{ library?.goal.slice(0, 20) + "..." }}</span>
+                  <span v-else>{{ library?.goal }}</span>
+                </div>
+              </div>
               <div class="svg-edit" @click="openDialog">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -235,9 +246,6 @@
                   />
                 </svg>
               </div>
-            </div>
-            <div class="goal-font">
-              {{ library?.goal }}
             </div>
           </div>
         </div>
@@ -560,7 +568,8 @@ const openOption = async (todoId) => {
   } else {
     topPosition = rect.top + window.scrollY - menuHeight;
   }
-  optionMenu.style.left = `${rect.left + window.scrollX}px`;
+  const rightOffset = -175;
+  optionMenu.style.left = `${rect.left + window.scrollX + rightOffset}px`;
   optionMenu.style.top = `${topPosition}px`;
   optionMenu.style.display = "block";
 };
