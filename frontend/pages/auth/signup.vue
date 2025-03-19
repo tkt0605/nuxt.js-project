@@ -5,6 +5,7 @@
       </div>
       <form @submit.prevent="signup" class="login-form">
           <input v-model="email" placeholder="メールアドレス" class="form-input" required />
+          <input v-model="code_name" type="text" placeholder="コードネーム" class="form-input" required/>
           <input v-model="password" type="password" placeholder="パスワード" class="form-input" required>
           <button type="submit" class="form-button">サインアップ</button>
       </form>
@@ -19,11 +20,12 @@ import { useAuthStore } from '../../store/auth';
 import { useRouter } from 'nuxt/app';
 const email =ref('');
 const password = ref('');
+const code_name = ref('');
 const authStore = useAuthStore();
 const  router = useRouter();
 const signup = async() =>{
   try{
-    await authStore.signup(email.value, password.value);
+    await authStore.signup(email.value, code_name.value , password.value);
     console.log('アカウント登録:', authStore.user);
     // localStorage.setItem("signup_email", email.value);
     router.push('/');

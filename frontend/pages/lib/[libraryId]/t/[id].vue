@@ -22,6 +22,9 @@
           class="checkboxs"
         />
         <div class="todo-items-detail">
+          <div v-if="libadd.auther === currentUser.id">
+            <span><img :src="currentUser.avatar" class="icon_img" alt="User Avatar"/>{{ currentUser.email }}</span>
+          </div>
           <p class="time-lib">{{ formatDate(libadd?.created_at) }}</p>
           <p class="text-lib">{{ libadd?.todo }}</p>
         </div>
@@ -90,6 +93,8 @@ const libraryStore = useLibraryStore();
 const route = useRoute();
 const placeholderText = ref("追加するToDO");
 const isPlaceholderVisable = ref(true);
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const currentUser = computed(() => authStore.currentUser);
 onMounted(async () => {
   try {
     await authStore.restoreSession();

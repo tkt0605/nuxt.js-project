@@ -95,6 +95,7 @@ export const useLibraryStore = defineStore("library", {
             return "復号エラー";
         }
     },
+    
     async LibraryCreategoal(id, goal){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
