@@ -22,11 +22,12 @@
           class="checkboxs"
         />
         <div class="todo-items-detail">
-          <div v-if="libadd.auther === currentUser.id">
-            <span><img :src="currentUser.avatar" class="icon_img" alt="User Avatar"/>{{ currentUser.email }}</span>
+          <div>
+            <!-- <span><img :src="currentUser.avatar" class="icon_img" alt="User Avatar"/>{{ currentUser.email }}</span> -->
+             <span><p>{{ libadd?.auther }}</p></span>
           </div>
           <p class="time-lib">{{ formatDate(libadd?.created_at) }}</p>
-          <p class="text-lib">{{ libadd?.todo }}</p>
+          <p class="text-lib">{{ libadd.todo }}</p>
         </div>
       </div>
     </div>
@@ -86,7 +87,8 @@ import { lib } from "crypto-js";
 import { errorMessages } from "vue/compiler-sfc";
 import { nextTick } from "vue";
 const libtodo = ref(null);
-const libaddtodo = ref([]);
+const users = ref([]);
+const libaddtodo = ref(null);
 const textKeyWard = ref(null);
 const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
@@ -103,9 +105,7 @@ onMounted(async () => {
     libtodo.value = await libraryStore.fetchId(routeId);
     const todos = await libraryStore.getLibraryTodo();
     if (Array.isArray(todos)) {
-      libaddtodo.value = todos
-        .filter((libaddtodo) => libaddtodo.tag === routeId)
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      libaddtodo.value = todos.filter((libaddtodo) => libaddtodo.tag === routeId).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     } else {
       console.error("取得に失敗", error);
     }
@@ -124,7 +124,11 @@ function formatDate(date) {
     minute: "2-digit",
   };
   return new Date(date).toLocaleDateString("ja-jp", details);
-}
+};
+// function PostUserName(userId) {
+
+// }
+// const postUserInfo = computed(() => )
 const LibrarycheckToDO = async (id, isCheck) => {
   try {
     const routeId = route.params.id;

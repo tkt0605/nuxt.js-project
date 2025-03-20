@@ -524,7 +524,7 @@ const Title = ref("");
 const tokenInput = ref("");
 const ismouse = ref(false);
 const currentUser = computed(() => authStore.currentUser);
-const libtodos = ref([]);
+const libtodos = ref(null);
 const EditTitle = ref("");
 const tokens = ref([]);
 const handleFocus = () => {

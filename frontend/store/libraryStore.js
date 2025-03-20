@@ -14,6 +14,8 @@ import { walk } from "vue/compiler-sfc";
 export const useLibraryStore = defineStore("library", {
   state: () => ({
     libraries: [],
+    libtodos: [],
+    libaddtodo: []
   }),
   actions: {
     async createLibrary(name, owner, members) {
@@ -95,7 +97,26 @@ export const useLibraryStore = defineStore("library", {
             return "復号エラー";
         }
     },
-    
+    decryptTodo(target) {
+      const secretKey = localStorage.getItem(`todo_${target.id}`);
+      if (!secretKey){
+        console.warn(`🔐ToDo:${target.id}の秘密鍵がわかりません。`);
+        return "暗号化済みToDO";
+      }
+      try{
+        const bytes = CryptoJS.AES.decrypt(target.todo, secretKey);
+        let decrypted_todo = bytes.toString(CryptoJS.enc.Utf8);
+        decrypted_todo = decrypted_todo.replace(/^"|"$/g, "");
+        if (!decrypted_todo){
+          const errorData = console.error();
+          throw new Error(errorData);
+        }
+        return decrypted_todo;
+      }catch(error){
+        console.error(`復号エラー「ToDO： (${target.id})」:`, error);
+        return "復号失敗";
+      }
+    },
     async LibraryCreategoal(id, goal){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
@@ -118,7 +139,7 @@ export const useLibraryStore = defineStore("library", {
         const data = await response.json();
         return data;
       }catch(error){
-        console.error(error);
+        console.error (error);
         throw new error;
       }
     },
@@ -292,7 +313,7 @@ export const useLibraryStore = defineStore("library", {
           return{
             id: libtodoData.id ?? null,
             tag: libtodoData.tag ?? null,
-            todo: libtodoData.todo ?? null,
+            todo: this.decryptTodo(libtodoData) ?? libtodoData.todo,
             auther: libtodoData.auther ?? null,
             checklist: libtodoData.checklist ?? null,
             created_at: libtodoData.created_at ?? null,
@@ -306,6 +327,8 @@ export const useLibraryStore = defineStore("library", {
     async CreateTodo(tag, todo, auther){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
+      const secretKey = generateSecretKey();
+      const encryptedToDO = encryptData(todo, secretKey);
       try{
         const [libtodo, addtodo] = await Promise.allSettled([
           fetch(`${config.public.apiBase}/libtodo/`, {
@@ -316,7 +339,7 @@ export const useLibraryStore = defineStore("library", {
             },
             body: JSON.stringify({
               tag: tag,
-              todo: todo.trim(),
+              todo: encryptedToDO,
               auther: auther
             })
           }),
@@ -328,37 +351,46 @@ export const useLibraryStore = defineStore("library", {
             },
             body: JSON.stringify({
               tag: tag,
-              todo: todo.trim(),
+              todo: encryptedToDO,
               auther: auther
             })
           })
         ]);
         let Headtodo = null;
         let Addtodo = null;
-        if (libtodo.status="fulfilled" && libtodo.value.ok){
+        if (libtodo.status === "fulfilled" && libtodo.value.ok) {
           Headtodo = await libtodo.value.json();
+          console.log("✅ libtodo 作成成功:", Headtodo);
+
+          // 🛠️ `id` が存在する場合のみ `localStorage` に保存
+          if (Headtodo.id) {
+            localStorage.setItem(`todo_${Headtodo.id}`, secretKey);
+            this.libraries.push(Headtodo);
+            return Headtodo;
+          } else {
+            console.warn("⚠️ `libtodo` のレスポンスに `id` がありません。");
+          }
+        } else if (libtodo.status === "rejected") {
+          console.error("🚨 libtodo の作成に失敗:", libtodo.reason);
         }
-        if (addtodo.status="fulfilled" && addtodo.value.ok){
+
+        // `libadd` のレスポンスを処理
+        if (addtodo.status === "fulfilled" && addtodo.value.ok) {
           Addtodo = await addtodo.value.json();
+          console.log("✅ libadd 作成成功:", Addtodo);
+
+          // 🛠️ `id` が存在する場合のみ `localStorage` に保存
+          if (Addtodo.id) {
+            localStorage.setItem(`todo_${Addtodo.id}`, secretKey);
+            this.libraries.push(Addtodo);
+            return Addtodo;
+          } else {
+            console.warn("⚠️ `libadd` のレスポンスに `id` がありません。");
+          }
+        } else if (addtodo.status === "rejected") {
+          console.error("🚨 libadd の作成に失敗:", addtodo.reason);
         }
-        if (Headtodo){
-          return {
-          id: Headtodo.id ?? null,
-          tag: Headtodo.tag ?? null,
-          auther: Headtodo.auther ?? null,
-          todo: Headtodo.todo ?? null,
-          created_at: Headtodo.created_at ?? null,
-          };
-        }else{
-          return {
-          id: Addtodo.id ?? null,
-          tag: Addtodo.tag ?? null,
-          todo: Addtodo.todo ?? null,
-          auther: Addtodo.auther ?? null,
-          checklist: Addtodo.checklist ?? null,
-          created_at: Addtodo.created_at ?? null,
-          };
-        }
+        throw new Error("Error");
       }catch(error){
         console.error(error);
         throw new Error;
@@ -368,7 +400,7 @@ export const useLibraryStore = defineStore("library", {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       try{
-        const [response, response_header] = await Promise.all([
+        const [response, response_add] = await Promise.all([
           fetch(`${config.public.apiBase}/libtodo/`, {
             method: "GET",
             headers: {
@@ -384,19 +416,31 @@ export const useLibraryStore = defineStore("library", {
             }
           })
         ]);
-        if (!response.ok || !response_header.ok){
-          const errorData = await response.json() || await response_header.json();
-          throw new Error(errorData.detail || "ToDOの取得を失敗");
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "レスポンスエラー(Libtodo):")
+        }
+        if (!response_add.ok){
+          const errorData = await response_add.json();
+          throw new Error(errorData.detail || "レスポンスエラー(Libtodo):")
         }
         const data = await response.json();
-        const data_header = await response_header.json();
+        const data_add = await response_add.json();
         if (!Array.isArray(data)){
-          throw new Error('APIレスポンスが配列ではありません。')
-        };
-        if (!Array.isArray(data_header)){
-          throw new Error('APIレスポンスが配列ではありません。')
-        };
-        return [...(data || []), ...(data_header || [])];
+          throw new Error("Library_ToDOは配列ではありません。");
+        }
+        if (!Array.isArray(data_add)){
+          throw new Error("Library_AddToDOは配列ではありません。");
+        }
+        const decrypted_todo = [...data, ...data_add].map(item => {
+          if (!item) return null;
+          return {
+            ...item,
+            todo: this.decryptTodo(item) ?? item.todo,
+          };
+        }).filter(todo => todo !== null);
+        console.log('暗号の復元成功：', decrypted_todo);
+        return decrypted_todo;
       }catch(error){
         console.error(error);
         throw new Error;

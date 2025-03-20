@@ -3,7 +3,7 @@
     <div class="header" v-if="isAsideOpen">
       <div class="headerline">
         <div class="container">
-          <a class="logo">Privatia</a>
+          <a class="logo">Plantation</a>
           <div v-if="isAuthenticated" class="account_form">
             <div class="icon_bord">
               <img
@@ -69,7 +69,7 @@
                 </svg>
               </button>
             </NuxtLink>
-            <a class="logo_down">Privatia</a>
+            <a class="logo_down">Plantation</a>
           </div>
           <div v-if="isAuthenticated" class="account_form">
             <div class="icon_bord">

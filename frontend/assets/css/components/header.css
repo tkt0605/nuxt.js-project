@@ -70,6 +70,7 @@ aside.closed {
 }
 .logo_down {
   font-size: 25px;
+  font-style: italic;
   position: relative;
   left: 0vh;
   font-weight: bold;
@@ -78,6 +79,8 @@ aside.closed {
 }
 .logo {
   font-size: 25px;
+  font-family: "AmstelvarAlpha";
+  font-style: italic;
   font-weight: bold;
   padding: 15px 15px;
   align-items: center;

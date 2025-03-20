@@ -243,6 +243,34 @@ export const useAuthStore = defineStore("auth", {
         throw error;
       }
     },
+    async UserInfoId(id){
+      const config = useRuntimeConfig();
+      try{
+        const response = await fetch(`${config.public.apiBase}/user/${id}/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${this.accessToken}`,
+          },
+        });
+        if(!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "User情報の取得失敗。");
+        }
+        const data = await response.json();
+        if (!Array.isArray(data)){
+          return {id: data.id, email: data.email, code_name: data.code_name, avatar: data.avatar}
+        }
+        return {
+          id: item.id,
+          code_name: item.code_name,
+          avatar: item.avatar,
+        };
+      }catch(error){
+        console.error("User情報の取得エラー", error);
+        throw new Error;
+      }
+    },
     async createToDO(auther, todo) {
       const config = useRuntimeConfig();
       try {
