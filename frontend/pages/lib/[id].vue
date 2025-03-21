@@ -306,10 +306,10 @@
       v-if="library.members?.includes(currentUser.id) || isLibraryMember"
     >
       <div class="lib-todo-exp">このライブラリのToDO</div>
-      <div v-for="data in libtodos" :key="data.id">
-        <div class="lib-todo-list" @click="PushTodoPage(data.id)">
-          <div class="todo-info-show">
-            <div class="list-todo">
+      <div>
+        <div class="lib-todo-list">
+          <div class="todo-info-show" v-for="data in libtodos" :key="data.id">
+            <div class="list-todo" @click="PushTodoPage(data.id)">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -340,7 +340,7 @@
                 <div class="first-todo">{{ data.todo }}</div>
               </div>
               <div class="option">
-                <button class="oprion-icon-lib" @click.stop="openOption(data.id)">
+                <button class="oprion-icon-lib" @click.stop="openOption(data.id, $event)">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -551,13 +551,13 @@ const openEditLibtitle = () => {
 const closedLibtitleEdit = () => {
   isLibTitle.value = false;
 };
-const openOption = async (todoId) => {
+const openOption = async (todoId, event) => {
   selectTodoId.value = todoId;
   isDialogOption.value = true;
   await nextTick();
   const optionMenu = document.getElementById('menu-option-lib');
-  const targetElement = document.querySelector('.oprion-icon-lib');
-  if (!optionMenu || !targetElement) return;
+  if (!optionMenu) return;
+  const targetElement = event.currentTarget;
   const rect = targetElement.getBoundingClientRect();
   const windowHeight = window.innerHeight;
   const menuHeight = optionMenu.offsetHeight || 50;

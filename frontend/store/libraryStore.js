@@ -366,7 +366,10 @@ export const useLibraryStore = defineStore("library", {
           if (Headtodo.id) {
             localStorage.setItem(`todo_${Headtodo.id}`, secretKey);
             this.libraries.push(Headtodo);
-            return Headtodo;
+            return {
+              ...Headtodo,
+              todo: this.decryptTodo(Headtodo) ?? Headtodo.todo,
+            };
           } else {
             console.warn("⚠️ `libtodo` のレスポンスに `id` がありません。");
           }
@@ -383,7 +386,10 @@ export const useLibraryStore = defineStore("library", {
           if (Addtodo.id) {
             localStorage.setItem(`todo_${Addtodo.id}`, secretKey);
             this.libraries.push(Addtodo);
-            return Addtodo;
+            return {
+              ...Addtodo,
+              todo: this.decryptTodo(Addtodo) ?? Addtodo.todo,
+            }
           } else {
             console.warn("⚠️ `libadd` のレスポンスに `id` がありません。");
           }
