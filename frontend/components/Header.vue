@@ -11,6 +11,8 @@
                 :src="currentUser.avatar"
                 class="icon_img"
                 alt="User Avatar"
+                ref="avatarBtn"
+                @click="userInfoShow(currentUser?.id)"
               />
             </div>
             <button class="logout" type="button" @click="logout">
@@ -78,6 +80,8 @@
                 :src="currentUser.avatar"
                 class="icon_img"
                 alt="User Avatar"
+                ref="avatarBtn"
+                @click="userInfoShow(currentUser?.id)"
               />
             </div>
             <button class="logout" type="button" @click="logout">
@@ -623,6 +627,28 @@
         </div>
       </ul>
     </aside>
+    <div class="modal-overlay-user" v-show="isDialogUserOpen">
+      <div>
+        <div lang="flex-content">
+          <div class="head">
+            <img
+              v-if="currentUser"
+              :src="currentUser.avatar"
+              class="icon_img"
+              alt="User Avatar"
+            />
+            <div class="user_name">{{ currentUser.code_name }}</div>
+            <button
+              type="button"
+              class="cancel"
+              @click.stop="userInfoDown(currentUser?.id)"
+            >
+              閉じる
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script setup>
@@ -649,6 +675,16 @@ const user = ref(null);
 const isAsideOpen = ref(true);
 const userMap = ref({});
 const openOptions = ref(null);
+const OptionDialogOpen = ref(false);
+const Deleteconfirmation = ref(false);
+const EditDialogOpen = ref(false);
+const isDialogOpen = ref(false);
+const selectTodoId = ref(null);
+const selectUserId = ref(null);
+const isDialogUserOpen = ref(null);
+const isMenuOpen = ref(false);
+const avatarBtn = ref(null);
+const menuRef = ref(null);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const currentUser = computed(() => authStore.currentUser);
 onMounted(async () => {
@@ -688,6 +724,8 @@ onMounted(async () => {
         optionMenu.style.display = closedOption();
       }
     });
+    document.addEventListener("click", handleClickOutside);
+    document.removeEventListener("click", handleClickOutside);
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -695,29 +733,44 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   window.removeEventListener("resize", checkWindow);
 });
-const OptionDialogOpen = ref(false);
-const Deleteconfirmation = ref(false);
-const EditDialogOpen = ref(false);
-const isDialogOpen = ref(false);
-const selectTodoId = ref(null);
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
+
+const handleClickOutside = (event) => {
+  if (
+    menuRef.value &&
+    !menuRef.value.contains(event.target) &&
+    !avatarBtn.value.contains(event.target)
+  ) {
+    isMenuOpen.value = false;
+  }
+};
+const userInfoShow = (userId) => {
+  selectUserId.value = userId;
+  isDialogUserOpen.value = true;
+};
+const userInfoDown = () => {
+  isDialogUserOpen.value = false;
+};
 const navigateToTodo = (todoId) => {
   if (this.openOptions !== todoId) {
     this.$router.push(`/t/${todoId}`);
   }
 };
-const openOption = async(todoId) => {
+const openOption = async (todoId) => {
   selectTodoId.value = todoId;
   OptionDialogOpen.value = true;
   await nextTick();
   const optionMenu = document.getElementById("menu-option");
-  const targetElement = document.querySelector('.oprion-icon');
+  const targetElement = document.querySelector(".oprion-icon");
   if (!optionMenu || !targetElement) return;
   const rect = targetElement.getBoundingClientRect();
   const windowHeight = window.innerHeight;
   const menuHeight = optionMenu.offsetHeight || 50;
   const screenCenter = windowHeight / 2;
   let topPosition;
-  if (rect.top < screenCenter){
+  if (rect.top < screenCenter) {
     topPosition = rect.bottom + window.scrollY;
   } else {
     topPosition = rect.top + window.scrollY - menuHeight;

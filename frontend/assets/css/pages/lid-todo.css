@@ -21,7 +21,10 @@
 .todo-items {
   max-width: 768px;
   width: 100%;
-  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: -20px;
+  padding-top: 20px;
   border-radius: 10px 10px 0px 0px;
   border-bottom: 1px solid #eceff1;
   transition: background-color 0.3s ease;
@@ -45,6 +48,8 @@
   flex-grow: 1;
   word-wrap: break-word;
   left: 0px;
+  padding-right: 15px;
+  padding-left: 0px;
   position: relative;
 }
 .todo-items-detail {
@@ -55,7 +60,10 @@
 .todo-additem{
     max-width: 768px;
     width: 100%;
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: -20px;
+    padding-top: 20px;
     border-bottom: 1px solid #eceff1;
     transition: background-color 0.3s ease;
     align-items: center;

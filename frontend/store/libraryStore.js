@@ -176,6 +176,28 @@ export const useLibraryStore = defineStore("library", {
         throw new Error;
       }
     },
+    async LibraryTodoDelete(id) {
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/libtodo/${id}/`, {
+          method: "DELETE",
+          headers:{
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          },
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData || "ToDOの削除に失敗");
+        }
+        window.location.reload();
+        console.log("削除成功");
+      }catch(error){
+        console.error('LibraryToDO削除時、Error:', error);
+        throw new Error;
+      }
+    },
     async CreateLibraryToken(library) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();

@@ -757,6 +757,64 @@ aside.open ~ .container {
   justify-content: space-between;
   align-items: center;
 }
+.modal-overlay-user{
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  width: 240px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  padding: 1rem;
+}
+.modal-content-user{
+  background: white;
+  border-radius: 10px;
+  width: 300px;
+  height: 250px;
+  text-align: left;
+  position: absolute;
+}
+.flex-content{
+  display: flex;
+  position: absolute;
+  padding: 1.0rem;
+
+}
+.head{
+
+}
+.user_name{
+
+}
+.cancel{
+
+}
+.avatar-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.account-menu {
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  width: 240px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  z-index: 999;
+  padding: 1rem;
+}
+
 @media (max-width: 768px) {
   .header {
     left: 0;

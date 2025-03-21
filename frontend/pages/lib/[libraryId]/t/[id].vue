@@ -10,6 +10,9 @@
           class="checkboxs"
         />
         <div class="todo-items-detail">
+          <div>
+             <span><p>{{ libtodo?.auther }}</p></span>
+          </div>
           <p class="time-lib">{{ formatDate(libtodo?.created_at) }}</p>
           <p class="text-lib">{{ libtodo?.todo }}</p>
         </div>
@@ -23,7 +26,6 @@
         />
         <div class="todo-items-detail">
           <div>
-            <!-- <span><img :src="currentUser.avatar" class="icon_img" alt="User Avatar"/>{{ currentUser.email }}</span> -->
              <span><p>{{ libadd?.auther }}</p></span>
           </div>
           <p class="time-lib">{{ formatDate(libadd?.created_at) }}</p>
@@ -164,12 +166,14 @@ const handleBlur = (event) => {
 const submitLibAddToDO = async () => {
   const todoElement = textKeyWard.value?.innerText.trim();
   const todoTagId = route.params.id;
-  const currentUser = authStore?.user?.id;
+  const currentuser = authStore?.user?.id;
+  // const currentuser = authStore?.user?.code_name;
+  // const currentUser = authStore?.currentUser;
   if (!todoElement || todoElement === "追加するToDO") {
     alert("有効なTODOにしてください。");
     return;
   }
-  if (!currentUser) {
+  if (!currentuser) {
     alert("ログインしてください");
     return;
   }
@@ -177,13 +181,21 @@ const submitLibAddToDO = async () => {
     const LibAddtodo = await libraryStore.CreateTodo(
       todoTagId,
       todoElement,
-      currentUser
+      currentuser
     );
     if (LibAddtodo.tag === todoTagId) {
-      libaddtodo.value.unshift(LibAddtodo);
-      libaddtodo.value.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
+      const normalizedTodo = {
+        id: LibAddtodo.id,
+        tag: LibAddtodo.tag,
+        auther: LibAddtodo.auther,
+        todo: LibAddtodo.todo,
+        title: LibAddtodo.title ?? "",
+        checklist: LibAddtodo.checklist ?? false,
+        created_at: LibAddtodo.created_at ?? new Date().toISOString()
+      };
+      await nextTick();
+      libaddtodo.value.unshift(normalizedTodo);
+      libaddtodo.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
       textKeyWard.value.innerText = "";
       isPlaceholderVisable.value = true;
       console.log("ToDOが正常に追加されました。");

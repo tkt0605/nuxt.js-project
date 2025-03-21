@@ -49,14 +49,14 @@ class ToDOList(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100, blank=True)
     auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True , related_name='todos')
-    todo = models.TextField(verbose_name='ToDO')
+    todo = models.TextField(max_length=1080, verbose_name='ToDO')
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return str(self.id)
 class addToDO(models.Model):
     todo_tag = models.ForeignKey(ToDOList, on_delete=models.CASCADE, null=True, related_name="tasks")
-    todo = models.TextField(verbose_name="Add ToDO")
+    todo = models.TextField(max_length=1080, verbose_name="Add ToDO")
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
@@ -66,7 +66,7 @@ class Library(models.Model):
     name = models.CharField(max_length=50, blank=False)
     owner =  models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='Owner')
     members = models.ManyToManyField(CustomUser, related_name='libraries')
-    goal = models.TextField(verbose_name="goal", blank=True)
+    goal = models.TextField(max_length=1080, verbose_name="goal", blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     def save(self, *args, **kwargs):
         if not self.id:
@@ -89,7 +89,7 @@ class LibraryToDO(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100, blank=True)
     tag = models.ForeignKey(Library, on_delete=models.CASCADE, null=True, related_name="LibraryId")
-    todo = models.TextField(verbose_name="task")
+    todo = models.TextField(max_length=1080, verbose_name="task")
     auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="HeaderToDO作者")
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -99,7 +99,7 @@ class LibraryToDO(models.Model):
 class LibraryAddToDO(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tag = models.ForeignKey(LibraryToDO, on_delete=models.CASCADE, null=True, related_name="LibraryToDOのタグ")
-    todo = models.TextField(verbose_name="ADD-Lib-todo")
+    todo = models.TextField(max_length=1080, verbose_name="ADD-Lib-todo")
     auther = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name="AddToDO作者")
     checklist = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)

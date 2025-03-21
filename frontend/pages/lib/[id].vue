@@ -228,7 +228,9 @@
               <div class="expsss">
                 <p>このプロジェクトの目標を載せる。</p>
                 <div class="goal-font" v-if="library?.goal?.length">
-                  <span v-if="library?.goal?.length > 20">{{ library?.goal.slice(0, 20) + "..." }}</span>
+                  <span v-if="library?.goal?.length > 20">{{
+                    library?.goal.slice(0, 20) + "..."
+                  }}</span>
                   <span v-else>{{ library?.goal }}</span>
                 </div>
               </div>
@@ -306,9 +308,8 @@
       v-if="library.members?.includes(currentUser.id) || isLibraryMember"
     >
       <div class="lib-todo-exp">このライブラリのToDO</div>
-      <div>
-        <div class="lib-todo-list">
-          <div class="todo-info-show" v-for="data in libtodos" :key="data.id">
+      <div class="lib-todo-list">
+        <div class="todo-info-show" v-for="data in libtodos" :key="data.id">
             <div class="list-todo" @click="PushTodoPage(data.id)">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -331,16 +332,20 @@
                 />
               </svg>
             </div>
-            <div class="sub-group">
+            <div class="sub-group"  @click="PushTodoPage(data.id)">
               <div class="some-info">
                 <div class="name" v-if="data.title === ''">
                   {{ formatDate(data.created_at) }}
                 </div>
                 <div class="name" v-else>{{ data.title }}</div>
-                <div class="first-todo">{{ data.todo }}</div>
+                <div class="first-todo" v-if="data.todo.length > 58">{{ data.todo.slice(0, 58) + "..." }}</div>
+                <div class="first-todo" v-else>{{ data.todo }}</div>
               </div>
               <div class="option">
-                <button class="oprion-icon-lib" @click.stop="openOption(data.id, $event)">
+                <button
+                  class="oprion-icon-lib"
+                  @click.stop="openOption(data.id, $event)"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="16"
@@ -356,141 +361,137 @@
                 </button>
               </div>
             </div>
-          </div>
-          <div class="modal-overlay-option-lib" v-show="isDialogOption" id="menu-option-lib">
-            <div class="modal-content-lib">
-              <div class="flex-option-lib">
-                <div class="option-menu">
-                  <div class="option-title-bord">
-                    <p class="option-title">オプション</p>
-                    <button
-                      @click.stop="closedOption"
-                      data-textid="close-button"
-                      class="closed-button"
-                      aria-label="閉じる"
+        </div>
+        <div class="modal-overlay-option-lib" v-show="isDialogOption" id="menu-option-lib">
+          <div class="modal-content-lib">
+            <div class="flex-option-lib">
+              <div class="option-menu">
+                <div class="option-title-bord">
+                  <p class="option-title">オプション</p>
+                  <button
+                    @click.stop="closedOption"
+                    data-textid="close-button"
+                    class="closed-button"
+                    aria-label="閉じる"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="icon-md"
                     >
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="icon-md"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
-                          fill="currentColor"
-                        ></path>
-                      </svg>
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
+                        fill="currentColor"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+                <button
+                  class="option-feature-edit"
+                  @click.stop="openEditDialog(selectTodoId)"
+                >
+                  <div class="button-in">タイトルを変更</div>
+                </button>
+                <button
+                  class="option-feature-delete"
+                  @click.stop="openDeleteDialog(selectTodoId)"
+                >
+                  <div class="button-design">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-trash"
+                      viewBox="0 0 16 16"
+                      style="font-weight: bold; color: red"
+                    >
+                      <path
+                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"
+                      />
+                      <path
+                        d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"
+                      />
+                    </svg>
+                    <div class="button-in-dele">削除する</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-overlay-delete" v-if="isDialogDelete" @click.stop>
+          <div class="modal-content-delete">
+            <div class="flex-delete">
+              <div v-for="item in getTodoActions" :key="item.id">
+                <div class="main-header">このToDOを削除しますか？</div>
+                <div class="some-info-bord">
+                  <div class="delete-exp">
+                    <div class="lib-name-del" v-if="item.title === ''">
+                      {{ formatDate(item.created_at) }}を削除します。
+                    </div>
+                    <div class="lib-name-del" v-else>
+                      {{ item.title }}を削除します。
+                    </div>
+                    <div class="lib-exp-font">
+                      ⚠️ 一度ToDOを削除すると復元することは出来ません。
+                    </div>
+                  </div>
+                  <div class="action-bord">
+                    <button class="cancel" @click.stop="closedDeleteDialog">
+                      <div class="litery">キャンセルする</div>
+                    </button>
+                    <button class="delete" @click.stop="deleteToDO(item.id)">
+                      <div class="litery">削除する</div>
                     </button>
                   </div>
-                  <button
-                    class="option-feature-edit"
-                    @click.stop="openEditDialog(selectTodoId)"
-                  >
-                    <div class="button-in">タイトルを変更</div>
-                  </button>
-                  <button
-                    class="option-feature-delete"
-                    @click.stop="openDeleteDialog(selectTodoId)"
-                  >
-                    <div class="button-design">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-trash"
-                        viewBox="0 0 16 16"
-                        style="font-weight: bold; color: red"
-                      >
-                        <path
-                          d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"
-                        />
-                        <path
-                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"
-                        />
-                      </svg>
-                      <div class="button-in-dele">削除する</div>
-                    </div>
-                  </button>
                 </div>
               </div>
             </div>
           </div>
-          <div class="modal-overlay-delete" v-if="isDialogDelete" @click.stop>
-            <div class="modal-content-delete">
-              <div class="flex-delete">
-                <div v-for="item in getTodoActions" :key="item.id">
-                  <div class="main-header">このToDOを削除しますか？</div>
-                  <div class="some-info-bord">
-                    <div class="delete-exp">
-                      <div class="lib-name-del" v-if="item.title === ''">
-                        {{ formatDate(item.created_at) }}を削除します。
-                      </div>
-                      <div class="lib-name-del" v-else>
-                        {{ item.title }}を削除します。
-                      </div>
-                      <div class="lib-exp-font">
-                        ⚠️ 一度ToDOを削除すると復元することは出来ません。
-                      </div>
+        </div>
+        <div class="modal-overlay-edit" v-if="isDialogEdit" @click.stop>
+          <div class="modal-content-edit">
+            <div class="flex-delete">
+              <div v-for="item in getTodoActions" :key="item.id">
+                <div class="main-header-edit">タイトルの編集をします。</div>
+                <div class="some-info-bord">
+                  <div class="exp-header">
+                    <div class="lib-name-del" v-if="item.title === ''">
+                      {{ formatDate(item.created_at) }}/タイトルの編集。
                     </div>
-                    <div class="action-bord">
-                      <button class="cancel" @click.stop="closedDeleteDialog">
-                        <div class="litery">キャンセルする</div>
-                      </button>
-                      <button class="delete" @click.stop="deleteToDO(item.id)">
-                        <div class="litery">削除する</div>
-                      </button>
+                    <div class="lib-name-del" v-else>
+                      <div v-if="item.title.length > 17">
+                        {{ item.title.slice(0, 17) + "..." }}/タイトルの編集。
+                      </div>
+                      <div v-else>{{ item.title }}/タイトルの編集</div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="modal-overlay-edit" v-if="isDialogEdit" @click.stop>
-            <div class="modal-content-edit">
-              <div class="flex-delete">
-                <div v-for="item in getTodoActions" :key="item.id">
-                  <div class="main-header-edit">タイトルの編集をします。</div>
-                  <div class="some-info-bord">
-                    <div class="exp-header">
-                      <div class="lib-name-del" v-if="item.title === ''">
-                        {{ formatDate(item.created_at) }}/タイトルの編集。
-                      </div>
-                      <div class="lib-name-del" v-else>
-                        <div v-if="item.title.length > 17">
-                          {{ item.title.slice(0, 17) + "..." }}/タイトルの編集。
-                        </div>
-                        <div v-else>{{ item.title }}/タイトルの編集</div>
-                      </div>
-                    </div>
-                    <div class="exp">
-                      ⚠️ 見返してもわかりやすいタイトルにしてください。
-                    </div>
-                    <div class="edit-area">
-                      <input
-                        id="edit-title"
-                        v-model="EditTitle"
-                        class="input-field"
-                        type="text"
-                        placeholder="タイトルの編集"
-                        @click.stop
-                      />
-                    </div>
-                    <div class="action-bord">
-                      <button
-                        class="cancel-edit"
-                        @click.stop="closedEditDialog"
-                      >
-                        <div class="litery-edit">キャンセルする</div>
-                      </button>
-                      <button class="save" @click.stop="editTitle(item.id)">
-                        <div class="litery">保存する</div>
-                      </button>
-                    </div>
+                  <div class="exp">
+                    ⚠️ 見返してもわかりやすいタイトルにしてください。
+                  </div>
+                  <div class="edit-area">
+                    <input
+                      id="edit-title"
+                      v-model="EditTitle"
+                      class="input-field"
+                      type="text"
+                      placeholder="タイトルの編集"
+                      @click.stop
+                    />
+                  </div>
+                  <div class="action-bord">
+                    <button class="cancel-edit" @click.stop="closedEditDialog">
+                      <div class="litery-edit">キャンセルする</div>
+                    </button>
+                    <button class="save" @click.stop="editTitle(item.id)">
+                      <div class="litery">保存する</div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -555,7 +556,7 @@ const openOption = async (todoId, event) => {
   selectTodoId.value = todoId;
   isDialogOption.value = true;
   await nextTick();
-  const optionMenu = document.getElementById('menu-option-lib');
+  const optionMenu = document.getElementById("menu-option-lib");
   if (!optionMenu) return;
   const targetElement = event.currentTarget;
   const rect = targetElement.getBoundingClientRect();
@@ -563,7 +564,7 @@ const openOption = async (todoId, event) => {
   const menuHeight = optionMenu.offsetHeight || 50;
   const screenCenter = windowHeight / 2;
   let topPosition;
-  if(rect.top < screenCenter) {
+  if (rect.top < screenCenter) {
     topPosition = rect.bottom + window.scrollY;
   } else {
     topPosition = rect.top + window.scrollY - menuHeight;
@@ -636,7 +637,7 @@ onMounted(async () => {
     }
     // libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
-    Goal.value = LibraryGoal.goal || "";
+    Goal.value = LibraryGoal.goal || ""; 
     Name.value = LibraryGoal.name;
     document.addEventListener("click", function (event) {
       const optionMenu = document.getElementById("menu-option-lib");
@@ -700,6 +701,16 @@ const EditName = async () => {
   } catch (error) {
     console.error(error);
     throw new Error();
+  }
+};
+const deleteToDO = async (todoId)=>{
+  try{
+    await libraryStore.LibraryTodoDelete(todoId);
+    console.log('todoの削除成功');
+    return closedDeleteDialog();
+  }catch(error){
+    console.error(error);
+    throw new Error("削除の際にError:");
   }
 };
 const createToken = async () => {
@@ -771,6 +782,7 @@ const submitLibTodo = async (libId) => {
   const todoContent = todoElement.innerText.trim();
   const now = new Date();
   const auther = authStore.user?.id;
+  // const auther = authStore.currentUser;
   if (!todoContent || todoContent === "このライブラリの新しいToDO") {
     console.log("ToDoの内容が空です。");
     return;
