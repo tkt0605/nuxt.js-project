@@ -758,6 +758,7 @@ aside.open ~ .container {
   align-items: center;
 }
 .modal-overlay-user{
+  /* position: absolute;にすると絶対参照になって画面に最優先で表示 */
   position: absolute;
   top: 50px;
   right: 10px;
@@ -769,14 +770,6 @@ aside.open ~ .container {
   z-index: 999;
   padding: 1rem;
 }
-.modal-content-user{
-  background: white;
-  border-radius: 10px;
-  width: 300px;
-  height: 250px;
-  text-align: left;
-  position: absolute;
-}
 .flex-content{
   display: flex;
   position: absolute;
@@ -784,13 +777,28 @@ aside.open ~ .container {
 
 }
 .head{
-
+  position: relative;
+  justify-content: center;
+  padding: .75rem;
 }
 .user_name{
 
 }
-.cancel{
-
+.icon-div{
+  position: relative;
+  justify-content: center;
+}
+.cancel-btn-popup{
+  padding: 10px;
+  color: white;
+  background: black;
+  width: 125px;
+  height: auto;
+  border-radius: 25px;
+}
+.cancel-btn-popup:hover{
+  color: white;
+  background: rgb(36, 36, 36);
 }
 .avatar-btn {
   border: none;

@@ -11,13 +11,22 @@
         />
         <div class="todo-items-detail">
           <div>
-             <span><p>{{ libtodo?.auther }}</p></span>
+            <img :src="libtodo?.auther?.avatar" class="icon_img" />
+            <span><p>{{ libtodo?.auther?.code_name }}</p></span>
           </div>
+          <!-- <div v-for="account in authUser">
+            <img :src="account.avatar" class="icon_img" />
+            <span><p>{{ account?.code_name }}</p></span>
+          </div> -->
           <p class="time-lib">{{ formatDate(libtodo?.created_at) }}</p>
           <p class="text-lib">{{ libtodo?.todo }}</p>
         </div>
       </div>
-      <div class="todo-additem" v-for="libadd in libaddtodo" :key="libadd.id">
+      <div
+        class="todo-additem"
+        v-for="libadd in libaddtodo"
+        :key="libadd.id"
+      >
         <input
           type="checkbox"
           :checked="libadd?.checklist"
@@ -26,7 +35,8 @@
         />
         <div class="todo-items-detail">
           <div>
-             <span><p>{{ libadd?.auther }}</p></span>
+            <img :src="libadd?.auther?.avatar" class="icon_img" />
+            <span><p>{{ libadd?.auther?.code_name }}</p></span>
           </div>
           <p class="time-lib">{{ formatDate(libadd?.created_at) }}</p>
           <p class="text-lib">{{ libadd.todo }}</p>
@@ -99,6 +109,9 @@ const placeholderText = ref("追加するToDO");
 const isPlaceholderVisable = ref(true);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const currentUser = computed(() => authStore.currentUser);
+const creater = ref([]);
+const authUser = ref([]);
+const Adduser = ref([]);
 onMounted(async () => {
   try {
     await authStore.restoreSession();
@@ -107,10 +120,16 @@ onMounted(async () => {
     libtodo.value = await libraryStore.fetchId(routeId);
     const todos = await libraryStore.getLibraryTodo();
     if (Array.isArray(todos)) {
-      libaddtodo.value = todos.filter((libaddtodo) => libaddtodo.tag === routeId).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      libaddtodo.value = todos
+        .filter((libaddtodo) => libaddtodo.tag === routeId)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+      // Adduser.value = await createrAccounts(libaddtodo.value.auther);
     } else {
       console.error("取得に失敗", error);
     }
+    authUser.value = await createrAccount(libtodo.value.auther);
+    Adduser.value = await createrAccounts(libaddtodo.value);
   } catch (error) {
     console.error("データの取得エラー", error);
   }
@@ -126,11 +145,7 @@ function formatDate(date) {
     minute: "2-digit",
   };
   return new Date(date).toLocaleDateString("ja-jp", details);
-};
-// function PostUserName(userId) {
-
-// }
-// const postUserInfo = computed(() => )
+}
 const LibrarycheckToDO = async (id, isCheck) => {
   try {
     const routeId = route.params.id;
@@ -166,9 +181,7 @@ const handleBlur = (event) => {
 const submitLibAddToDO = async () => {
   const todoElement = textKeyWard.value?.innerText.trim();
   const todoTagId = route.params.id;
-  const currentuser = authStore?.user?.id;
-  // const currentuser = authStore?.user?.code_name;
-  // const currentUser = authStore?.currentUser;
+  const currentuser = authStore?.user?.code_name;
   if (!todoElement || todoElement === "追加するToDO") {
     alert("有効なTODOにしてください。");
     return;
@@ -191,11 +204,13 @@ const submitLibAddToDO = async () => {
         todo: LibAddtodo.todo,
         title: LibAddtodo.title ?? "",
         checklist: LibAddtodo.checklist ?? false,
-        created_at: LibAddtodo.created_at ?? new Date().toISOString()
+        created_at: LibAddtodo.created_at ?? new Date().toISOString(),
       };
       await nextTick();
       libaddtodo.value.unshift(normalizedTodo);
-      libaddtodo.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      libaddtodo.value.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
       textKeyWard.value.innerText = "";
       isPlaceholderVisable.value = true;
       console.log("ToDOが正常に追加されました。");
@@ -203,5 +218,25 @@ const submitLibAddToDO = async () => {
   } catch (error) {
     console.error("todoが追加されませんでした。");
   }
+};
+const createrAccount = async (User) => {
+  const allUsers = await authStore.getUserInfo();
+  const ToDOAuthor = allUsers.filter((user) => user.code_name === User);
+  creater.value = ToDOAuthor;
+  return ToDOAuthor;
+};
+// const createrAccounts = async (User) => {
+//   const user = await authStore.getUserInfo();
+//   const account = user.filter((target)=> User.includes(target.code_name));
+//   Adduser.value = account;
+//   return account;
+// };
+const createrAccounts = async (target_users) => {
+  const allusers = await authStore.getUserInfo();
+  const LibMembers = allusers.filter(
+    (user) => user.code_name === target_users.auther
+  );
+  Adduser.value = LibMembers;
+  return LibMembers;
 };
 </script>

@@ -11,7 +11,6 @@
                 :src="currentUser.avatar"
                 class="icon_img"
                 alt="User Avatar"
-                ref="avatarBtn"
                 @click="userInfoShow(currentUser?.id)"
               />
             </div>
@@ -80,7 +79,6 @@
                 :src="currentUser.avatar"
                 class="icon_img"
                 alt="User Avatar"
-                ref="avatarBtn"
                 @click="userInfoShow(currentUser?.id)"
               />
             </div>
@@ -180,8 +178,8 @@
             <li v-for="library in libraries" :key="library.id" class="lib-line">
               <div
                 v-if="
-                  library?.owner === currentUser.id ||
-                  library?.members.includes(currentUser.id)
+                  library?.owner === currentUser.code_name ||
+                  library?.members.includes(currentUser.code_name)
                 "
                 class="lib-tmp"
               >
@@ -311,7 +309,7 @@
                   <div class="opeion-wrapper">
                     <button
                       class="oprion-icon"
-                      @click.stop="openOption(todo.id)"
+                      @click.stop="openOption(todo.id, $event)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -360,7 +358,7 @@
                   <div class="opeion-wrapper">
                     <button
                       class="oprion-icon"
-                      @click.stop="openOption(todo.id)"
+                      @click.stop="openOption(todo.id, $event)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -409,7 +407,7 @@
                   <div class="opeion-wrapper">
                     <button
                       class="oprion-icon"
-                      @click.stop="openOption(todo.id)"
+                      @click.stop="openOption(todo.id, $event)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -458,7 +456,7 @@
                   <div class="opeion-wrapper">
                     <button
                       class="oprion-icon"
-                      @click.stop="openOption(todo.id)"
+                      @click.stop="openOption(todo.id, $event)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -628,19 +626,16 @@
       </ul>
     </aside>
     <div class="modal-overlay-user" v-show="isDialogUserOpen">
-      <div>
+      <div v-if="currentUser">
         <div lang="flex-content">
           <div class="head">
-            <img
-              v-if="currentUser"
-              :src="currentUser.avatar"
-              class="icon_img"
-              alt="User Avatar"
-            />
-            <div class="user_name">{{ currentUser.code_name }}</div>
+            <div class="icon-div">
+              <img v-if="currentUser" :src="currentUser.avatar" class="icon_img" alt="User Avatar"/>
+            </div>
+            <div class="user_name">{{ currentUser?.code_name }}</div>
             <button
               type="button"
-              class="cancel"
+              class="cancel-btn-popup"
               @click.stop="userInfoDown(currentUser?.id)"
             >
               閉じる
@@ -724,8 +719,6 @@ onMounted(async () => {
         optionMenu.style.display = closedOption();
       }
     });
-    document.addEventListener("click", handleClickOutside);
-    document.removeEventListener("click", handleClickOutside);
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -733,19 +726,6 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   window.removeEventListener("resize", checkWindow);
 });
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value;
-};
-
-const handleClickOutside = (event) => {
-  if (
-    menuRef.value &&
-    !menuRef.value.contains(event.target) &&
-    !avatarBtn.value.contains(event.target)
-  ) {
-    isMenuOpen.value = false;
-  }
-};
 const userInfoShow = (userId) => {
   selectUserId.value = userId;
   isDialogUserOpen.value = true;
@@ -758,12 +738,13 @@ const navigateToTodo = (todoId) => {
     this.$router.push(`/t/${todoId}`);
   }
 };
-const openOption = async (todoId) => {
+const openOption = async (todoId, event) => {
   selectTodoId.value = todoId;
   OptionDialogOpen.value = true;
   await nextTick();
   const optionMenu = document.getElementById("menu-option");
-  const targetElement = document.querySelector(".oprion-icon");
+  // const targetElement = document.querySelector(".oprion-icon");
+  const targetElement = event.currentTarget;
   if (!optionMenu || !targetElement) return;
   const rect = targetElement.getBoundingClientRect();
   const windowHeight = window.innerHeight;
@@ -809,8 +790,12 @@ const createLibrary = async () => {
     alert("ライブラリ名を入力してください。");
     return;
   }
-  const owner = authStore.user?.id;
-  const members = authStore.user?.id ? [authStore.user?.id] : [];
+  const user = authStore?.user;
+  if (!user || !user.code_name){
+    console.log('ログインをしてください。');
+  }
+  const owner = user.code_name;
+  const members = [owner];
   try {
     const createLib = await libraryStore.createLibrary(libname, owner, members);
     console.log("作成成功:", createLib);

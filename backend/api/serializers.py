@@ -2,8 +2,12 @@ from rest_framework import serializers
 from rest_framework.views import APIView
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import ToDOList, addToDO, Library, LibraryToDO, LibraryToken, LibraryAddToDO
+from .models import ToDOList, addToDO, Library, LibraryToDO, LibraryToken, LibraryAddToDO, CustomUser
 User = get_user_model()
+class AutherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['code_name', 'avatar']  # 必要に応じて他のフィールドも追加
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -44,18 +48,39 @@ class AddToDOSerializer(serializers.ModelSerializer):
         model = addToDO
         fields = '__all__'
 class LibrarySerializer(serializers.ModelSerializer):
+    owner = serializers.SlugRelatedField(
+        queryset = CustomUser.objects.all(),
+        slug_field = "code_name"
+    )
+    members = serializers.SlugRelatedField(
+        queryset = CustomUser.objects.all(),
+        slug_field = "code_name",
+        many = True,
+    )
     class Meta:
         model = Library
-        fields = '__all__'
-class LibraryToDOSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = LibraryToDO
         fields = '__all__'
 class LibraryTokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = LibraryToken
         fields = '__all__'
+
+class LibraryToDOSerializer(serializers.ModelSerializer):
+    # auther = serializers.SlugRelatedField(
+    #     queryset = CustomUser.objects.all(),
+    #     slug_field = "code_name",
+    # )
+    auther = AutherSerializer(read_only=True)
+    class Meta:
+        model = LibraryToDO
+        fields = '__all__'
+
 class libraryAddToDOSerializer(serializers.ModelSerializer):
+    # auther = serializers.SlugRelatedField(
+    #     queryset = CustomUser.objects.all(),
+    #     slug_field = "code_name",
+    # )
+    auther = AutherSerializer(read_only=True)
     class Meta:
         model = LibraryAddToDO
         fields = "__all__"

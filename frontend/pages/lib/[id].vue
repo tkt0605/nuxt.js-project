@@ -65,7 +65,7 @@
         </div>
       </div>
     </div>
-    <div v-if="currentUser.id === library.owner">
+    <div v-if="currentUser.code_name === library.owner">
       <div class="modal-overlay-key" v-if="iskeyDialog">
         <div class="modal-content-key">
           <div class="flex-key">
@@ -171,7 +171,43 @@
         </div>
       </button>
       <div v-if="JoinDialogOpen" class="modal-overlay-join">
-        <div class="modal-content-join">
+        <div class="modal-content-join" v-if="library?.members.includes(currentUser.code_name)">
+          <div class="flex-closed-btn">
+            <h3>Hello World</h3>
+            <button
+              @click="closedJoinDialog"
+              class="closed-button"
+              data-textid="close-button"
+              aria-label="閉じる"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon-md"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div class="join-form">
+            <div class="exp-join">
+              <p>現在参加済みのアカウント</p>
+            </div>
+            <div class="account-form" v-for="account in  accounts" :key="account.id">
+              <img :src="account.avatar" class="icon_img"/>
+              <div>{{ account.code_name }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-content-join" v-else>
           <div class="flex-closed-btn">
             <h3>🚀 ライブラリに参加</h3>
             <button
@@ -305,7 +341,7 @@
     </div>
     <div
       class="lib-main-todo"
-      v-if="library.members?.includes(currentUser.id) || isLibraryMember"
+      v-if="library.members?.includes(currentUser.code_name) || isLibraryMember"
     >
       <div class="lib-todo-exp">このライブラリのToDO</div>
       <div class="lib-todo-list">
@@ -504,7 +540,7 @@
 </template>
 <script setup>
 import Header from "../components/Header.vue";
-import { useRoute, useRouter } from "nuxt/app";
+import { useResponseHeader, useRoute, useRouter } from "nuxt/app";
 import { useAuthStore } from "../../store/auth";
 import { useLibraryStore } from "../../store/libraryStore";
 import "../assets/css/pages/lib-id.css";
@@ -528,6 +564,8 @@ const currentUser = computed(() => authStore.currentUser);
 const libtodos = ref(null);
 const EditTitle = ref("");
 const tokens = ref([]);
+const members = ref([]);
+const accounts = ref([]);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -637,8 +675,9 @@ onMounted(async () => {
     }
     // libtoken.value = await libraryStore.getLibraryToken(routeId);
     //v-modelとして定義したGoalと、APIでLibraryの引数Goalを取得するよう定義したLibraryGoalの引数goalを結びつける。
-    Goal.value = LibraryGoal.goal || ""; 
+    Goal.value = LibraryGoal.goal || "";
     Name.value = LibraryGoal.name;
+    accounts.value = await LibraryMembers(library.value.members);
     document.addEventListener("click", function (event) {
       const optionMenu = document.getElementById("menu-option-lib");
       if (!event.target.classList.contains("option-menu")) {
@@ -661,7 +700,7 @@ const props = defineProps({
   },
 });
 const isLibraryMember = computed(() => {
-  const isMember = library?.members?.includes(currentUser?.id);
+  const isMember = library?.members?.includes(currentUser?.code_name);
   return isMember;
 });
 const getTodoActions = computed(() => {
@@ -739,7 +778,7 @@ const createToken = async () => {
 const joinLibrary = async () => {
   const routeId = route.params.id;
   const inputtoken = tokenInput.value.trim();
-  const add_member = authStore.user?.id;
+  const add_member = authStore.user?.code_name;
   try {
     const libtokens = await libraryStore.libraryToken();
     const libtoken = libtokens.find((item) => item.library === routeId);
@@ -781,7 +820,7 @@ const submitLibTodo = async (libId) => {
   const todoElement = document.getElementById("text_keybord");
   const todoContent = todoElement.innerText.trim();
   const now = new Date();
-  const auther = authStore.user?.id;
+  const auther = authStore.user?.code_name;
   // const auther = authStore.currentUser;
   if (!todoContent || todoContent === "このライブラリの新しいToDO") {
     console.log("ToDoの内容が空です。");
@@ -824,5 +863,11 @@ const editTitle = async (todoId) => {
     console.error(error);
     throw new Error();
   }
+};
+const LibraryMembers = async (target_users) => {
+  const allusers = await authStore.getUserInfo();
+  const LibMembers = allusers.filter((user) => target_users.includes(user.code_name))
+  members.value = LibMembers;
+  return LibMembers;
 };
 </script>
