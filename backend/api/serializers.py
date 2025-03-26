@@ -66,20 +66,27 @@ class LibraryTokenSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class LibraryToDOSerializer(serializers.ModelSerializer):
-    # auther = serializers.SlugRelatedField(
-    #     queryset = CustomUser.objects.all(),
-    #     slug_field = "code_name",
-    # )
-    auther = AutherSerializer(read_only=True)
+    auther = serializers.SlugRelatedField(
+        queryset = CustomUser.objects.all(),
+        slug_field = "code_name",
+    )
     class Meta:
         model = LibraryToDO
         fields = '__all__'
-
+class LibraryToDOReadSerializer(serializers.ModelSerializer):
+    auther = AutherSerializer(read_only=True)
+    class Meta:
+        model = LibraryToDO
+        fields = "__all__"
 class libraryAddToDOSerializer(serializers.ModelSerializer):
-    # auther = serializers.SlugRelatedField(
-    #     queryset = CustomUser.objects.all(),
-    #     slug_field = "code_name",
-    # )
+    auther = serializers.SlugRelatedField(
+        queryset = CustomUser.objects.all(),
+        slug_field = "code_name",
+    )
+    class Meta:
+        model = LibraryAddToDO
+        fields = "__all__"
+class LibraryAddToDOReadSerializer(serializers.ModelSerializer):
     auther = AutherSerializer(read_only=True)
     class Meta:
         model = LibraryAddToDO

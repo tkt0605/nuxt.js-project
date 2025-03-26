@@ -14,10 +14,6 @@
             <img :src="libtodo?.auther?.avatar" class="icon_img" />
             <span><p>{{ libtodo?.auther?.code_name }}</p></span>
           </div>
-          <!-- <div v-for="account in authUser">
-            <img :src="account.avatar" class="icon_img" />
-            <span><p>{{ account?.code_name }}</p></span>
-          </div> -->
           <p class="time-lib">{{ formatDate(libtodo?.created_at) }}</p>
           <p class="text-lib">{{ libtodo?.todo }}</p>
         </div>
@@ -30,16 +26,16 @@
         <input
           type="checkbox"
           :checked="libadd?.checklist"
-          @change="LibrarycheckToDO(libadd.id, $event.target.checked)"
+          @change="LibrarycheckToDO(libadd?.id, $event.target.checked)"
           class="checkboxs"
         />
         <div class="todo-items-detail">
-          <div>
+          <div v-if="libadd?.auther">
             <img :src="libadd?.auther?.avatar" class="icon_img" />
             <span><p>{{ libadd?.auther?.code_name }}</p></span>
           </div>
           <p class="time-lib">{{ formatDate(libadd?.created_at) }}</p>
-          <p class="text-lib">{{ libadd.todo }}</p>
+          <p class="text-lib">{{ libadd?.todo }}</p>
         </div>
       </div>
     </div>
@@ -55,8 +51,7 @@
             @focus="handleFocus"
             @blur="handleBlur"
           >
-            <p v-if="isPlaceholderVisable">{{ placeholderText }}</p>
-            <p v-else></p>
+            <p>{{ isPlaceholderVisable ? placeholderText : '' }}</p>
           </div>
         </div>
         <div class="flex-button-lib-todo">
@@ -64,6 +59,7 @@
             <button
               type="button"
               class="submit-button-id"
+              :disabled="isLoading"
               @click="submitLibAddToDO"
             >
               <svg
@@ -94,7 +90,7 @@ import Header from "../../../../components/Header.vue";
 import { useAuthStore } from "../../../../store/auth";
 import { useLibraryStore } from "../../../../store/libraryStore";
 import "../../../../assets/css/pages/lid-todo.css";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onUnmounted } from "vue";
 import { lib } from "crypto-js";
 import { errorMessages } from "vue/compiler-sfc";
 import { nextTick } from "vue";
@@ -112,6 +108,7 @@ const currentUser = computed(() => authStore.currentUser);
 const creater = ref([]);
 const authUser = ref([]);
 const Adduser = ref([]);
+const isLoading = ref(false);
 onMounted(async () => {
   try {
     await authStore.restoreSession();
@@ -133,6 +130,11 @@ onMounted(async () => {
   } catch (error) {
     console.error("データの取得エラー", error);
   }
+});
+const isUnmounted = ref(false);
+
+onUnmounted(() => {
+  isUnmounted.value = true;
 });
 function formatDate(date) {
   if (!date) return "日付不明";
@@ -196,24 +198,33 @@ const submitLibAddToDO = async () => {
       todoElement,
       currentuser
     );
+    if (isUnmounted.value) {
+      console.warn("アンマウント後の処理をキャンセルしました");
+      return;
+    }
     if (LibAddtodo.tag === todoTagId) {
-      const normalizedTodo = {
-        id: LibAddtodo.id,
-        tag: LibAddtodo.tag,
-        auther: LibAddtodo.auther,
-        todo: LibAddtodo.todo,
-        title: LibAddtodo.title ?? "",
-        checklist: LibAddtodo.checklist ?? false,
-        created_at: LibAddtodo.created_at ?? new Date().toISOString(),
-      };
+      // const normalizedTodo = {
+      //   id: LibAddtodo.id,
+      //   tag: LibAddtodo.tag,
+      //   auther: LibAddtodo.auther,
+      //   todo: LibAddtodo.todo,
+      //   title: LibAddtodo.title ?? "",
+      //   checklist: LibAddtodo.checklist ?? false,
+      //   created_at: LibAddtodo.created_at ?? new Date().toISOString(),
+      // };
       await nextTick();
-      libaddtodo.value.unshift(normalizedTodo);
+      if (isUnmounted.value) return;
+      // libaddtodo.value.unshift(normalizedTodo);
+      libaddtodo.value = await libraryStore.getLibraryTodo();
       libaddtodo.value.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
-      textKeyWard.value.innerText = "";
+      if (textKeyWard.value && typeof textKeyWard.value.innerText === 'string'){
+        textKeyWard.value.innerText = "";
+      }
       isPlaceholderVisable.value = true;
       console.log("ToDOが正常に追加されました。");
+      // window.location.reload();
     }
   } catch (error) {
     console.error("todoが追加されませんでした。");

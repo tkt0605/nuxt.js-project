@@ -9,7 +9,7 @@ import json
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IslibraryMember
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer, LibraryTokenSerializer, libraryAddToDOSerializer
+from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer, LibraryTokenSerializer, libraryAddToDOSerializer, LibraryAddToDOReadSerializer, LibraryToDOReadSerializer
 from .models import CustomUser, ToDOList, addToDO, LibraryToDO, Library, LibraryToken, LibraryAddToDO
 from rest_framework import generics, viewsets
 from django.shortcuts import get_object_or_404
@@ -83,15 +83,15 @@ class LibraryTokenViewset(viewsets.ModelViewSet):
         # library = get_object_or_404(Library, id=id)
         return get_object_or_404(LibraryToken, id=id)
 
-class LibraryTodoViewset(viewsets.ModelViewSet):
-    queryset = LibraryToDO.objects.all()
-    serializer_class = LibraryToDOSerializer
-    permission_classes = [IsAuthenticated]
+# class LibraryTodoViewset(viewsets.ModelViewSet):
+#     queryset = LibraryToDO.objects.all()
+#     serializer_class = LibraryToDOReadSerializer
+#     permission_classes = [IsAuthenticated]
 
-class LibraryAddToDOViewset(viewsets.ModelViewSet):
-    queryset = LibraryAddToDO.objects.all()
-    serializer_class = libraryAddToDOSerializer
-    permission_classes = [IsAuthenticated]
+# class LibraryAddToDOViewset(viewsets.ModelViewSet):
+#     queryset = LibraryAddToDO.objects.all()
+#     serializer_class = libraryAddToDOSerializer
+#     permission_classes = [IsAuthenticated]
 
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
@@ -138,6 +138,25 @@ class LibraryAddToDODetail(generics.RetrieveUpdateDestroyAPIView):
 class IndexAPI(APIView):
     def get(self, request):
         return Response({'message': 'Hello world!!!!'})
+
+
+class LibraryTodoViewset(viewsets.ModelViewSet):
+    queryset = LibraryToDO.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return LibraryToDOReadSerializer
+        return LibraryToDOSerializer
+
+class LibraryAddToDOViewset(viewsets.ModelViewSet):
+    queryset = LibraryAddToDO.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return LibraryAddToDOReadSerializer
+        return libraryAddToDOSerializer
 class EmailLoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
