@@ -8,6 +8,10 @@ class AutherSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['code_name', 'avatar']  # 必要に応じて他のフィールドも追加
+# class TitleSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ToDOList
+#         fields = ["title"]
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -39,14 +43,30 @@ class LogoutSerializer(serializers.Serializer):
         return data
     def save(self, **kwargs):
         RefreshToken(self.token).blacklist()
+
 class ToDOListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ToDOList
         fields = '__all__'
+
+class TitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ToDOList
+        fields = ["id", "title"]
 class AddToDOSerializer(serializers.ModelSerializer):
+    todo_tag = serializers.SlugRelatedField(
+        queryset = ToDOList.objects.all(),
+        slug_field = "id"
+    )
     class Meta:
         model = addToDO
         fields = '__all__'
+class AddToDOReadSerializer(serializers.ModelSerializer):
+    todo_tag = TitleSerializer(read_only=True)
+    class Meta:
+        model = addToDO
+        fields = "__all__"
+
 class LibrarySerializer(serializers.ModelSerializer):
     owner = serializers.SlugRelatedField(
         queryset = CustomUser.objects.all(),

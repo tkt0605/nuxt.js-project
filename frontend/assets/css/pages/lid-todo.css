@@ -1,6 +1,6 @@
 .lib-todo-bord {
   background: rgb(226, 226, 226);
-  top: 100px;
+  top: 75px;
   left: 33%;
   max-width: 1280px;
   width: calc(100% - 37.5%);
@@ -23,7 +23,7 @@
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
-  padding-bottom: -20px;
+  padding-bottom: 20px;
   padding-top: 20px;
   border-radius: 10px 10px 0px 0px;
   border-bottom: 1px solid #eceff1;
@@ -47,14 +47,15 @@
   color: #333;
   flex-grow: 1;
   word-wrap: break-word;
-  left: 0px;
+  left: 40px;
   padding-right: 15px;
   padding-left: 0px;
+  margin: 5px;
   position: relative;
 }
 .todo-items-detail {
   position: relative;
-  top: -25px;
+  /* top: -25px; */
   left: 25px;
 }
 .todo-additem{
@@ -62,7 +63,7 @@
     width: 100%;
     padding-left: 20px;
     padding-right: 20px;
-    padding-bottom: -20px;
+    padding-bottom: 20px;
     padding-top: 20px;
     border-bottom: 1px solid #eceff1;
     transition: background-color 0.3s ease;
@@ -152,6 +153,41 @@
     font-weight: 800;
     display: flex;
     justify-content: flex-end;
+}
+.nameInfo{
+  /* margin-bottom: -20px; */
+}
+.name_user{
+  margin: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  position: relative;
+}
+.icon_img_lib{
+  /* margin: 10px;/ */
+    width: 35px;
+    height: 35px;
+    border-radius: 0.125rem;
+    /* height: auto; */
+    max-width: 100%;
+    background-color: var(--avatar-bgColor);
+    border-radius: var(--borderRadius-medium);
+    box-shadow: 0 0 0 1px var(--avatar-borderColor);
+    display: inline-block;
+    flex-shrink: 0;
+    line-height: 1;
+    overflow: hidden;
+    vertical-align: middle;
+    border-radius: var(--borderRadius-full, 50%) !important;
+    border: #ffffff solid 1px;
+}
+.time-lib{
+  position: relative;
+}
+.div-bord-info{
+  /* position: relative;
+  display: flex;
+  flex-direction: row; */
 }
 @media (max-width: 480px) {
   .lib-todo-bord {

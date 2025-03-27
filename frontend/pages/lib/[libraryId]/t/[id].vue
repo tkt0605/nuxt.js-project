@@ -3,39 +3,35 @@
   <div class="lib-todo-bord">
     <div class="lib-todoitems-list">
       <div class="todo-items">
-        <input
+        <!-- <input
           type="checkbox"
           :checked="libtodo?.checklist"
           @change="LibrarycheckToDO(libtodo?.id, $event.target.checked)"
           class="checkboxs"
-        />
+        /> -->
         <div class="todo-items-detail">
-          <div>
-            <img :src="libtodo?.auther?.avatar" class="icon_img" />
-            <span><p>{{ libtodo?.auther?.code_name }}</p></span>
+          <div class="nameInfo">
+            <img :src="libtodo?.auther?.avatar" class="icon_img_lib" />
+            <span class="name_user">{{ libtodo?.auther?.code_name }}</span>
+            <small class="time-lib">{{ formatDate(libtodo?.created_at) }}</small>
+            <p class="text-lib">{{ libtodo?.todo }}</p>
           </div>
-          <p class="time-lib">{{ formatDate(libtodo?.created_at) }}</p>
-          <p class="text-lib">{{ libtodo?.todo }}</p>
         </div>
       </div>
-      <div
-        class="todo-additem"
-        v-for="libadd in libaddtodo"
-        :key="libadd.id"
-      >
-        <input
+      <div class="todo-additem" v-for="libadd in libaddtodo" :key="libadd.id">
+        <!-- <input
           type="checkbox"
           :checked="libadd?.checklist"
           @change="LibrarycheckToDO(libadd?.id, $event.target.checked)"
           class="checkboxs"
-        />
+        /> -->
         <div class="todo-items-detail">
-          <div v-if="libadd?.auther">
-            <img :src="libadd?.auther?.avatar" class="icon_img" />
-            <span><p>{{ libadd?.auther?.code_name }}</p></span>
+          <div v-if="libadd?.auther" class="nameInfo">
+            <img :src="libadd?.auther?.avatar" class="icon_img_lib" />
+            <span class="name_user">{{ libadd?.auther?.code_name }}</span>
+            <small class="time-lib">{{ formatDate(libadd?.created_at) }}</small>
+            <p class="text-lib">{{ libadd?.todo }}</p>
           </div>
-          <p class="time-lib">{{ formatDate(libadd?.created_at) }}</p>
-          <p class="text-lib">{{ libadd?.todo }}</p>
         </div>
       </div>
     </div>
@@ -51,7 +47,7 @@
             @focus="handleFocus"
             @blur="handleBlur"
           >
-            <p>{{ isPlaceholderVisable ? placeholderText : '' }}</p>
+            <p>{{ isPlaceholderVisable ? placeholderText : "" }}</p>
           </div>
         </div>
         <div class="flex-button-lib-todo">
@@ -125,8 +121,6 @@ onMounted(async () => {
     } else {
       console.error("取得に失敗", error);
     }
-    authUser.value = await createrAccount(libtodo.value.auther);
-    Adduser.value = await createrAccounts(libaddtodo.value);
   } catch (error) {
     console.error("データの取得エラー", error);
   }
@@ -198,28 +192,31 @@ const submitLibAddToDO = async () => {
       todoElement,
       currentuser
     );
+    console.log("追加ToDOの結果：", LibAddtodo);
     if (isUnmounted.value) {
       console.warn("アンマウント後の処理をキャンセルしました");
       return;
     }
     if (LibAddtodo.tag === todoTagId) {
-      // const normalizedTodo = {
-      //   id: LibAddtodo.id,
-      //   tag: LibAddtodo.tag,
-      //   auther: LibAddtodo.auther,
-      //   todo: LibAddtodo.todo,
-      //   title: LibAddtodo.title ?? "",
-      //   checklist: LibAddtodo.checklist ?? false,
-      //   created_at: LibAddtodo.created_at ?? new Date().toISOString(),
-      // };
+      const normalizedTodo = {
+        id: LibAddtodo.id,
+        tag: LibAddtodo.tag,
+        auther: LibAddtodo.auther,
+        todo: LibAddtodo.todo,
+        title: LibAddtodo.title ?? "",
+        checklist: LibAddtodo.checklist ?? false,
+        created_at: LibAddtodo.created_at ?? new Date().toISOString(),
+      };
       await nextTick();
       if (isUnmounted.value) return;
-      // libaddtodo.value.unshift(normalizedTodo);
-      libaddtodo.value = await libraryStore.getLibraryTodo();
+      libaddtodo.value.unshift(normalizedTodo);
       libaddtodo.value.sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at)
       );
-      if (textKeyWard.value && typeof textKeyWard.value.innerText === 'string'){
+      if (
+        textKeyWard.value &&
+        typeof textKeyWard.value.innerText === "string"
+      ) {
         textKeyWard.value.innerText = "";
       }
       isPlaceholderVisable.value = true;
@@ -229,25 +226,5 @@ const submitLibAddToDO = async () => {
   } catch (error) {
     console.error("todoが追加されませんでした。");
   }
-};
-const createrAccount = async (User) => {
-  const allUsers = await authStore.getUserInfo();
-  const ToDOAuthor = allUsers.filter((user) => user.code_name === User);
-  creater.value = ToDOAuthor;
-  return ToDOAuthor;
-};
-// const createrAccounts = async (User) => {
-//   const user = await authStore.getUserInfo();
-//   const account = user.filter((target)=> User.includes(target.code_name));
-//   Adduser.value = account;
-//   return account;
-// };
-const createrAccounts = async (target_users) => {
-  const allusers = await authStore.getUserInfo();
-  const LibMembers = allusers.filter(
-    (user) => user.code_name === target_users.auther
-  );
-  Adduser.value = LibMembers;
-  return LibMembers;
 };
 </script>

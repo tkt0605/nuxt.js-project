@@ -9,10 +9,13 @@ import json
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .permissions import IslibraryMember
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer, LibraryTokenSerializer, libraryAddToDOSerializer, LibraryAddToDOReadSerializer, LibraryToDOReadSerializer
+from .serializers import EmailLoginSerializer, LogoutSerializer, RegisterSerializer, ToDOListSerializer, AddToDOSerializer, UserSerializer, LibrarySerializer, LibraryToDOSerializer, LibraryTokenSerializer, libraryAddToDOSerializer, LibraryAddToDOReadSerializer, LibraryToDOReadSerializer, AddToDOReadSerializer
 from .models import CustomUser, ToDOList, addToDO, LibraryToDO, Library, LibraryToken, LibraryAddToDO
 from rest_framework import generics, viewsets
 from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import status
+
 User = get_user_model()
 @csrf_exempt
 @login_required
@@ -101,9 +104,9 @@ class ToDODetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
     permission_classes = [IsAuthenticated]
-class AddToDOViewset(viewsets.ModelViewSet):
-    queryset = addToDO.objects.all()
-    serializer_class =AddToDOSerializer
+# class AddToDOViewset(viewsets.ModelViewSet):
+#     queryset = addToDO.objects.all()
+#     serializer_class =AddToDOSerializer
 class AddToDOListView(generics.ListCreateAPIView):
     queryset = addToDO.objects.all()
     serializer_class = AddToDOSerializer
@@ -157,6 +160,28 @@ class LibraryAddToDOViewset(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve']:
             return LibraryAddToDOReadSerializer
         return libraryAddToDOSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = serializer.save()
+
+        # 保存後に read serializer を使ってレスポンス
+        read_serializer = LibraryAddToDOReadSerializer(instance)
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
+class AddToDOViewset(viewsets.ModelViewSet):
+    queryset = addToDO.objects.all()
+    permission_classes = [IsAuthenticated]
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return AddToDOReadSerializer
+        return AddToDOSerializer
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        isinstance = serializer.save()
+        read_serializer = AddToDOReadSerializer(isinstance)
+        return Response(read_serializer.data, status=status.HTTP_201_CREATED)
 class EmailLoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):

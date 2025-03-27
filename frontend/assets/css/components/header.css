@@ -102,6 +102,7 @@ aside.closed .logo {
   left: 255px;
   width: calc(100% - 255px);
   z-index: 10;
+  border-bottom: 1px solid #cbcbcba8;
 }
 /* ul {
   padding: 15px 20px;

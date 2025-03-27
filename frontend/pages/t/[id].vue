@@ -10,16 +10,17 @@
           class="checkboxs"
         />
         <div class="details">
-          <p class="time">{{ formatDate(todolist?.created_at) }}</p>
-          <!-- <p class="text">{{ todolist?.todo }}</p> -->
-           <p class="text" v-html="convertLinks(todolist?.todo)"></p>
+          <span class="title_todo">{{ todolist?.title || formatDate(todolist?.created_at)}} </span>
+          <small class="time">{{ formatDate(todolist?.created_at) }}</small>
+          <p class="text" v-html="convertLinks(todolist?.todo)"></p>
         </div>
       </div>
       <div v-if="addtodo.length > 0">
-        <div v-for="todo in addtodo" :key="todo.id" class="item">
+        <div v-for="todo in addtodo" :key="todo.id" class="item_add">
           <input type="checkbox" :checked="todo.checklist" @change="checkAddToDO(todo.id, $event.target.checked)" class="checkboxs" />
           <div class="details">
-            <p class="time">{{ formatDate(todo?.created_at) }}</p>
+            <span class="title_todo">{{ todo?.todo_tag?.title || formatDate(todo?.created_at) }}</span>
+            <small class="time">{{ formatDate(todo?.created_at) }}</small>
             <!-- <p class="text">{{ todo?.todo }}</p> -->
             <p class="text" v-html="convertLinks(todo?.todo)"></p>
           </div>
@@ -41,7 +42,8 @@
               @focus="handleFocus"
               @blur="handleBlur"
             >
-              <p v-if="isPlaceholderVisible">{{ placeholderText }}</p>
+              <!-- <p v-if="isPlaceholderVisible">{{ placeholderText }}</p> -->
+               <p>{{ isPlaceholderVisible ? placeholderText : "" }}</p>
             </div>
           </div>
           <div class="flex-button">
@@ -78,16 +80,19 @@
 <script setup>
 import "../assets/css/pages/id.css";
 import { useAuthStore } from "~/store/auth";
+import { useLibraryStore } from "../../store/libraryStore";
 import { useRoute } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted, nextTick } from "vue";
 import Header from "../../components/Header.vue";
 const textKeybord = ref(null);
 const route = useRoute();
+const libraryStore= useLibraryStore();
 const authStore = useAuthStore();
 const todolist = ref([]);
 const addtodo = ref([]);
 const placeholderText = ref("あなたのToDO");
 const isPlaceholderVisible = ref(true);
+const isUnmounted = ref(false);
 const handleFocus = () => {
   if (isPlaceholderVisible.value) {
     isPlaceholderVisible.value = false;
@@ -98,6 +103,9 @@ const handleBlur = (event) => {
     isPlaceholderVisible.value = true;
   }
 };
+onUnmounted(() => {
+  isUnmounted.value = true;
+});
 const convertLinks = (text) => {
   if (!text) return "";
   return text.replace(
@@ -117,11 +125,11 @@ onMounted(async () => {
     console.log("セッション復元成功。");
     const routeId = route.params.id;
     todolist.value = await authStore.getToDOByid(routeId);
-    // const todos = await authStore.getAddedToDO();
-    const todos = await authStore.AllfetchToDO();
+    const todos = await libraryStore.Filitertodos();
+    // const todos = await authStore.AllfetchToDO();
     if (Array.isArray(todos)) {
       // addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId);
-      addtodo.value = todos.filter((addtodo) => addtodo.todo_tag === routeId).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      addtodo.value = todos.filter((addtodo) => String(addtodo.todo_tag?.id) === String(routeId)).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     } else {
       console.error("追加todoの取得に失敗しました。", error);
     }
@@ -163,20 +171,21 @@ const checkAddToDO = async(id, isCheck) => {
   }
 }
 const submitAddToDO = async () => {
-  // const todoElement = document.getElementById('text_keybord');
-  // const todoContent = todoElement?.innerText.trim();
   const todoContent = textKeybord.value?.innerText.trim();
   const todoTagId = route.params.id;
+  // const todoTitle = todolist.value?.title ?? "";
   if(!todoContent || todoContent === "あなたのToDO") {
     alert('有効なToDOの内容にしてください。');
     return;
   }
   try {
     const newAddToDo = await authStore.addToDO(todoTagId, todoContent);
-    if (newAddToDo.todo_tag === todoTagId) {
+    console.log(newAddToDo);
+    if (String(newAddToDo.todo_tag?.id) === String(todoTagId)) {
+      await nextTick();
+      if (isUnmounted.value)return;
       addtodo.value.unshift(newAddToDo);
       addtodo.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      // todoElement.innerText = "";
       textKeybord.value.innerText = "";
       isPlaceholderVisible.value = true;
       console.log("ToDOが作成されました。");

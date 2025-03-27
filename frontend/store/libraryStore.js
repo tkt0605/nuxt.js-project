@@ -474,6 +474,28 @@ export const useLibraryStore = defineStore("library", {
         throw new Error;
       }
     },
+    async Filitertodos(){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const response = await fetch(`${config.public.apiBase}/addtodo/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          }
+        });
+        if (!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "レスポンスエラー");
+        }
+        const data = await response.json();
+        return data;
+      }catch(error){
+        console.log(error);
+        throw new Error;
+      }
+    },
     async libraryCheck(id, isCheck){
       const config = useRuntimeConfig();
       const authStore = useAuthStore();

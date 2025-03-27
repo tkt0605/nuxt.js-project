@@ -44,6 +44,20 @@
   }
   .item:hover {
     background-color: #f1f5f9;
+    /* border-radius: 0%; */
+  }
+  .item_add{
+    max-width: 768px;
+    width: 100%;
+    padding: 20px;
+    border-bottom: 1px solid #eceff1;
+    transition: background-color 0.3s ease;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+  }
+  .item_add:hover{
+    background-color: #f1f5f9;
   }
   .checkboxs {
     margin-right: 15px;
@@ -52,7 +66,12 @@
     accent-color: #007bff; /* Modern browsers */
     cursor: pointer;
   }
-
+  .title_todo{
+    margin: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    position: relative;
+  }
   /* Time styling */
   .time {
     font-size: 15px;

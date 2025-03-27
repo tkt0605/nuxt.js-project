@@ -311,7 +311,7 @@ export const useAuthStore = defineStore("auth", {
             "Authorization": `Bearer ${this.accessToken}`,
           },
           body: JSON.stringify({
-            todo_tag: todo_tag.trim(),
+            todo_tag: todo_tag,
             todo: todo.trim(),
           }),
         });
@@ -320,13 +320,14 @@ export const useAuthStore = defineStore("auth", {
           throw new Error(errorData.detail || "todoの追加失敗。");
         }
         const data = await response.json();
-        return {
-          id: data.id,
-          todo_tag: data.todo_tag,
-          checklist: data.checklist,
-          todo: data.todo,
-          created_at: data.created_at,
-        };
+        // return {
+        //   id: data.id,
+        //   todo_tag: data.todo_tag,
+        //   checklist: data.checklist,
+        //   todo: data.todo,
+        //   created_at: data.created_at,
+        // };
+        return data;
       } catch (error) {
         console.error("ToDO追加作成:", error);
         throw error;
