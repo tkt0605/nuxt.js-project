@@ -15,7 +15,7 @@ from rest_framework import generics, viewsets
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
-
+from django.db.models import Q
 User = get_user_model()
 @csrf_exempt
 @login_required
@@ -69,12 +69,35 @@ class ToDOViewset(viewsets.ModelViewSet):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
     permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        keyward = self.request.query_params.get('q')
+        queryset = queryset.filter(
+            Q(auther_id=user.id)
+        )
+        if keyward:
+            queryset = queryset.filter(
+                Q(title__icontains=keyward) |
+                Q(created_at__icontains=keyward)
+            ).distinct()
+        return queryset
 
 class LibraryViewset(viewsets.ModelViewSet):
     queryset = Library.objects.all()
     serializer_class = LibrarySerializer
     permission_classes = [IsAuthenticated]
-
+    def get_queryset(self):
+        # user = self.request.user.code_name
+        queryset = super().get_queryset()
+        keyword = self.request.query_params.get('q')
+        if keyword:
+            queryset = queryset.filter(
+                Q(name_plain__icontains=keyword) |
+                Q(owner__code_name__icontains=keyword) |
+                Q(members__code_name__icontains=keyword)
+            ).distinct()
+        return queryset
 class LibraryTokenViewset(viewsets.ModelViewSet):
     queryset = LibraryToken.objects.all()
     serializer_class = LibraryTokenSerializer
@@ -146,6 +169,20 @@ class IndexAPI(APIView):
 class LibraryTodoViewset(viewsets.ModelViewSet):
     queryset = LibraryToDO.objects.all()
     permission_classes = [IsAuthenticated]
+
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     queryset = super().get_queryset()
+    #     keyward = self.request.query_params.get('q')
+    #     queryset = queryset.filter(
+    #         Q(auther_id=user.id)
+    #     )
+    #     if keyward:
+    #         queryset = queryset.filter(
+    #             Q(auther__code_name__icontains = keyward) |
+    #             Q(title__icontains = keyward) |
+    #             Q(created_at__icontains=keyward)
+    #         )
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:

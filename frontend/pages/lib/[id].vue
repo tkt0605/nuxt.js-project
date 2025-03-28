@@ -35,7 +35,7 @@
       </div>
       <div class="lib-name">{{ library?.name }}</div>
     </div>
-    <div v-if="currentUser.id === library.owner">
+    <div v-if="currentUser?.code_name === library.owner">
       <div class="modal-overlay-name" v-if="isLibTitle">
         <div class="modal-content-name">
           <div class="flex-key">
@@ -730,7 +730,7 @@ const EditName = async () => {
   const routeId = route.params.id;
   const Newname = Name.value.trim();
   try {
-    if (currentUser.id === library.owner) {
+    if (currentUser.code_name === library.owner) {
       const editName = await libraryStore.LibraryNameEdit(routeId, Newname);
       console.log("ライブラリ名の新規更新の確認", editName);
       window.location.reload();
@@ -755,7 +755,7 @@ const deleteToDO = async (todoId)=>{
 const createToken = async () => {
   const routeId = route.params.id;
   try {
-    if (currentUser.id === library.owner) {
+    if (currentUser.code_name === library.owner) {
       const libtokens = await libraryStore.libraryToken();
       const libtoken = libtokens.find((item) => item.library === routeId);
       if (!libtoken) {

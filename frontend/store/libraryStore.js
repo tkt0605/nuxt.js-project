@@ -18,7 +18,7 @@ export const useLibraryStore = defineStore("library", {
     libaddtodo: []
   }),
   actions: {
-    async createLibrary(name, owner, members) {
+    async createLibrary(name, name_plain , owner, members) {
       const config = useRuntimeConfig();
       const authStore = useAuthStore();
       const secretKey = generateSecretKey(); // 🔑 秘密鍵生成
@@ -32,6 +32,7 @@ export const useLibraryStore = defineStore("library", {
           },
           body: JSON.stringify({
             name: encryptedName,
+            name_plain: name_plain,
             owner: owner,
             members: members,
           }),
@@ -67,6 +68,7 @@ export const useLibraryStore = defineStore("library", {
           id: library.id,
           // 新規定義している引数libraryを元データとして秘密鍵の解析を実行。
           name: this.decryptLibraryName(library),
+          name_plain: library.name_plain,
           owner: library.owner,
           members: library.members,
           created_at: library.created_at,
@@ -548,6 +550,85 @@ export const useLibraryStore = defineStore("library", {
         console.error(error);
         throw new Error;
 
+      }
+    },
+    async searchEngine(q) {
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      try{
+        const url = q ? `${config.public.apiBase}/library/?q=${encodeURIComponent(q)}` :
+        `${config.public.apiBase}/library/`;
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authStore.accessToken}`
+          }
+        });
+        if(!response.ok){
+          const errorData = await response.json();
+          throw new Error(errorData || "検索失敗" );
+        }
+        const data = await response.json();
+        return data.map(item => ({
+          ...item,
+          name: this.decryptLibraryName(item) ?? item.name,
+        }));
+      }catch(error){
+        console.error('検索失敗・エラー：', error);
+        throw new Error;
+      }
+    },
+    async demoSearch(q){
+      const config = useRuntimeConfig();
+      const authStore = useAuthStore();
+      const BaseUrl = config.public.apiBase;
+      const query = q ? `?q=${encodeURIComponent(q)}` : "" ;
+      try{
+        const [todores, libres] = await Promise.all([
+          // fetch(`${BaseUrl}/libtodo/${query}`, {
+          //   method: "GET",
+          //   headers: {
+          //     "Content-Type": "application/json",
+          //     "Authorization": `Bearer ${authStore.accessToken}`
+          //   }
+          // }),
+          fetch(`${BaseUrl}/todolist/${query}`, {
+            method: "GET",
+            headers:{
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authStore.accessToken}`
+            }
+          }),
+          fetch(`${BaseUrl}/library/${query}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${authStore.accessToken}`
+            }
+          })
+        ]);
+        if (!todores.ok || !libres.ok){
+          const errorData = await Promise.all([
+            libtodores.json(),
+            todores.json(),
+            libres.json()
+          ]);
+
+          throw new Error(errorData || "検索失敗");
+        }
+        const [todoListData, libraryData] = await Promise.all([
+          todores.json(),
+          libres.json()
+        ]);
+
+        return {
+          todolist: Array.isArray(todoListData) ? todoListData : [],
+          libraries: Array.isArray(libraryData) ? libraryData : [],
+        };
+      }catch(error){
+        console.error('検索失敗：', error);
+        throw new Error;
       }
     }
   },

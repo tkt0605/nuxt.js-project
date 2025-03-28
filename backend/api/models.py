@@ -64,6 +64,7 @@ class addToDO(models.Model):
 class Library(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=50, blank=False)
+    name_plain = models.CharField(max_length=50, blank=False, db_index=True, default="")
     owner =  models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='Owner')
     members = models.ManyToManyField(CustomUser, related_name='libraries')
     goal = models.TextField(max_length=1080, verbose_name="goal", blank=True)
@@ -73,7 +74,6 @@ class Library(models.Model):
             if not self.members.exists():
                 return ValueError('メンバーは最低一人必要です。')
         super().save(*args, **kwargs)
-
         blockchain.add_member(self.id, self.owner.id)
         for member in self.members.all():
             blockchain.add_member(self.id, member.id)

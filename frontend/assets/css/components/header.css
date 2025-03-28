@@ -140,6 +140,19 @@ li {
 .icon :hover {
   background: rgb(226, 226, 226);
 }
+.search-icon{
+  align-items: center;
+  position: relative;
+  left: 0px;
+  top: 0px;
+  padding: 10px 10px;
+  background: rgb(226, 226, 226);;
+  border-radius: 10%;
+
+}
+.search-icon:hover{
+  background: rgb(189, 187, 187);
+}
 .create_icon {
   align-items: center;
   position: relative;
@@ -763,7 +776,7 @@ aside.open ~ .container {
   position: absolute;
   top: 50px;
   right: 10px;
-  width: 240px;
+  width: 300px;
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -777,13 +790,42 @@ aside.open ~ .container {
   padding: 1.0rem;
 
 }
+.icon-div{
+  text-align: center;
+  padding: 10px;
+}
+.icon_img-div{
+  width: 50px;
+  height: 50px;
+  border-radius: 0.125rem;
+  height: auto;
+  max-width: 100%;
+  background-color: var(--avatar-bgColor);
+  border-radius: var(--borderRadius-medium);
+  box-shadow: 0 0 0 1px var(--avatar-borderColor);
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 1;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: var(--borderRadius-full, 50%) !important;
+  border: #ffffff solid 1px;
+}
+.main-user-info{
+  position: relative;
+  align-items: center;
+}
+
 .head{
   position: relative;
   justify-content: center;
   padding: .75rem;
 }
 .user_name{
-
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  padding-bottom: 10px;
 }
 .icon-div{
   position: relative;
@@ -811,6 +853,11 @@ aside.open ~ .container {
   height: 32px;
   border-radius: 50%;
 }
+.action-bord-user{
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+}
 .account-menu {
   position: absolute;
   top: 50px;
@@ -822,6 +869,128 @@ aside.open ~ .container {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   z-index: 999;
   padding: 1rem;
+}
+
+
+.modal-overlay-search{
+  position: fixed; /* ページ全体に表示 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* ビューポート幅 */
+  height: 100vh; /* ビューポート高さ */
+  /* background: rgba(0, 0, 0, 0.5); */
+  /* background: rgba(255, 255, 255, 0.5); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* 他の要素の上に表示 */
+}
+.modal-content-search{
+  background: white;
+  /* padding: 20px; */
+  border-radius: 10px;
+  width: 668px; /* 適度な横幅 */
+  height: auto;
+  /* text-align: center; */
+  position: relative; /* オーバーレイ内で中央配置 */
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid silver;
+}
+/* .search-field{
+  padding: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-input{
+  max-width: 680px;
+  width: 100%;
+  height: 30px;
+  border-style: none;
+  border: 1px solid #ffffff;
+  padding: 10px;
+}
+.closed-field-button{
+
+} */
+.main-area {
+  padding: 16px;
+  /* background-color: #ffffff; */
+  /* border: 1px solid #ddd; */
+  border-radius: 8px;
+  /* max-width: 600px; */
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.search-field {
+  margin-bottom: 12px;
+}
+
+.search-engine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+}
+
+.search-input {
+  flex: 1;
+  outline: none;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+}
+
+.closed-field-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+  border-radius: 25px;
+  width: 30px;
+  height: 30px;
+}
+
+.closed-field-button:hover {
+  color: #111;
+
+}
+
+.result-area {
+  min-height: 100px;
+  height: 100%;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #333;
+}
+
+.result-search-item {
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.action-bord-search {
+  text-align: right;
+}
+
+.action-bord-search button {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+
+.action-bord-search button:hover {
+  background-color: #e0e0e0;
 }
 
 @media (max-width: 768px) {

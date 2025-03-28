@@ -5,6 +5,22 @@
         <div class="container">
           <a class="logo">Plantation</a>
           <div v-if="isAuthenticated" class="account_form">
+            <div>
+              <button @click="searchFieldOpen()" class="search-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                  />
+                </svg>
+              </button>
+            </div>
             <div class="icon_bord">
               <img
                 v-if="currentUser"
@@ -14,9 +30,6 @@
                 @click="userInfoShow(currentUser?.id)"
               />
             </div>
-            <button class="logout" type="button" @click="logout">
-              <b>ログアウト</b>
-            </button>
           </div>
           <div v-else class="account_form">
             <button class="login" type="button" @click="gotoLogin">
@@ -73,6 +86,36 @@
             <a class="logo_down">Plantation</a>
           </div>
           <div v-if="isAuthenticated" class="account_form">
+            <div>
+              <button @click="searchFieldOpen()" class="search-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                  />
+                </svg>
+              </button>
+            </div>
+            <button @click="" class="search-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-search"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+                />
+              </svg>
+            </button>
             <div class="icon_bord">
               <img
                 v-if="currentUser"
@@ -82,9 +125,9 @@
                 @click="userInfoShow(currentUser?.id)"
               />
             </div>
-            <button class="logout" type="button" @click="logout">
+            <!-- <button class="logout" type="button" @click="logout">
               <b>ログアウト</b>
-            </button>
+            </button> -->
           </div>
           <div v-else class="account_form">
             <button class="login" type="button" @click="gotoLogin">
@@ -625,22 +668,102 @@
         </div>
       </ul>
     </aside>
-    <div class="modal-overlay-user" v-show="isDialogUserOpen">
+    <div class="modal-overlay-user" v-show="isDialogUserOpen" id="show-info">
       <div v-if="currentUser">
         <div lang="flex-content">
           <div class="head">
-            <div class="icon-div">
-              <img v-if="currentUser" :src="currentUser.avatar" class="icon_img" alt="User Avatar"/>
+            <div class="main-user-info">
+              <div class="icon-div">
+                <img
+                  v-if="currentUser"
+                  :src="currentUser.avatar"
+                  class="icon_img-div"
+                  alt="User Avatar"
+                />
+              </div>
+              <div class="user_name">{{ currentUser?.code_name }}</div>
             </div>
-            <div class="user_name">{{ currentUser?.code_name }}</div>
-            <button
-              type="button"
-              class="cancel-btn-popup"
-              @click.stop="userInfoDown(currentUser?.id)"
-            >
-              閉じる
-            </button>
+            <div class="action-bord-user">
+              <button
+                type="button"
+                class="cancel-btn-popup"
+                @click.stop="userInfoDown(currentUser?.id)"
+              >
+                閉じる
+              </button>
+              <button class="logout" type="button" @click="logout">
+                <b>ログアウト</b>
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay-search" v-show="isSearchDialogOpen">
+      <div class="modal-content-search">
+        <div class="main-area">
+          <div class="search-field">
+            <div class="search-engine">
+              <input class="search-input" @input="serachEngine" v-model="Keyward" placeholder="ライブラリの検索...." type="text" />
+              <button
+                @click.stop="searchFieldclosed()"
+                data-textid="close-button"
+                class="closed-field-button"
+                aria-label="閉じる"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="icon-md"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M5.63603 5.63604C6.02656 5.24552 6.65972 5.24552 7.05025 5.63604L12 10.5858L16.9497 5.63604C17.3403 5.24552 17.9734 5.24552 18.364 5.63604C18.7545 6.02657 18.7545 6.65973 18.364 7.05025L13.4142 12L18.364 16.9497C18.7545 17.3403 18.7545 17.9734 18.364 18.364C17.9734 18.7545 17.3403 18.7545 16.9497 18.364L12 13.4142L7.05025 18.364C6.65972 18.7545 6.02656 18.7545 5.63603 18.364C5.24551 17.9734 5.24551 17.3403 5.63603 16.9497L10.5858 12L5.63603 7.05025C5.24551 6.65973 5.24551 6.02657 5.63603 5.63604Z"
+                    fill="currentColor"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="result-area">
+            <div class="result-search-item">
+              <div><h3>検索結果：</h3></div>
+            </div>
+            <div class="result-header">
+              <ul>
+                  <li v-for="lib in results" :key="lib.id" class="result-bord">
+                    <div class="result-items">
+                      <NuxtLink class="lib-result" :to="`/lib/${lib.id}`">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-folder" viewBox="0 0 16 16" style="font-weight: bold; font-size: large;"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"></path></svg>
+                        <span class="lib-result-name">{{ lib.name_plain }}</span>
+                      </NuxtLink>
+                    </div>
+                  </li>
+                </ul>
+                <ul>
+                  <li v-for="todo in todo_results" :key="todo.id">
+                    <NuxtLink class="lib-result" :to="`/t/${todo.id}`">
+                      <span class="todo-result-name">{{ todo.title || formatDate(todo.created_at) }}</span>
+                    </NuxtLink>
+                  </li>
+                </ul>
+                <!-- <ul>
+                  <li v-for="libtodo in libtodo_results" :key="libtodo.id">
+                    <NuxtLink class="lib-result" :to="`/t/${libtodo.id}`">
+                      <span class="todo-result-name">{{ libtodo.title || formatDate(libtodo.created_at) }}</span>
+                    </NuxtLink>
+                  </li>
+                </ul> -->
+            </div>
+          </div>
+          <!-- <div class="action-bord-search">
+            <button @click.stop="searchFieldclosed()">閉じる</button>
+          </div> -->
         </div>
       </div>
     </div>
@@ -665,6 +788,10 @@ const libraryStore = useLibraryStore();
 const todolist = ref([]);
 const libraryName = ref([]);
 const EditTitle = ref([]);
+const Keyward = ref(null);
+const results = ref([]);
+const todo_results = ref([]);
+// const libtodo_results = ref([]);
 const libraries = ref([]);
 const user = ref(null);
 const isAsideOpen = ref(true);
@@ -677,6 +804,7 @@ const isDialogOpen = ref(false);
 const selectTodoId = ref(null);
 const selectUserId = ref(null);
 const isDialogUserOpen = ref(null);
+const isSearchDialogOpen = ref(null);
 const isMenuOpen = ref(false);
 const avatarBtn = ref(null);
 const menuRef = ref(null);
@@ -719,6 +847,7 @@ onMounted(async () => {
         optionMenu.style.display = closedOption();
       }
     });
+
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -726,6 +855,12 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   window.removeEventListener("resize", checkWindow);
 });
+const searchFieldOpen = () => {
+  isSearchDialogOpen.value = true;
+};
+const searchFieldclosed = () => {
+  isSearchDialogOpen.value = false;
+};
 const userInfoShow = (userId) => {
   selectUserId.value = userId;
   isDialogUserOpen.value = true;
@@ -783,7 +918,18 @@ const openDialog = () => {
 const closeDialog = () => {
   isDialogOpen.value = false;
 };
-
+const serachEngine = async()=>{
+  const q = Keyward.value?.trim() || "";
+  try{
+    const {todolist, libraries} = await libraryStore.demoSearch(q);
+    results.value = libraries;
+    // libtodo_results.value = libtodo;
+    todo_results.value = todolist;
+  }catch(error){
+    console.error("検索失敗：", error);
+    throw new Error;
+  }
+};
 const createLibrary = async () => {
   const libname = libraryName.value.trim();
   if (!libname) {
@@ -791,13 +937,13 @@ const createLibrary = async () => {
     return;
   }
   const user = authStore?.user;
-  if (!user || !user.code_name){
-    console.log('ログインをしてください。');
+  if (!user || !user.code_name) {
+    console.log("ログインをしてください。");
   }
   const owner = user.code_name;
   const members = [owner];
   try {
-    const createLib = await libraryStore.createLibrary(libname, owner, members);
+    const createLib = await libraryStore.createLibrary(libname, libname, owner, members);
     console.log("作成成功:", createLib);
     libraries.value = await libraryStore.fetchLibraries();
     closeDialog();
