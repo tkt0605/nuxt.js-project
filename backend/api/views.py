@@ -120,8 +120,8 @@ class GobalSearchEngine(APIView):
         data = []
 
         for result in sqs:
-            obj = request.object
-            model = result.model_name.lower()
+            obj = result.object
+            # model = result.model_name.lower()
             if isinstance(obj, ToDOList):
                 data.append({
                     "type": "todolist",
@@ -138,8 +138,8 @@ class GobalSearchEngine(APIView):
                     "id": str(obj.id),
                     "name": str(obj.name),
                     "name_plain": obj.name_plain,
-                    "owner": str(obj.owner),
-                    "members": str(obj.members),
+                    "owner": obj.owner.code_name,
+                    "members": [member.code_name for member in obj.members.all()],
                     "goal": obj.goal,
                     "created_at": obj.created_at
                 })

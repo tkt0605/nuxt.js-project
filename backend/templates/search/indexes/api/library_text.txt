@@ -1,2 +1,3 @@
-{{ object.name }}
+{{ object.name_plain }}
 {{ object.goal }}
+{{ object.owner }}

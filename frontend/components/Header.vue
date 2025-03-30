@@ -770,15 +770,16 @@ import {
   callWithErrorHandling,
   nextTick,
 } from "vue";
+import { useSearchStore } from "../store/useSearchStore";
 const router = useRouter();
 const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
 const todolist = ref([]);
 const libraryName = ref([]);
 const EditTitle = ref([]);
-const Keyward = ref(null);
-const results = ref([]);
-const todo_results = ref([]);
+// const Keyward = ref(null);
+// const results = ref([]);
+//  const todo_results = ref([]);
 // const libtodo_results = ref([]);
 const libraries = ref([]);
 const user = ref(null);
@@ -798,6 +799,7 @@ const avatarBtn = ref(null);
 const menuRef = ref(null);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const currentUser = computed(() => authStore.currentUser);
+const serchStore = useSearchStore();
 onMounted(async () => {
   try {
     await authStore.restoreSession();
@@ -835,7 +837,6 @@ onMounted(async () => {
         optionMenu.style.display = closedOption();
       }
     });
-
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -848,6 +849,7 @@ const searchFieldOpen = () => {
 };
 const searchFieldclosed = () => {
   isSearchDialogOpen.value = false;
+  serchStore.clear();
 };
 const userInfoShow = (userId) => {
   selectUserId.value = userId;
@@ -906,18 +908,27 @@ const openDialog = () => {
 const closeDialog = () => {
   isDialogOpen.value = false;
 };
-const serachEngine = async()=>{
-  const q = Keyward.value?.trim() || "";
-  try{
-    const {todolist, libraries} = await libraryStore.demoSearch(q);
-    results.value = libraries;
-    // libtodo_results.value = libtodo;
-    todo_results.value = todolist;
-  }catch(error){
-    console.error("検索失敗：", error);
-    throw new Error;
-  }
+const Keyward = computed({
+  get: () => serchStore.keybord,
+  set: (val) => serchStore.keybord = val,
+});
+const serachEngine = () => {
+  serchStore.GlobalSearchEngine()
 };
+const results = computed(()=> serchStore.results.filter(item=> item.type === "library"));
+const todo_results = computed(()=>serchStore.results.filter(item => item.type === "todolist"));
+// const serachEngine = async()=>{
+//   const q = Keyward.value?.trim() || "";
+//   try{
+//     const {todolist, libraries} = await libraryStore.demoSearch(q);
+//     results.value = libraries;
+//     // libtodo_results.value = libtodo;
+//     todo_results.value = todolist;
+//   }catch(error){
+//     console.error("検索失敗：", error);
+//     throw new Error;
+//   }
+// };
 const createLibrary = async () => {
   const libname = libraryName.value.trim();
   if (!libname) {
