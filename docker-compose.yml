@@ -21,8 +21,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      # elasticsearch:
-      #   condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     networks:
       - todo-networks
   frontend:
@@ -32,7 +32,6 @@ services:
     container_name: frontend
     volumes:
       - ./frontend:/frontend
-      # -  /frontend/node_modules
     ports:
       - "3000:3000"
     environment:
@@ -61,16 +60,6 @@ services:
       start_period: 30s
     networks:
       - todo-networks
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
-  #   container_name: elasticsearch
-  #   environment:
-  #     - discovery.type=single-node
-  #     - xpack.security.enabled=false
-  #   ports:
-  #     - "9200:9200"
-  #   volumes:
-  #     - esdata:/usr/share/elasticsearch/data
   nginx:
     image: nginx:latest
     container_name: nginx_server
@@ -83,8 +72,31 @@ services:
       - backend
     networks:
       - todo-networks
+  elasticsearch:  # 🔽 追加
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - todo-networks
 volumes:
   mysql_data:
+  esdata:
 networks:
   todo-networks:
     driver: bridge

@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_simplejwt.views import TokenBlacklistView, TokenRefreshView, TokenObtainPairView
 from rest_framework import routers
-from .views import IndexAPI,LogoutView, EmailLoginView, RegisterView, ToDOViewset, ToDOsListView, ToDODetailView, LibraryTokenViewset, LibraryTodoViewset, LibraryAddToDOViewset
+from .views import IndexAPI,LogoutView, EmailLoginView, RegisterView, ToDOViewset, ToDOsListView, ToDODetailView, LibraryTokenViewset, LibraryTodoViewset, LibraryAddToDOViewset, GobalSearchEngine
 from api import views
 router = routers.DefaultRouter()
 router.register('todolist', views.ToDOViewset)
@@ -15,6 +15,7 @@ router.register('libtodo', views.LibraryTodoViewset)
 router.register('libadd', views.LibraryAddToDOViewset)
 urlpatterns = [
     path('', include(router.urls)),
+    path('search/', GobalSearchEngine.as_view(), name="search_engine"),
     path('hello/', IndexAPI.as_view(), name='api-hello'),
     path('login/', EmailLoginView.as_view(), name='api-login'),
     path('logout/', LogoutView.as_view(), name="api-logout"),

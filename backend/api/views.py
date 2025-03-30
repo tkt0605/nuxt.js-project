@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
+from haystack.query import SearchQuerySet
+
 User = get_user_model()
 @csrf_exempt
 @login_required
@@ -109,15 +111,39 @@ class LibraryTokenViewset(viewsets.ModelViewSet):
         # library = get_object_or_404(Library, id=id)
         return get_object_or_404(LibraryToken, id=id)
 
-# class LibraryTodoViewset(viewsets.ModelViewSet):
-#     queryset = LibraryToDO.objects.all()
-#     serializer_class = LibraryToDOReadSerializer
-#     permission_classes = [IsAuthenticated]
+class GobalSearchEngine(APIView):
+    def get(self, request):
+        q = request.query_params.get('q', '')
+        if not q:
+            return Response([])
+        sqs = SearchQuerySet().filter(content=q)
+        data = []
 
-# class LibraryAddToDOViewset(viewsets.ModelViewSet):
-#     queryset = LibraryAddToDO.objects.all()
-#     serializer_class = libraryAddToDOSerializer
-#     permission_classes = [IsAuthenticated]
+        for result in sqs:
+            obj = request.object
+            model = result.model_name.lower()
+            if isinstance(obj, ToDOList):
+                data.append({
+                    "type": "todolist",
+                    "id": str(obj.id),
+                    "title": obj.title,
+                    "todo": obj.todo,
+                    "auther": str(obj.auther),
+                    "checklist": str(obj.checklist),
+                    "created_at": obj.created_at
+                })
+            elif isinstance(obj, Library):
+                data.append({
+                    "type": "library",
+                    "id": str(obj.id),
+                    "name": str(obj.name),
+                    "name_plain": obj.name_plain,
+                    "owner": str(obj.owner),
+                    "members": str(obj.members),
+                    "goal": obj.goal,
+                    "created_at": obj.created_at
+                })
+        return Response(data)
 
 class ToDOsListView(generics.ListCreateAPIView):
     queryset = ToDOList.objects.all()
@@ -127,9 +153,6 @@ class ToDODetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
     permission_classes = [IsAuthenticated]
-# class AddToDOViewset(viewsets.ModelViewSet):
-#     queryset = addToDO.objects.all()
-#     serializer_class =AddToDOSerializer
 class AddToDOListView(generics.ListCreateAPIView):
     queryset = addToDO.objects.all()
     serializer_class = AddToDOSerializer

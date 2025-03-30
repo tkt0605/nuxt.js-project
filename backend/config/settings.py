@@ -21,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(os.path.dirname(BASE_DIR))
 env = environ.Env()
 env.read_env(os.path.join(ROOT_DIR, ".env"))  # nuxt.js-project/.env を参照
-
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
 #env = environ.Env()
 #env.read_env(os.path.join(BASE_DIR, ".env"))  # 明示的に .env のパスを指定
 # Quick-start development settings - unsuitable for production
@@ -40,6 +41,7 @@ ALLOWED_HOSTS = ['*']
 # SESSION_COOKIE_SECURE = False
 
 INSTALLED_APPS = [
+    'haystack',
     'corsheaders',
     "api",
     'django.contrib.admin',
@@ -124,7 +126,8 @@ CSRF_TRUSTED_ORIGINS = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,8 +156,14 @@ DATABASES = {
         'PORT': env('DATABASE_PORT'),
     }
 }
-
-
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
+        'URL': 'http://elasticsearch:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
