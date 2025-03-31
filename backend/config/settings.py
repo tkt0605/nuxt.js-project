@@ -164,27 +164,33 @@ HAYSTACK_CONNECTIONS = {
         'KWARGS': {
             'settings': {
                 "analysis": {
-                    "analyzer": {
-                        "ngram_analyzer": {
+                    "tokenizer": {
+                        "kuromoji_ngram_tokenizer": {
                             "type": "custom",
-                            "tokenizer": "ngram_tokenizer",
-                            "filter": ["lowercase"]
+                            "tokenizer": "kuromoji_tokenizer",
+                            "filter": ["lowercase", "kuromoji_baseform", "kuromoji_part_of_speech", "ja_stop", "kuromoji_number", "kuromoji_stemmer", "edge_ngram_filter"]
                         }
                     },
-                    "tokenizer": {
-                        "ngram_tokenizer": {
+                    "filter": {
+                        "edge_ngram_filter": {
                             "type": "edge_ngram",
                             "min_gram": 1,
-                            "max_gram": 10,
-                            "token_chars": ["letter", "digit"]
+                            "max_gram": 15
                         }
                     },
-                },
-
+                    "analyzer": {
+                        "ja_edge_ngram_analyzer": {
+                            "type": "custom",
+                            "tokenizer": "kuromoji_tokenizer",
+                            "filter": ["lowercase", "edge_ngram_filter"]
+                        }
+                    }
+                }
             }
         },
     },
 }
+
 HAYSTACK_CUSTOM_INDEX_SETTINGS = True
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 # HAYSTACK_SIGNAL_PROCESSOR = 'library.signals.RealtimeSignalProcessor'

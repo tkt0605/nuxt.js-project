@@ -112,10 +112,10 @@ class LibraryTokenViewset(viewsets.ModelViewSet):
 
 class GobalSearchEngine(APIView):
     def get(self, request):
-        q = request.query_params.get('q', '')
+        q = request.query_params.get('q', '').strip()
         if not q:
             return Response([])
-        sqs = SearchQuerySet().filter(content=q)
+        sqs = SearchQuerySet().filter(content__startswith=q.lower())[:10]
         data = []
 
         for result in sqs:
@@ -140,7 +140,7 @@ class GobalSearchEngine(APIView):
                     "owner": obj.owner.code_name,
                     "members": [member.code_name for member in obj.members.all()],
                     "goal": obj.goal,
-                    "created_at": obj.created_at.isoformat() 
+                    "created_at": obj.created_at.isoformat()
                 })
         return Response(data)
 

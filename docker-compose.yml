@@ -73,7 +73,10 @@ services:
     networks:
       - todo-networks
   elasticsearch:  # 🔽 追加
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    # image: docker.elastic.co/elasticsearch/elasticsearch:7.17.13
+    build:
+      context: ./elasticsearch
+      dockerfile: dockerfile
     container_name: elasticsearch
     environment:
       - discovery.type=single-node
