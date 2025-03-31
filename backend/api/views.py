@@ -70,36 +70,35 @@ class RegisterView(generics.CreateAPIView):
 class ToDOViewset(viewsets.ModelViewSet):
     queryset = ToDOList.objects.all()
     serializer_class = ToDOListSerializer
-    permission_classes = [IsAuthenticated]
-    def get_queryset(self):
-        user = self.request.user
-        queryset = super().get_queryset()
-        keyward = self.request.query_params.get('q')
-        queryset = queryset.filter(
-            Q(auther_id=user.id)
-        )
-        if keyward:
-            queryset = queryset.filter(
-                Q(title__icontains=keyward) |
-                Q(created_at__icontains=keyward)
-            ).distinct()
-        return queryset
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     queryset = super().get_queryset()
+    #     keyward = self.request.query_params.get('q')
+    #     queryset = queryset.filter(
+    #         Q(auther_id=user.id)
+    #     )
+    #     if keyward:
+    #         queryset = queryset.filter(
+    #             Q(title__icontains=keyward) |
+    #             Q(created_at__icontains=keyward)
+    #         ).distinct()
+    #     return queryset
 
 class LibraryViewset(viewsets.ModelViewSet):
     queryset = Library.objects.all()
     serializer_class = LibrarySerializer
     permission_classes = [IsAuthenticated]
-    def get_queryset(self):
-        # user = self.request.user.code_name
-        queryset = super().get_queryset()
-        keyword = self.request.query_params.get('q')
-        if keyword:
-            queryset = queryset.filter(
-                Q(name_plain__icontains=keyword) |
-                Q(owner__code_name__icontains=keyword) |
-                Q(members__code_name__icontains=keyword)
-            ).distinct()
-        return queryset
+    # def get_queryset(self):
+    #     # user = self.request.user.code_name
+    #     queryset = super().get_queryset()
+    #     keyword = self.request.query_params.get('q')
+    #     if keyword:
+    #         queryset = queryset.filter(
+    #             Q(name_plain__icontains=keyword) |
+    #             Q(owner__code_name__icontains=keyword) |
+    #             Q(members__code_name__icontains=keyword)
+    #         ).distinct()
+    #     return queryset
 class LibraryTokenViewset(viewsets.ModelViewSet):
     queryset = LibraryToken.objects.all()
     serializer_class = LibraryTokenSerializer
@@ -121,7 +120,7 @@ class GobalSearchEngine(APIView):
 
         for result in sqs:
             obj = result.object
-            # model = result.model_name.lower()
+            # user = self.request.user
             if isinstance(obj, ToDOList):
                 data.append({
                     "type": "todolist",
@@ -130,7 +129,7 @@ class GobalSearchEngine(APIView):
                     "todo": obj.todo,
                     "auther": str(obj.auther),
                     "checklist": str(obj.checklist),
-                    "created_at": obj.created_at
+                    "created_at": obj.created_at.isoformat()
                 })
             elif isinstance(obj, Library):
                 data.append({
@@ -141,7 +140,7 @@ class GobalSearchEngine(APIView):
                     "owner": obj.owner.code_name,
                     "members": [member.code_name for member in obj.members.all()],
                     "goal": obj.goal,
-                    "created_at": obj.created_at
+                    "created_at": obj.created_at.isoformat() 
                 })
         return Response(data)
 

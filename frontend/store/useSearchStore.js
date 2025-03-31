@@ -8,6 +8,7 @@ export const useSearchStore = defineStore('search', {
         results: [],
         loading: false,
         error: null,
+        timer: null,
     }),
     actions: {
         async GlobalSearchEngine () {
@@ -37,6 +38,10 @@ export const useSearchStore = defineStore('search', {
             }finally{
                 this.loading = false;
             }
+        },
+        debounceSearch(delay = 300){
+            if (this.timer)clearTimeout(this.timer)
+            this.timer = setTimeout(()=> this.GlobalSearchEngine(), delay)
         },
         clear(){
             this.keybord = "";

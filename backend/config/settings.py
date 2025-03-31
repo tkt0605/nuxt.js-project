@@ -161,9 +161,33 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.elasticsearch7_backend.Elasticsearch7SearchEngine',
         'URL': 'http://elasticsearch:9200/',
         'INDEX_NAME': 'haystack',
+        'KWARGS': {
+            'settings': {
+                "analysis": {
+                    "analyzer": {
+                        "ngram_analyzer": {
+                            "type": "custom",
+                            "tokenizer": "ngram_tokenizer",
+                            "filter": ["lowercase"]
+                        }
+                    },
+                    "tokenizer": {
+                        "ngram_tokenizer": {
+                            "type": "edge_ngram",
+                            "min_gram": 1,
+                            "max_gram": 10,
+                            "token_chars": ["letter", "digit"]
+                        }
+                    },
+                },
+
+            }
+        },
     },
 }
+HAYSTACK_CUSTOM_INDEX_SETTINGS = True
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+# HAYSTACK_SIGNAL_PROCESSOR = 'library.signals.RealtimeSignalProcessor'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
