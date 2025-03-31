@@ -120,7 +120,6 @@ class GobalSearchEngine(APIView):
 
         for result in sqs:
             obj = result.object
-            # user = self.request.user
             if isinstance(obj, ToDOList):
                 data.append({
                     "type": "todolist",

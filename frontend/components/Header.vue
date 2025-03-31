@@ -3,7 +3,44 @@
     <div class="header" v-if="isAsideOpen">
       <div class="headerline">
         <div class="container">
-          <a class="logo">Plantation</a>
+          <!-- <a class="logo">ISTJ.com</a> -->
+          <svg
+            width="225"
+            height="50"
+            viewBox="0 0 512 128"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- 背景なし（透明） -->
+
+            <!-- テキストロゴ -->
+            <text
+              x="10"
+              y="85"
+              font-family="Inter, sans-serif"
+              font-size="64"
+              font-weight="700"
+              fill="#212121"
+              letter-spacing="2"
+            >
+              ISTJ
+            </text>
+
+            <!-- ドット（.com のドット） -->
+            <circle cx="185" cy="75" r="6" fill="#4FC3F7" />
+
+            <!-- com -->
+            <text
+              x="200"
+              y="85"
+              font-family="Inter, sans-serif"
+              font-size="48"
+              font-weight="500"
+              fill="#4FC3F7"
+            >
+              com
+            </text>
+          </svg>
+
           <div v-if="isAuthenticated" class="account_form">
             <div>
               <button @click="searchFieldOpen()" class="search-icon">
@@ -83,7 +120,7 @@
                 </svg>
               </button>
             </NuxtLink>
-            <a class="logo_down">Plantation</a>
+            <a class="logo_down">ISTJ.com</a>
           </div>
           <div v-if="isAuthenticated" class="account_form">
             <div>
@@ -761,8 +798,14 @@
                       </svg>
                     </div>
                     <div class="result-lib">
-                      <span class="lib-result-name">{{lib.name_plain || lib.title || formatDate(lib.created_at)}}</span>
-                      <div class="first-todo" v-if="lib.goal.length >=50">{{ lib.goal.slice(0, 50) + "..." }}</div>
+                      <span class="lib-result-name">{{
+                        lib.name_plain ||
+                        lib.title ||
+                        formatDate(lib.created_at)
+                      }}</span>
+                      <div class="first-todo" v-if="lib.goal.length >= 50">
+                        {{ lib.goal.slice(0, 50) + "..." }}
+                      </div>
                       <div class="first-todo" v-else>{{ lib.goal }}</div>
                     </div>
                   </NuxtLink>
@@ -797,8 +840,12 @@
                       </svg>
                     </div>
                     <div>
-                      <span class="todo-result-name">{{todo.title || formatDate(todo.created_at)}}</span>
-                      <div class="first-todo" v-if="todo.todo.length >= 50">{{ todo.todo.slice(0, 50) + "..." }}</div>
+                      <span class="todo-result-name">{{
+                        todo.title || formatDate(todo.created_at)
+                      }}</span>
+                      <div class="first-todo" v-if="todo.todo.length >= 50">
+                        {{ todo.todo.slice(0, 50) + "..." }}
+                      </div>
                       <div class="first-todo" v-else>{{ todo.todo }}</div>
                     </div>
                   </NuxtLink>

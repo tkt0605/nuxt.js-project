@@ -193,7 +193,6 @@ HAYSTACK_CONNECTIONS = {
 
 HAYSTACK_CUSTOM_INDEX_SETTINGS = True
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
-# HAYSTACK_SIGNAL_PROCESSOR = 'library.signals.RealtimeSignalProcessor'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
