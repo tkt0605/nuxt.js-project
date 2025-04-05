@@ -1,55 +1,53 @@
 import { defineStore } from "pinia";
-import { useAuthStore } from "./auth";
-const SERACH_HISTORY = "search_history";
+import { useAuthStore } from "~/store/auth";
+const SEARCH_HISTORY = 'search_history';
 export const useHistoryStore = defineStore("history", {
     state: () => ({
         history: [],
         userId: null,
     }),
-    actions: {
-        setUser(userId){
-            this.userId = userId;
+    actions:{
+        setUserId(id){
+            this.userId = id;
         },
-        getHistoryStorage(){
-            const authStore = useAuthStore();
-            const user = authStore.currentUser;
-            if(!user.code_name)throw new Error("codenameが未定義です。");
-            return `${SERACH_HISTORY}_${user.code_name}`;
+        getUserHistory(){
+            // const  authStore = useAuthStore();
+            return `${SEARCH_HISTORY}_${this.userId}`;
         },
-        Addhistory(target, link){
-            if (!target || !link) return;
-            console.log("💾 Addhistory 実行:", { target, link });
-            const index = this.history.findIndex((item)=> item.target === target);
-            if (index !==-1){
-                this.history.splice(index, 1);
+        addHistory(target, url){
+            if (!target || !url) return;
+            console.log("検索履歴に追加・完了しました。");
+            const index = this.history.findIndex((item) => item.target === target && item.url === url);
+            if (index !== -1){
+                this.history.splice(index, 1)
             }
-            this.history.unshift({target, link});
-            if (this.history.length > 10){
+            this.history.unshift({target, url});
+            if (this.history.length > 10) {
                 this.history.pop()
             }
-            const key = this.getHistoryStorage();
+            const key = this.getUserHistory();
             localStorage.setItem(key, JSON.stringify(this.history));
         },
-        Loadhistory(){
+        loadHistory(){
             try{
-                // const key = `${SERACH_HISTORY}`;
-                const key = this.getHistoryStorage();
-                const saved = localStorage.getItem(key);
-                if(saved){
-                    const parsed = JSON.parse(saved);
+                const key = this.getUserHistory();
+                const save = localStorage.getItem(key);
+                if (save){
+                    const parsed = JSON.parse(save)
                     if (Array.isArray(parsed)){
-                        this.history = parsed;
+                        this.history = parsed
                     }
                 }
             }catch(error){
-                console.error("検索履歴のロード失敗:", error);
+                console.error('履歴のロード・失敗：', error);
+                throw new Error("Loading Error...");
+
             }
         },
-        Clearhistory(){
+        clearHistory(){
             this.history = [];
-            const key = this.getHistoryStorage();
-            // const key = `${SERACH_HISTORY}`;
+            const key = this.getUserHistory();
             localStorage.removeItem(key);
         }
     }
-})
+});

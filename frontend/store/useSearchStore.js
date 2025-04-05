@@ -9,8 +9,12 @@ export const useSearchStore = defineStore('search', {
         loading: false,
         error: null,
         timer: null,
+        userName: null,
     }),
     actions: {
+        setUserId(code_name){
+            this.userName = code_name;
+        },
         async GlobalSearchEngine () {
             const config = useRuntimeConfig();
             const authStore = useAuthStore();

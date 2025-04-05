@@ -1,22 +1,39 @@
+// {
+//     "name": "Nuxt.js_Django",
+//     "dockerComposeFile": [
+//       "../docker-compose.yml"
+//     ],
+//     "service": "backend",  // Djangoのサービス名に置き換える
+//     "workspaceFolder": "/backend",
+//     "settings": {
+//       "terminal.integrated.defaultProfile.linux": "/bin/bash",
+//       "python.pythonPath": "/usr/local/bin/python"
+//     },
+//     "extensions": [
+//       "ms-python.python",
+//       "ms-azuretools.vscode-docker"
+//     ],
+//     "postCreateCommand": "pip install --no-cache-dir -r requirements.txt",
+//     "mounts": [
+//       "source=${localWorkspaceFolder},target=/workspace,type=bind"
+//     ]
+//   }
 {
-    "name": "Nuxt.js_Django",
-    "dockerComposeFile": [
-      "../docker-compose.yml"
-    ],
-    "service": "backend",  // Djangoのサービス名に置き換える
-    "workspaceFolder": "/backend",
-    "settings": {
-      "terminal.integrated.defaultProfile.linux": "/bin/bash",
-      "python.pythonPath": "/usr/local/bin/python"
-    },
-    "extensions": [
-      "ms-python.python",
-      "ms-azuretools.vscode-docker"
-    ],
-    "postCreateCommand": "pip install --no-cache-dir -r requirements.txt",
-    "remoteUser": "root",
-    "mounts": [
-      "source=${localWorkspaceFolder},target=/workspace,type=bind"
-    ]
-  }
-  
+  "name": "Nuxt.js_Django",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "backend",
+  "workspaceFolder": "/backend",
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "/bin/bash"
+  },
+  "extensions": [
+    "ms-python.python",
+    "ms-azuretools.vscode-docker"
+  ],
+  "postCreateCommand": "pip install --no-cache-dir -r requirements.txt",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind"
+  ]
+}

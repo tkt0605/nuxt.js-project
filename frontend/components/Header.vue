@@ -774,13 +774,60 @@
             </div>
           </div>
           <div class="result-area">
-            <div class="result-search-item">
+            <!-- <div class="result-search-item">
               <div><h4>最近の検索</h4></div>
               <div class="result-header">
                 <ul>
-                  <li class="resukt-bord" v-for="history in histories" :key="history.target">
-                    <!-- <NuxtLink class="lib-result" :to="history.url" @click="TransportPage(history.trem, history.url)"> -->
-                    <NuxtLink class="lib-result" :to="history.url" @click.prevent="searchFromHistory(history.target, history.url)">
+                  <li
+                    class="resukt-bord"
+                    v-for="history in histories"
+                    :key="history.target"
+                  >
+                    <NuxtLink
+                      class="lib-result"
+                      :to="history.url"
+                      @click.prevent="
+                        searchFromHistory(history.target, history.url)
+                      "
+                    >
+                      <div class="result-lib">
+                        <span class="lib-result-name">
+                          {{ history.target }}
+                        </span>
+                      </div>
+                    </NuxtLink>
+                  </li>
+                </ul>
+              </div>
+            </div> -->
+            <div v-show="Keyward === ''" class="result-search-item">
+              <div><h4>最近の検索</h4></div>
+              <div class="result-header">
+                <ul>
+                  <li
+                    class="resukt-bord"
+                    v-for="history in histories"
+                    :key="history.target"
+                  >
+                    <NuxtLink class="lib-result" :to="history.url">
+                      <div class="icon_svg_lib">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-arrow-clockwise"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"
+                          />
+                          <path
+                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"
+                          />
+                        </svg>
+                      </div>
                       <div class="result-lib">
                         <span class="lib-result-name">
                           {{ history.target }}
@@ -791,7 +838,7 @@
                 </ul>
               </div>
             </div>
-            <div>
+            <div v-show="Keyward !== ''">
               <div class="result-search-item">
                 <div><h3>検索結果：</h3></div>
               </div>
@@ -802,6 +849,9 @@
                     <NuxtLink
                       class="lib-result"
                       :to="`/lib/${lib.id}`"
+                      @click.prevent="
+                        searchFromHistory(lib.name_plain, `/lib/${lib.id}`)
+                      "
                     >
                       <div class="icon_svg_lib">
                         <svg
@@ -840,6 +890,12 @@
                     <NuxtLink
                       class="lib-result"
                       :to="`/t/${todo.id}`"
+                      @click.prevent="
+                        searchFromHistory(
+                          todo.title || formatDate(todo.created_at),
+                          `/t/${todo.id}`
+                        )
+                      "
                     >
                       <div class="icon_svg_lib">
                         <svg
@@ -935,8 +991,8 @@ onMounted(async () => {
       try {
         user.value = await authStore.getUserInfo();
         console.log("ユーザー情報取得:", user.value);
-        historyStore.setUser(user.id);
-        historyStore.Loadhistory();
+        historyStore.setUserId(authStore.user.id);
+        historyStore.loadHistory();
       } catch (error) {
         console.error("ユーザー情報取得:", error);
         throw error;
@@ -958,7 +1014,7 @@ onMounted(async () => {
         optionMenu.style.display = closedOption();
       }
     });
-    historyStore.Loadhistory();
+    historyStore.loadHistory();
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -967,10 +1023,9 @@ onBeforeUnmount(async () => {
   window.removeEventListener("resize", checkWindow);
 });
 
-
 const searchFieldOpen = () => {
   isSearchDialogOpen.value = true;
-  historyStore.Loadhistory();
+  historyStore.loadHistory();
 };
 const searchFieldclosed = () => {
   isSearchDialogOpen.value = false;
@@ -1037,11 +1092,12 @@ const Keyward = computed({
   get: () => serchStore.keybord,
   set: (val) => (serchStore.keybord = val),
 });
-const searchFromHistory =(target, url)=>{
+const searchFromHistory = (target, url) => {
   Keyward.value = target;
-  historyStore.Addhistory(target, url);
-  console.log('履歴の追加・成功：', historyStore.Addhistory(target, url));
-  serchStore.GlobalSearchEngine();
+  historyStore.addHistory(target, url);
+  setTimeout(() => {
+    router.push(url);
+  }, 50);
 };
 
 const histories = computed(() => historyStore.history);
@@ -1053,7 +1109,7 @@ const results = computed(() =>
   serchStore.results.filter((item) => item.type === "library")
 );
 const todo_results = computed(() =>
-  serchStore.results.filter((item) => item.type === "todolist")
+  serchStore.results.filter((item) => item.type === "todolist" && item.auther === authStore.user.email)
 );
 const createLibrary = async () => {
   const libname = libraryName.value.trim();

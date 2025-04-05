@@ -877,7 +877,7 @@ aside.open ~ .container {
   left: 0;
   width: 100vw; /* ビューポート幅 */
   height: 100vh; /* ビューポート高さ */
-  /* background: rgba(0, 0, 0, 0.5); */
+  background: rgba(0, 0, 0, 0.5);
   /* background: rgba(255, 255, 255, 0.5); */
   display: flex;
   align-items: center;
