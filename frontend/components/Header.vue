@@ -775,82 +775,107 @@
           </div>
           <div class="result-area">
             <div class="result-search-item">
-              <div><h3>検索結果：</h3></div>
+              <div><h4>最近の検索</h4></div>
+              <div class="result-header">
+                <ul>
+                  <li class="resukt-bord" v-for="history in histories" :key="history.target">
+                    <!-- <NuxtLink class="lib-result" :to="history.url" @click="TransportPage(history.trem, history.url)"> -->
+                    <NuxtLink class="lib-result" :to="history.url" @click.prevent="searchFromHistory(history.target, history.url)">
+                      <div class="result-lib">
+                        <span class="lib-result-name">
+                          {{ history.target }}
+                        </span>
+                      </div>
+                    </NuxtLink>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="result-header">
-              <ul>
-                <li v-for="lib in results" :key="lib.id" class="result-bord">
-                  <!-- <div class="result-items"> -->
-                  <NuxtLink class="lib-result" :to="`/lib/${lib.id}`">
-                    <div class="icon_svg_lib">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-folder"
-                        viewBox="0 0 16 16"
-                        style="font-weight: bold; font-size: large"
-                      >
-                        <path
-                          d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <div class="result-lib">
-                      <span class="lib-result-name">{{
-                        lib.name_plain ||
-                        lib.title ||
-                        formatDate(lib.created_at)
-                      }}</span>
-                      <div class="first-todo" v-if="lib.goal.length >= 50">
-                        {{ lib.goal.slice(0, 50) + "..." }}
+            <div>
+              <div class="result-search-item">
+                <div><h3>検索結果：</h3></div>
+              </div>
+              <div class="result-header">
+                <ul>
+                  <li v-for="lib in results" :key="lib.id" class="result-bord">
+                    <!-- <div class="result-items"> -->
+                    <NuxtLink
+                      class="lib-result"
+                      :to="`/lib/${lib.id}`"
+                    >
+                      <div class="icon_svg_lib">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-folder"
+                          viewBox="0 0 16 16"
+                          style="font-weight: bold; font-size: large"
+                        >
+                          <path
+                            d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a2 2 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139q.323-.119.684-.12h5.396z"
+                          ></path>
+                        </svg>
                       </div>
-                      <div class="first-todo" v-else>{{ lib.goal }}</div>
-                    </div>
-                  </NuxtLink>
-                  <!-- </div> -->
-                </li>
-                <li
-                  v-for="todo in todo_results"
-                  :key="todo.id"
-                  class="result-bord"
-                >
-                  <NuxtLink class="lib-result" :to="`/t/${todo.id}`">
-                    <div class="icon_svg_lib">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        class="bi bi-list-task"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"
-                        ></path>
-                        <path
-                          d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"
-                        ></path>
-                        <path
-                          fill-rule="evenodd"
-                          d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <span class="todo-result-name">{{
-                        todo.title || formatDate(todo.created_at)
-                      }}</span>
-                      <div class="first-todo" v-if="todo.todo.length >= 50">
-                        {{ todo.todo.slice(0, 50) + "..." }}
+                      <div class="result-lib">
+                        <span class="lib-result-name">{{
+                          lib.name_plain ||
+                          lib.title ||
+                          formatDate(lib.created_at)
+                        }}</span>
+                        <div class="first-todo" v-if="lib.goal.length >= 50">
+                          {{ lib.goal.slice(0, 50) + "..." }}
+                        </div>
+                        <div class="first-todo" v-else>{{ lib.goal }}</div>
                       </div>
-                      <div class="first-todo" v-else>{{ todo.todo }}</div>
-                    </div>
-                  </NuxtLink>
-                </li>
-              </ul>
+                    </NuxtLink>
+                    <!-- </div> -->
+                  </li>
+                  <li
+                    v-for="todo in todo_results"
+                    :key="todo.id"
+                    class="result-bord"
+                  >
+                    <NuxtLink
+                      class="lib-result"
+                      :to="`/t/${todo.id}`"
+                    >
+                      <div class="icon_svg_lib">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          class="bi bi-list-task"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"
+                          ></path>
+                          <path
+                            d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"
+                          ></path>
+                          <path
+                            fill-rule="evenodd"
+                            d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"
+                          ></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <span class="todo-result-name">{{
+                          todo.title || formatDate(todo.created_at)
+                        }}</span>
+                        <div class="first-todo" v-if="todo.todo.length >= 50">
+                          {{ todo.todo.slice(0, 50) + "..." }}
+                        </div>
+                        <div class="first-todo" v-else>{{ todo.todo }}</div>
+                      </div>
+                    </NuxtLink>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -872,16 +897,13 @@ import {
   nextTick,
 } from "vue";
 import { useSearchStore } from "../store/useSearchStore";
+import { useHistoryStore } from "../store/historyStore";
 const router = useRouter();
 const authStore = useAuthStore();
 const libraryStore = useLibraryStore();
 const todolist = ref([]);
 const libraryName = ref([]);
 const EditTitle = ref([]);
-// const Keyward = ref(null);
-// const results = ref([]);
-//  const todo_results = ref([]);
-// const libtodo_results = ref([]);
 const libraries = ref([]);
 const user = ref(null);
 const isAsideOpen = ref(true);
@@ -901,6 +923,7 @@ const menuRef = ref(null);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const currentUser = computed(() => authStore.currentUser);
 const serchStore = useSearchStore();
+const historyStore = useHistoryStore();
 onMounted(async () => {
   try {
     await authStore.restoreSession();
@@ -912,6 +935,8 @@ onMounted(async () => {
       try {
         user.value = await authStore.getUserInfo();
         console.log("ユーザー情報取得:", user.value);
+        historyStore.setUser(user.id);
+        historyStore.Loadhistory();
       } catch (error) {
         console.error("ユーザー情報取得:", error);
         throw error;
@@ -922,11 +947,6 @@ onMounted(async () => {
     todolist.value = todos.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
-    // if(Array.isArray(todos)){
-    //   todolist.value = todos.filter((todolist)=>todolist.auther === currentUser.id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    // }else{
-    //   console.error(error);
-    // }
     const categorized = categorizeTodos(todolist.value);
     categorizedTodos.value =
       { ...categorized } && categorizeTodos(todolist.value);
@@ -938,6 +958,7 @@ onMounted(async () => {
         optionMenu.style.display = closedOption();
       }
     });
+    historyStore.Loadhistory();
   } catch (error) {
     console.error("初期データのロードに失敗しました。", error);
   }
@@ -945,8 +966,11 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   window.removeEventListener("resize", checkWindow);
 });
+
+
 const searchFieldOpen = () => {
   isSearchDialogOpen.value = true;
+  historyStore.Loadhistory();
 };
 const searchFieldclosed = () => {
   isSearchDialogOpen.value = false;
@@ -1013,6 +1037,14 @@ const Keyward = computed({
   get: () => serchStore.keybord,
   set: (val) => (serchStore.keybord = val),
 });
+const searchFromHistory =(target, url)=>{
+  Keyward.value = target;
+  historyStore.Addhistory(target, url);
+  console.log('履歴の追加・成功：', historyStore.Addhistory(target, url));
+  serchStore.GlobalSearchEngine();
+};
+
+const histories = computed(() => historyStore.history);
 const serachEngine = () => {
   serchStore.GlobalSearchEngine();
   serchStore.debounceSearch(300); // 300ms ごとに実行
@@ -1023,18 +1055,6 @@ const results = computed(() =>
 const todo_results = computed(() =>
   serchStore.results.filter((item) => item.type === "todolist")
 );
-// const serachEngine = async()=>{
-//   const q = Keyward.value?.trim() || "";
-//   try{
-//     const {todolist, libraries} = await libraryStore.demoSearch(q);
-//     results.value = libraries;
-//     // libtodo_results.value = libtodo;
-//     todo_results.value = todolist;
-//   }catch(error){
-//     console.error("検索失敗：", error);
-//     throw new Error;
-//   }
-// };
 const createLibrary = async () => {
   const libname = libraryName.value.trim();
   if (!libname) {
