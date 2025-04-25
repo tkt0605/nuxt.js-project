@@ -4,7 +4,9 @@ RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
-
+ARG USERNAME=vscode
+RUN useradd -ms /bin/bash $USERNAME \
+    && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 WORKDIR /backend
 COPY . /backend/
 COPY requirements.txt /backend/
